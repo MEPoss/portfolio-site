@@ -1301,6 +1301,46 @@ a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
   .about-grid { grid-template-columns: 1fr; }
 }
 
+/* ── About: intro card with stickers, then listening + career side by side ── */
+.about-intro {
+  position: relative; overflow: hidden; padding: 2.1rem 2.25rem; margin-bottom: 1.5rem;
+  background: var(--surface); border: 1px solid var(--divider); border-radius: 16px; box-shadow: var(--shadow-sm);
+  min-height: 21rem;
+}
+.about-intro .about-bio { position: relative; z-index: 1; max-width: 23rem; }
+.about-intro .about-bio p { font-size: 1.05rem; line-height: 1.75; margin-bottom: 1.25rem; }
+.about-intro .about-bio strong { color: var(--text); font-weight: 500; }
+.about-stickers { position: absolute; top: 0; right: 0; bottom: 0; width: 36%; pointer-events: none; }
+.sticker { position: absolute; display: block; height: auto; filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18)); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+.st-tree { width: 66%; right: -12%; top: -5%; transform: rotate(8deg); }
+.st-arrow { width: 26%; left: 30%; top: 40%; transform: rotate(-12deg); }
+.st-eye { width: 52%; right: -12%; top: 58%; transform: rotate(-6deg); }
+.about-intro:hover .st-tree { transform: rotate(12deg) translateY(4px); }
+.about-intro:hover .st-arrow { transform: rotate(-4deg) translate(6px, -6px); }
+.about-intro:hover .st-eye { transform: rotate(2deg) translateY(-5px); }
+.about-row { display: grid; grid-template-columns: 0.8fr 1.4fr; gap: 1.5rem; margin-bottom: 3.5rem; align-items: stretch; }
+.about-row .now-card { max-width: none; margin: 0; padding: 1.25rem 1.25rem 1.5rem; }
+.about-row .crate { padding-top: 2.6rem; margin-bottom: 1rem; }
+.about-row .now-text { font-size: 0.95rem; line-height: 1.7; }
+.exp-card { padding: 0.75rem; border-radius: 16px; }
+.exp-list { display: flex; flex-direction: column; }
+.exp-row { display: flex; justify-content: space-between; align-items: center; gap: 1.25rem; padding: 0.95rem 1rem; border-radius: 10px; transition: background-color 0.15s; }
+.exp-row:hover { background: color-mix(in srgb, var(--text) 5%, transparent); }
+.exp-title { font-size: 1rem; font-weight: 500; color: var(--text); }
+.exp-desc { font-size: 0.9rem; line-height: 1.55; color: var(--text-muted); margin-top: 0.15rem; }
+.exp-date { flex: none; font-size: 0.95rem; color: var(--text); white-space: nowrap; }
+@media (max-width: 720px) {
+  .about-row { grid-template-columns: 1fr; }
+  .about-row .now-card { max-width: 24rem; }
+}
+@media (max-width: 640px) {
+  .about-intro { padding: 1.5rem; min-height: 0; }
+  .about-stickers { display: none; }
+  .exp-row { flex-direction: column; align-items: flex-start; gap: 0.35rem; }
+  .exp-date { order: -1; font-size: 0.8rem; color: var(--text-muted); }
+}
+@media (prefers-reduced-motion: reduce) { .sticker { transition: none; } }
+
 /* ── CASE STUDY PAGES ────────────────────────────────── */
 .case-inner {
   position: relative;
@@ -2515,47 +2555,56 @@ body.game-active .footer-links a {
       </a>
       <h2 class="page-title">About</h2>
 
-      <div class="about-grid">
-        <div class="about-card">
-          <div class="about-bio">
-            <p>I'm a Product Designer based in Italy 🇮🇹, passionate about turning complexity into clarity.</p>
-            <p>I design digital experiences that bridge product, business, and technology. From empowering users through thoughtful workflows to creating playful, engaging interfaces inspired by games and space.</p>
-            <p>Currently at <strong class="text-accent">Treedom 🌳</strong>, making satellite data readable for people and sustainability measurable for businesses.</p>
+      <div class="about-intro">
+        <div class="about-bio">
+          <p>Hey there, I'm <strong>Ugo</strong> — a Product Designer based in <strong>Italy</strong> 🇮🇹, passionate about turning complexity into clarity.</p>
+          <p>I design digital experiences that bridge product, business, and technology. From empowering users through thoughtful workflows to creating playful, engaging interfaces inspired by games and space.</p>
+          <p>I'm currently a <strong>Product Designer at Treedom</strong> 🌳, making satellite data readable for people and sustainability measurable for businesses.</p>
+        </div>
+        <div class="about-stickers" aria-hidden="true">
+          <img class="sticker st-tree" src="images/stickers/treedom.png" alt="" width="392" height="299">
+          <img class="sticker st-arrow" src="images/stickers/arrow.png" alt="" width="332" height="332">
+          <img class="sticker st-eye" src="images/stickers/eye.png" alt="" width="332" height="332">
+        </div>
+      </div>
+
+      <div class="about-row">
+      <div class="now-card about-listen" id="now-card">
+        <div class="crate">
+          <div class="crate-inner">
+            <button class="crate-item" type="button" data-i="0" aria-label="John Butler Trio, Grand National"><span class="crate-card">
+              <span class="crate-vinyl" aria-hidden="true"><span class="crate-disc"><span class="record-label"></span></span></span>
+              <img class="record-sleeve" src="images/music/grand-national.jpg" alt="" width="900" height="813" loading="lazy" decoding="async">
+            </span></button>
+            <button class="crate-item is-empty" type="button" data-i="1" aria-label="Empty sleeve"><span class="crate-card"><span class="record-sleeve"></span></span></button>
+            <button class="crate-item is-empty" type="button" data-i="2" aria-label="Empty sleeve"><span class="crate-card"><span class="record-sleeve"></span></span></button>
+            <button class="crate-item is-empty" type="button" data-i="3" aria-label="Empty sleeve"><span class="crate-card"><span class="record-sleeve"></span></span></button>
           </div>
         </div>
-
-        <div class="about-card">
-          <h3 class="about-section-title">Experience</h3>
-          <div class="experience-list">
-            <div class="experience-item">
-              <div class="experience-role">Product Designer</div>
-              <div class="experience-company">Treedom</div>
-              <div class="experience-period">Jul 2021 - Present · Florence, Italy · Hybrid</div>
-              <div class="experience-desc">Design systems, the B2B impact dashboard, and the ESA satellite data platform bringing environmental monitoring to non-technical users across Ecuador and Madagascar.</div>
+        <p class="now-text" aria-live="polite"></p>
+        <button class="play-btn" type="button" aria-pressed="false"><svg class="play-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="pause-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg><span class="play-label">Play preview</span></button>
+      </div>
+        <div class="about-card exp-card">
+          <div class="exp-list">
+            <div class="exp-row">
+              <div class="exp-main"><div class="exp-title">Product Designer at Treedom</div><div class="exp-desc">Design systems, the B2B impact dashboard, and the ESA satellite data platform bringing environmental monitoring to non-technical users across Ecuador and Madagascar.</div></div>
+              <div class="exp-date">2021 – Now</div>
             </div>
-            <div class="experience-item">
-              <div class="experience-role">UX/UI Designer</div>
-              <div class="experience-company">Ars Digitalia</div>
-              <div class="experience-period">Apr 2021 - Jul 2021 · Remote</div>
-              <div class="experience-desc">Digital School Register: modernized Italy's education infrastructure, achieving 95% adoption among 3,000+ teachers across 50 schools.</div>
+            <div class="exp-row">
+              <div class="exp-main"><div class="exp-title">UX/UI Designer at Ars Digitalia</div><div class="exp-desc">Digital School Register: modernized Italy's education infrastructure, achieving 95% adoption among 3,000+ teachers across 50 schools.</div></div>
+              <div class="exp-date">2021</div>
             </div>
-            <div class="experience-item">
-              <div class="experience-role">Graphic Designer</div>
-              <div class="experience-company">zeroCO2</div>
-              <div class="experience-period">Apr 2021 - May 2021 · Remote</div>
-              <div class="experience-desc">Designed the graphics and laid out the text of their first Impact Report, for 2020.</div>
+            <div class="exp-row">
+              <div class="exp-main"><div class="exp-title">Graphic Designer at zeroCO2</div><div class="exp-desc">Designed the graphics and laid out the text of their first Impact Report, for 2020.</div></div>
+              <div class="exp-date">2021</div>
             </div>
-            <div class="experience-item">
-              <div class="experience-role">Editor</div>
-              <div class="experience-company">Tasc</div>
-              <div class="experience-period">Jun 2013 - Dec 2017 · Freelance · Remote</div>
-              <div class="experience-desc">Writing and editing; started as an author in Sep 2012.</div>
+            <div class="exp-row">
+              <div class="exp-main"><div class="exp-title">Editor at Tasc</div><div class="exp-desc">Writing and editing; started as an author in 2012.</div></div>
+              <div class="exp-date">2013 – 2017</div>
             </div>
-            <div class="experience-item">
-              <div class="experience-role">Blogger</div>
-              <div class="experience-company">Wired Italia</div>
-              <div class="experience-period">Jun 2013 - Dec 2013 · Freelance · Remote</div>
-              <div class="experience-desc">Copywriting.</div>
+            <div class="exp-row">
+              <div class="exp-main"><div class="exp-title">Blogger at Wired Italia</div><div class="exp-desc">Copywriting.</div></div>
+              <div class="exp-date">2013</div>
             </div>
           </div>
         </div>
@@ -2593,23 +2642,6 @@ body.game-active .footer-links a {
         <span class="not-designing-chip"><svg class="lucide lucide-lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/></svg>Video games</span>
         <span class="not-designing-chip"><svg class="lucide lucide-lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>Comics</span>
         <span class="not-designing-chip"><svg class="lucide lucide-lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>Dreaming about the stars</span>
-      </div>
-
-      <h3 class="about-section-title">Listening</h3>
-      <div class="now-card" id="now-card">
-        <div class="crate">
-          <div class="crate-inner">
-            <button class="crate-item" type="button" data-i="0" aria-label="John Butler Trio, Grand National"><span class="crate-card">
-              <span class="crate-vinyl" aria-hidden="true"><span class="crate-disc"><span class="record-label"></span></span></span>
-              <img class="record-sleeve" src="images/music/grand-national.jpg" alt="" width="900" height="813" loading="lazy" decoding="async">
-            </span></button>
-            <button class="crate-item is-empty" type="button" data-i="1" aria-label="Empty sleeve"><span class="crate-card"><span class="record-sleeve"></span></span></button>
-            <button class="crate-item is-empty" type="button" data-i="2" aria-label="Empty sleeve"><span class="crate-card"><span class="record-sleeve"></span></span></button>
-            <button class="crate-item is-empty" type="button" data-i="3" aria-label="Empty sleeve"><span class="crate-card"><span class="record-sleeve"></span></span></button>
-          </div>
-        </div>
-        <p class="now-text" aria-live="polite"></p>
-        <button class="play-btn" type="button" aria-pressed="false"><svg class="play-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="pause-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg><span class="play-label">Play preview</span></button>
       </div>
 
       <h3 class="about-section-title">Readings</h3>
@@ -4581,7 +4613,7 @@ const READING_LIST = [
     { name: 'BatFi',     icon: 'batfi.png',     kind: 'Battery',       desc: 'Keeps the Mac battery charge in check.', links: [] },
     { name: 'Thaw',      icon: 'thaw.png',      kind: 'Menu bar',      desc: 'Keeps the menu bar tidy.', links: [] },
     { name: 'Vorssaint', icon: 'vorssaint.png', kind: 'Mac utility',   desc: 'A small utility in the menu bar.', links: [] },
-    { name: 'Expensa',   icon: 'expensa.png',   kind: 'Expenses',      desc: 'The money app I use now, instead of building my own.', links: [
+    { name: 'Expensa',   icon: 'expensa.png',   kind: 'Expenses',      desc: 'The money app I use now.', links: [
       { label: 'App Store', href: 'https://apps.apple.com/us/app/expensa-expense-tracker/id6758392205' },
       { label: 'getexpensa.com', href: 'https://getexpensa.com/' } ] }
   ];
