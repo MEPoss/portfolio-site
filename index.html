@@ -1140,7 +1140,7 @@ body.game-active .about-avatar-row .av {
 }
 .dock-panel {
   position: relative; border: 1px solid var(--divider); border-radius: var(--r-in); padding: var(--gap);
-  height: 11rem;                                /* fixed, so the section never grows or shrinks with the content */
+  height: 9.75rem;                              /* fixed, so the section never grows or shrinks with the content */
   display: flex; flex-direction: column; background: var(--surface);
   --notch-x: 50%;
 }
@@ -1150,8 +1150,17 @@ body.game-active .about-avatar-row .av {
   transform: translateX(-50%) rotate(45deg); transition: left 0.25s cubic-bezier(0.24, 1.34, 0.38, 1);
 }
 .dock-head { display: flex; align-items: center; gap: 0.5rem; padding: 0.15rem 0.45rem 0.6rem; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+.dock-links { margin-left: auto; display: flex; gap: 0.4rem; padding-right: 2.6rem; }
+.dock-link {
+  display: inline-flex; align-items: center; gap: 0.3em; font-size: 0.76rem; letter-spacing: 0; text-transform: none;
+  padding: 0.2rem 0.65rem; border: 1px solid var(--divider); border-radius: 999px; color: var(--text-muted);
+  text-decoration: none; background: var(--surface); transition: color 0.15s, border-color 0.15s;
+}
+.dock-link svg { width: 0.85em; height: 0.85em; transition: transform 0.2s cubic-bezier(0.24, 1.34, 0.38, 1); }
+.dock-link:hover, .dock-link:focus-visible { color: var(--accent); border-color: var(--accent); }
+a.dock-link[target]:hover svg, a.dock-link[target]:focus-visible svg { transform: translate(0.15em, -0.15em); }
 .dock-head-icon { width: 20px; height: 20px; border-radius: 5px; }
-.dock-cards { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); animation: dockIn 0.2s ease; }
+.dock-cards { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr; gap: var(--gap); animation: dockIn 0.2s ease; }
 @keyframes dockIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 .dock-item {
   min-width: 0; display: flex; flex-direction: column; background: color-mix(in srgb, var(--text) 3%, var(--surface));
@@ -1162,7 +1171,7 @@ body.game-active .about-avatar-row .av {
 .dock-item span { font-size: 0.82rem; color: var(--text-muted); line-height: 1.45; }
 a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
 .dock {
-  display: flex; gap: 0.1rem; padding: var(--gap); border-radius: var(--r-in); background: var(--surface);
+  display: flex; gap: 0.3rem; padding: var(--gap); border-radius: var(--r-in); background: var(--surface);
   border: 1px solid var(--divider);
 }
 /* each button is its icon plus a 3px margin; the ring sits on the button's edge, so its
@@ -1176,8 +1185,6 @@ a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
 .dock-btn img.dock-icon { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; border-radius: 22.5%; }
 .dock-btn[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); transform: translateY(-2px); }
 .dock-btn:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
-/* Vercel is a website, not an app: brOS (where it opens) rides in the corner */
-.dock-badge { position: absolute; right: -5px; bottom: -5px; width: 44%; height: 44%; pointer-events: none; border-radius: 22.5%; box-shadow: 0 0 0 2px var(--surface); background: var(--surface); }
 .dock-sound {
   all: unset; box-sizing: border-box; cursor: pointer; position: absolute; z-index: 2;
   top: calc(var(--gap) + 0.4rem); right: calc(var(--gap) + 0.55rem); width: 30px; height: 30px;
@@ -1189,41 +1196,86 @@ a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
 .dock-sound[aria-pressed="true"] .dock-sound-off, .dock-sound[aria-pressed="false"] .dock-sound-on { display: none; }
 @media (max-width: 560px) {
   .dock-stage { --gap: 8px; --r-in: 18px; }
-  .dock { gap: 0; }
-  .dock-panel { height: 14rem; }
-  .dock-cards { grid-template-columns: 1fr; grid-auto-rows: 1fr; }
+  .dock { gap: 0.1rem; }
+  .dock-panel { height: 12rem; }
+  .dock-head { flex-wrap: wrap; padding-right: 2.6rem; }
+  .dock-links { margin-left: 0; padding-right: 0; width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) { .dock-btn, .dock-panel::after { transition: none; } .dock-cards { animation: none; } }
 
-/* ── Listening: the sleeve with its record sliding out (idea from marco.fyi) ── */
+/* ── Listening: a crate of records. Point at one behind and it lifts, click it and it
+   slides to the front like flipping through a shop; the front one plays a 30s preview
+   from Apple Music and its record spins. The empty sleeves are placeholders. ── */
 .now-card {
   max-width: 24rem; padding: 1.5rem; margin-bottom: 3.5rem;
   background: var(--surface); border: 1px solid var(--divider); border-radius: 16px; box-shadow: var(--shadow-sm);
 }
-.record { position: relative; width: 100%; aspect-ratio: 1.4; margin-bottom: 1.5rem; }
-.record-sleeve {
-  position: absolute; left: 0; top: 50%; width: 72%; height: auto; aspect-ratio: 1563 / 1412; transform: translateY(-50%);
-  border-radius: 3px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22); z-index: 2; object-fit: cover;
+.crate { padding-top: 3.4rem; margin-bottom: 1.5rem; }
+.crate-inner { position: relative; width: 100%; aspect-ratio: 1.4; }
+/* The button is the hit area and never moves out of its place in the stack; the card inside
+   it is what lifts and tilts (and ignores the pointer), so a record that has risen can't
+   cover the ones behind it and you can slide from one to the next without leaving. */
+.crate-item {
+  all: unset; box-sizing: border-box; cursor: pointer; position: absolute; left: 0; top: 50%; width: 72%; aspect-ratio: 1563 / 1412;
+  --d: 0; --lift: 0px; --z: 0px; --tilt: 0deg;
+  perspective: 900px;
+  transform: translateY(calc(-50% - var(--d) * 17px));
+  z-index: calc(10 - var(--d));
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.record-vinyl {
-  position: absolute; right: 0; top: 50%; width: 56%; aspect-ratio: 1; margin-top: -28%; z-index: 1; border-radius: 50%;
+.crate-card {
+  display: block; position: absolute; inset: 0; pointer-events: none; transform-origin: 50% 100%;
+  transform: translateY(calc(0px - var(--lift))) translateZ(var(--z)) rotateX(var(--tilt));
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* at rest every sleeve is a flat square in the stack; the motion only happens on hover.
+   Any record you point at, in front or behind, leans toward you top edge first; the ones behind also rise clear of the stack. */
+.crate-item[data-front]:hover, .crate-item[data-front]:focus-visible { --z: 30px; --tilt: -10deg; }
+.crate-item:not([data-front]):hover, .crate-item:not([data-front]):focus-visible { --lift: 32px; --z: 30px; --tilt: -10deg; }
+.crate-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.record-sleeve {
+  display: block; position: relative; width: 100%; height: 100%; object-fit: cover; border-radius: 3px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+}
+.crate-item.is-empty .record-sleeve {
+  background: color-mix(in srgb, var(--text) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--text) 20%, transparent);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+}
+.crate-vinyl {
+  position: absolute; left: 61%; top: 50%; width: 78%; aspect-ratio: 1; margin-top: -39%; z-index: -1;
+  transition: transform 0.6s cubic-bezier(0.24, 1.34, 0.38, 1), opacity 0.3s;
+  transform: translateX(-70%); opacity: 0;
+}
+.crate-item[data-front] .crate-vinyl { transform: none; opacity: 1; }
+.crate-item[data-front]:hover .crate-vinyl, .crate-item[data-front]:focus-visible .crate-vinyl, #now-card[data-playing] .crate-vinyl { transform: translateX(9%); }
+.crate-disc {
+  position: absolute; inset: 0; border-radius: 50%;
   background:
     conic-gradient(from 30deg, transparent 0 18%, rgba(255,255,255,0.09) 24%, transparent 30%, transparent 68%, rgba(255,255,255,0.09) 74%, transparent 80%),
     repeating-radial-gradient(circle, #0a0a0a 0 2px, #1b1b1b 2px 3px);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-  transition: transform 0.6s cubic-bezier(0.24, 1.34, 0.38, 1);
 }
+#now-card[data-playing] .crate-disc { animation: vinylSpin 2.8s linear infinite; }
+@keyframes vinylSpin { to { transform: rotate(360deg); } }
 .record-label {
   position: absolute; inset: 33%; border-radius: 50%; border: 3px solid #222;
   background: #111 url("images/music/grand-national.jpg") 50% 52% / 430% no-repeat;
 }
 .record-label::after { content: ''; position: absolute; left: 50%; top: 50%; width: 9%; aspect-ratio: 1; border-radius: 50%; background: var(--surface); transform: translate(-50%, -50%); }
-.now-card:hover .record-vinyl, .now-card:focus-within .record-vinyl { transform: translateX(9%); animation: vinylSpin 4s linear 0.5s infinite; }
-@keyframes vinylSpin { to { transform: translateX(9%) rotate(360deg); } }
-.now-text { font-size: 1.05rem; line-height: 1.75; color: var(--text-muted); margin: 0; }
+.now-text { font-size: 1.05rem; line-height: 1.75; color: var(--text-muted); margin: 0; min-height: 5.3em; }
 .now-text a { color: var(--text); font-weight: 500; text-decoration: underline dotted; text-decoration-thickness: 2px; text-underline-offset: 5px; }
 .now-text a:hover { color: var(--accent); }
-@media (prefers-reduced-motion: reduce) { .record-vinyl { transition: none; } .now-card:hover .record-vinyl, .now-card:focus-within .record-vinyl { animation: none; } }
+.play-btn {
+  all: unset; box-sizing: border-box; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem;
+  padding: 0.5rem 0.95rem 0.5rem 0.75rem; border: 1px solid var(--divider); border-radius: 999px; font-size: 0.85rem; font-weight: 500;
+  color: var(--text); background: var(--surface); transition: border-color 0.15s, color 0.15s;
+}
+.play-btn svg { width: 14px; height: 14px; }
+.play-btn:hover, .play-btn:focus-visible { border-color: var(--accent); color: var(--accent); }
+.play-btn[hidden] { display: none; }
+.play-btn[aria-pressed="false"] .pause-ico, .play-btn[aria-pressed="true"] .play-ico { display: none; }
+.play-btn:disabled { opacity: 0.55; cursor: default; }
+@media (prefers-reduced-motion: reduce) { .crate-item, .crate-card, .crate-vinyl { transition: none; } #now-card[data-playing] .crate-disc { animation: none; } }
 
 .tools-pending {
   font-size: 0.85rem;
@@ -2478,21 +2530,35 @@ body.game-active .footer-links a {
             <div class="experience-item">
               <div class="experience-role">Product Designer</div>
               <div class="experience-company">Treedom</div>
-              <div class="experience-period">Jul 2021 - Present · Italy</div>
+              <div class="experience-period">Jul 2021 - Present · Florence, Italy · Hybrid</div>
               <div class="experience-desc">Design systems, the B2B impact dashboard, and the ESA satellite data platform bringing environmental monitoring to non-technical users across Ecuador and Madagascar.</div>
             </div>
             <div class="experience-item">
-              <div class="experience-role">Co-Lead Designer</div>
+              <div class="experience-role">UX/UI Designer</div>
               <div class="experience-company">Ars Digitalia</div>
-              <div class="experience-period">Apr 2021 - Jul 2021 · Italy</div>
+              <div class="experience-period">Apr 2021 - Jul 2021 · Remote</div>
               <div class="experience-desc">Digital School Register: modernized Italy's education infrastructure, achieving 95% adoption among 3,000+ teachers across 50 schools.</div>
+            </div>
+            <div class="experience-item">
+              <div class="experience-role">Graphic Designer</div>
+              <div class="experience-company">zeroCO2</div>
+              <div class="experience-period">Apr 2021 - May 2021 · Remote</div>
+              <div class="experience-desc">Designed the graphics and laid out the text of their first Impact Report, for 2020.</div>
+            </div>
+            <div class="experience-item">
+              <div class="experience-role">Editor</div>
+              <div class="experience-company">Tasc</div>
+              <div class="experience-period">Jun 2013 - Dec 2017 · Freelance · Remote</div>
+              <div class="experience-desc">Writing and editing; started as an author in Sep 2012.</div>
+            </div>
+            <div class="experience-item">
+              <div class="experience-role">Blogger</div>
+              <div class="experience-company">Wired Italia</div>
+              <div class="experience-period">Jun 2013 - Dec 2013 · Freelance · Remote</div>
+              <div class="experience-desc">Copywriting.</div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="palette-strip" aria-hidden="true">
-        <span></span><span></span><span></span><span></span><span></span>
       </div>
 
       <h3 class="about-section-title">Tools I use</h3>
@@ -2500,20 +2566,21 @@ body.game-active .footer-links a {
         <div class="tools-card dock-card-wrap">
           <div class="dock-stage" id="tools-dock">
             <div class="dock-panel" aria-live="polite">
-              <div class="dock-head"><img class="dock-head-icon" src="images/tools/figma.png" alt="" width="20" height="20"><span class="dock-head-name">Figma</span></div>
+              <div class="dock-head"><img class="dock-head-icon" src="images/tools/figma.png" alt="" width="20" height="20"><span class="dock-head-name">Figma</span><span class="dock-links"></span></div>
               <div class="dock-cards"></div>
             </div>
             <div class="dock" role="toolbar" aria-label="Tools I use">
             <button class="dock-btn" type="button" data-i="0" aria-pressed="false" aria-label="Raycast"><img class="dock-icon" src="images/tools/raycast.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
             <button class="dock-btn" type="button" data-i="1" aria-pressed="false" aria-label="Figma"><img class="dock-icon" src="images/tools/figma.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
             <button class="dock-btn" type="button" data-i="2" aria-pressed="false" aria-label="Claude"><img class="dock-icon" src="images/tools/claude.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
-            <button class="dock-btn" type="button" data-i="3" aria-pressed="false" aria-label="Vercel"><img class="dock-icon" src="images/tools/vercel.png" alt="" width="96" height="96" loading="lazy" decoding="async"><img class="dock-badge" src="images/tools/bros.png" alt="" width="40" height="40" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="3" aria-pressed="false" aria-label="Vercel"><img class="dock-icon" src="images/tools/vercel.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
             <button class="dock-btn" type="button" data-i="4" aria-pressed="false" aria-label="brOS"><img class="dock-icon" src="images/tools/bros.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
             <button class="dock-btn" type="button" data-i="5" aria-pressed="false" aria-label="Warp"><img class="dock-icon" src="images/tools/warp.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
             <button class="dock-btn" type="button" data-i="6" aria-pressed="false" aria-label="Paper"><img class="dock-icon" src="images/tools/paper.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
             <button class="dock-btn" type="button" data-i="7" aria-pressed="false" aria-label="BatFi"><img class="dock-icon" src="images/tools/batfi.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
             <button class="dock-btn" type="button" data-i="8" aria-pressed="false" aria-label="Thaw"><img class="dock-icon" src="images/tools/thaw.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
             <button class="dock-btn" type="button" data-i="9" aria-pressed="false" aria-label="Vorssaint"><img class="dock-icon" src="images/tools/vorssaint.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="10" aria-pressed="false" aria-label="Expensa"><img class="dock-icon" src="images/tools/expensa.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
             </div>
             <button class="dock-sound" type="button" aria-pressed="true" aria-label="Sound on"><svg class="lucide dock-sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg><svg class="lucide dock-sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></svg></button>
           </div>
@@ -2529,12 +2596,20 @@ body.game-active .footer-links a {
       </div>
 
       <h3 class="about-section-title">Listening</h3>
-      <div class="now-card">
-        <div class="record">
-          <div class="record-vinyl" aria-hidden="true"><span class="record-label"></span></div>
-          <img class="record-sleeve" src="images/music/grand-national.jpg" alt="Cover of Grand National by The John Butler Trio" width="900" height="813" loading="lazy" decoding="async">
+      <div class="now-card" id="now-card">
+        <div class="crate">
+          <div class="crate-inner">
+            <button class="crate-item" type="button" data-i="0" aria-label="John Butler Trio, Grand National"><span class="crate-card">
+              <span class="crate-vinyl" aria-hidden="true"><span class="crate-disc"><span class="record-label"></span></span></span>
+              <img class="record-sleeve" src="images/music/grand-national.jpg" alt="" width="900" height="813" loading="lazy" decoding="async">
+            </span></button>
+            <button class="crate-item is-empty" type="button" data-i="1" aria-label="Empty sleeve"><span class="crate-card"><span class="record-sleeve"></span></span></button>
+            <button class="crate-item is-empty" type="button" data-i="2" aria-label="Empty sleeve"><span class="crate-card"><span class="record-sleeve"></span></span></button>
+            <button class="crate-item is-empty" type="button" data-i="3" aria-label="Empty sleeve"><span class="crate-card"><span class="record-sleeve"></span></span></button>
+          </div>
         </div>
-        <p class="now-text">Currently listening to <a href="https://music.apple.com/search?term=John%20Butler%20Trio%20Funky%20Tonight" target="_blank" rel="noopener noreferrer">Funky Tonight</a> by <a href="https://music.apple.com/search?term=John%20Butler%20Trio" target="_blank" rel="noopener noreferrer">John Butler Trio</a> from the album <a href="https://music.apple.com/search?term=John%20Butler%20Trio%20Grand%20National" target="_blank" rel="noopener noreferrer">Grand National</a>.</p>
+        <p class="now-text" aria-live="polite"></p>
+        <button class="play-btn" type="button" aria-pressed="false"><svg class="play-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="pause-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg><span class="play-label">Play preview</span></button>
       </div>
 
       <h3 class="about-section-title">Readings</h3>
@@ -4488,28 +4563,35 @@ const READING_LIST = [
 <script>
 /* ══ Tools dock ═══════════════════════════════════════════
    Point at (or tap, or arrow-key to) a tool and the panel above says what it is
-   for. Sounds are made with the Web Audio API, so there is nothing to download;
-   browsers only allow audio after a click or key press, so hover sounds start once
-   you have interacted with the page, and the speaker button turns them off. */
+   for, with the links to its site in the corner. Sounds are made with the Web Audio
+   API, so there is nothing to download; browsers only allow audio after a click or
+   key press, so hover sounds start once you have interacted with the page, and the
+   speaker button turns them off. */
 (function () {
   var root = document.getElementById('tools-dock');
   if (!root) return;
   var TOOLS = [
-    { name: 'Raycast',   icon: 'raycast.png',   kind: 'Launcher',       desc: 'Apps, snippets and quick commands from one key.', url: 'https://www.raycast.com', host: 'raycast.com' },
-    { name: 'Figma',     icon: 'figma.png',     kind: 'UI design',      desc: 'Interfaces, prototypes and design systems.', url: 'https://www.figma.com', host: 'figma.com' },
-    { name: 'Claude',    icon: 'claude.png',    kind: 'AI pair',        desc: 'Thinking partner for design and code.', url: 'https://claude.ai', host: 'claude.ai' },
-    { name: 'Vercel',    icon: 'vercel.png',    kind: 'Hosting',        desc: 'Where this site lives.', url: 'https://vercel.com', host: 'vercel.com' },
-    { name: 'brOS',      icon: 'bros.png',      kind: 'Browser',        desc: 'The Mac browser I built.', url: '#/ideas/bros', host: 'Open project', internal: true },
-    { name: 'Warp',      icon: 'warp.png',      kind: 'Terminal',       desc: 'Where the command line happens.', url: 'https://www.warp.dev', host: 'warp.dev' },
-    { name: 'Paper',     icon: 'paper.png',     kind: 'Design canvas',  desc: 'Designing in HTML on a canvas.', url: 'https://paper.design', host: 'paper.design' },
-    { name: 'BatFi',     icon: 'batfi.png',     kind: 'Battery',        desc: 'Keeps the Mac battery charge in check.' },
-    { name: 'Thaw',      icon: 'thaw.png',      kind: 'Menu bar',       desc: 'Keeps the menu bar tidy.' },
-    { name: 'Vorssaint', icon: 'vorssaint.png', kind: 'Mac utility',    desc: 'A small utility in the menu bar.' }
+    { name: 'Raycast',   icon: 'raycast.png',   kind: 'Launcher',      desc: 'Apps, snippets and quick commands from one key.', links: [{ label: 'raycast.com', href: 'https://www.raycast.com' }] },
+    { name: 'Figma',     icon: 'figma.png',     kind: 'UI design',     desc: 'Interfaces, prototypes and design systems.', links: [{ label: 'figma.com', href: 'https://www.figma.com' }] },
+    { name: 'Claude',    icon: 'claude.png',    kind: 'AI pair',       desc: 'Thinking partner for design and code.', links: [{ label: 'claude.ai', href: 'https://claude.ai' }] },
+    { name: 'Vercel',    icon: 'vercel.png',    kind: 'Hosting',       desc: 'Where this site lives.', links: [{ label: 'vercel.com', href: 'https://vercel.com' }] },
+    { name: 'brOS',      icon: 'bros.png',      kind: 'Browser',       desc: 'The Mac browser I built.', links: [{ label: 'Open project', href: '#/ideas/bros', internal: true }] },
+    { name: 'Warp',      icon: 'warp.png',      kind: 'Terminal',      desc: 'Where the command line happens.', links: [{ label: 'warp.dev', href: 'https://www.warp.dev' }] },
+    { name: 'Paper',     icon: 'paper.png',     kind: 'Design canvas', desc: 'Designing in HTML on a canvas.', links: [{ label: 'paper.design', href: 'https://paper.design' }] },
+    { name: 'BatFi',     icon: 'batfi.png',     kind: 'Battery',       desc: 'Keeps the Mac battery charge in check.', links: [] },
+    { name: 'Thaw',      icon: 'thaw.png',      kind: 'Menu bar',      desc: 'Keeps the menu bar tidy.', links: [] },
+    { name: 'Vorssaint', icon: 'vorssaint.png', kind: 'Mac utility',   desc: 'A small utility in the menu bar.', links: [] },
+    { name: 'Expensa',   icon: 'expensa.png',   kind: 'Expenses',      desc: 'The money app I use now, instead of building my own.', links: [
+      { label: 'App Store', href: 'https://apps.apple.com/us/app/expensa-expense-tracker/id6758392205' },
+      { label: 'getexpensa.com', href: 'https://getexpensa.com/' } ] }
   ];
+  var ARROW_OUT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>';
+  var ARROW_IN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
   var btns = Array.prototype.slice.call(root.querySelectorAll('.dock-btn'));
   var panel = root.querySelector('.dock-panel');
   var headIcon = root.querySelector('.dock-head-icon');
   var headName = root.querySelector('.dock-head-name');
+  var linksEl = root.querySelector('.dock-links');
   var cards = root.querySelector('.dock-cards');
   var soundBtn = root.querySelector('.dock-sound');
   var cur = -1;
@@ -4538,8 +4620,8 @@ const READING_LIST = [
     o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.02);
   }
   /* a soft tick that climbs a little for each icon, a two-note pop on select */
-  function tick(i) { blip(480 + i * 38, 0.07, 'sine', 0.05); }
-  function pop(i) { blip(420 + i * 38, 0.12, 'triangle', 0.07, 1.6); setTimeout(function () { blip(640 + i * 38, 0.1, 'sine', 0.045); }, 55); }
+  function tick(i) { blip(480 + i * 34, 0.07, 'sine', 0.05); }
+  function pop(i) { blip(420 + i * 34, 0.12, 'triangle', 0.07, 1.6); setTimeout(function () { blip(640 + i * 34, 0.1, 'sine', 0.045); }, 55); }
   function setSound(v, quiet) {
     on = v;
     soundBtn.setAttribute('aria-pressed', String(v));
@@ -4550,15 +4632,14 @@ const READING_LIST = [
   setSound(on, true);
   soundBtn.addEventListener('click', function () { setSound(!on); });
 
-  /* ── panel ── */
-  function item(title, sub, href, internal) {
-    var el = document.createElement(href ? 'a' : 'div');
-    el.className = 'dock-item';
-    if (href) { el.href = href; if (!internal) { el.target = '_blank'; el.rel = 'noopener noreferrer'; } }
-    var b = document.createElement('strong'); b.textContent = title;
-    var s = document.createElement('span'); s.textContent = sub;
-    el.appendChild(b); el.appendChild(s);
-    return el;
+  /* ── panel: the description fills the card, the links sit in the header ── */
+  function link(l) {
+    var a = document.createElement('a');
+    a.className = 'dock-link'; a.href = l.href;
+    if (!l.internal) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+    a.appendChild(document.createTextNode(l.label));
+    a.insertAdjacentHTML('beforeend', l.internal ? ARROW_IN : ARROW_OUT);
+    return a;
   }
   function select(i, how) {
     if (i === cur) return;
@@ -4567,11 +4648,15 @@ const READING_LIST = [
     btns.forEach(function (b, k) { b.setAttribute('aria-pressed', String(k === i)); b.tabIndex = k === i ? 0 : -1; });
     headIcon.src = 'images/tools/' + t.icon;
     headName.textContent = t.name;
+    linksEl.textContent = '';
+    t.links.forEach(function (l) { linksEl.appendChild(link(l)); });
     var fresh = cards.cloneNode(false);
-    fresh.appendChild(item(t.kind, t.desc));
-    if (t.url) fresh.appendChild(item(t.internal ? 'Project' : 'Website', t.host, t.url, t.internal));
+    var el = document.createElement('div'); el.className = 'dock-item';
+    var b = document.createElement('strong'); b.textContent = t.kind;
+    var sp = document.createElement('span'); sp.textContent = t.desc;
+    el.appendChild(b); el.appendChild(sp); fresh.appendChild(el);
     cards.replaceWith(fresh); cards = fresh;
-    var b = btns[i], r = b.getBoundingClientRect(), pr = panel.getBoundingClientRect();
+    var r = btns[i].getBoundingClientRect(), pr = panel.getBoundingClientRect();
     panel.style.setProperty('--notch-x', (r.left + r.width / 2 - pr.left) + 'px');
     if (how === 'hover') tick(i); else if (how === 'click') pop(i);
   }
@@ -4593,5 +4678,80 @@ const READING_LIST = [
     var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting && first()) io.disconnect(); });
     io.observe(root);
   }
+})();
+</script>
+<script>
+/* ══ Listening crate ══════════════════════════════════════
+   Records are stacked; the one in front is "on the turntable". Click one behind and
+   the stack reorders so it comes forward; click the front one (or the button) to play
+   or pause its preview. The preview is the free 30-second clip Apple Music publishes,
+   looked up when you first press play so the link never goes stale. */
+(function () {
+  var card = document.getElementById('now-card');
+  if (!card) return;
+  var items = Array.prototype.slice.call(card.querySelectorAll('.crate-item'));
+  var text = card.querySelector('.now-text');
+  var btn = card.querySelector('.play-btn');
+  var label = btn.querySelector('.play-label');
+  var order = items.map(function (_, i) { return i; });
+  var audioEl = null, previewUrl = null, loading = false;
+  var TEXT = [
+    'Currently listening to <a href="https://music.apple.com/search?term=John%20Butler%20Trio%20Funky%20Tonight" target="_blank" rel="noopener noreferrer">Funky Tonight</a> by <a href="https://music.apple.com/search?term=John%20Butler%20Trio" target="_blank" rel="noopener noreferrer">John Butler Trio</a> from the album <a href="https://music.apple.com/search?term=John%20Butler%20Trio%20Grand%20National" target="_blank" rel="noopener noreferrer">Grand National</a>.',
+    'An empty sleeve, for the next record.'
+  ];
+  function playing() { return card.hasAttribute('data-playing'); }
+  function setPlaying(v) {
+    if (v) card.setAttribute('data-playing', ''); else card.removeAttribute('data-playing');
+    btn.setAttribute('aria-pressed', String(v));
+    label.textContent = v ? 'Pause' : 'Play preview';
+  }
+  function stop() { if (audioEl) { audioEl.pause(); audioEl.currentTime = 0; } setPlaying(false); }
+  function render() {
+    items.forEach(function (it, i) {
+      var d = order.indexOf(i);
+      it.style.setProperty('--d', d);
+      if (d === 0) it.setAttribute('data-front', ''); else it.removeAttribute('data-front');
+    });
+    var front = order[0];
+    text.innerHTML = front === 0 ? TEXT[0] : TEXT[1];
+    btn.hidden = front !== 0;
+  }
+  function lookup() {
+    if (previewUrl || loading) return Promise.resolve(previewUrl);
+    loading = true;
+    return fetch('https://itunes.apple.com/search?term=' + encodeURIComponent('John Butler Trio Funky Tonight') + '&entity=song&limit=10')
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var hit = (d.results || []).filter(function (x) { return x.trackName === 'Funky Tonight' && /Grand National/i.test(x.collectionName || ''); })[0]
+               || (d.results || []).filter(function (x) { return x.trackName === 'Funky Tonight'; })[0];
+        previewUrl = hit && hit.previewUrl || null;
+        return previewUrl;
+      })
+      .catch(function () { return null; })
+      .then(function (u) { loading = false; return u; });
+  }
+  function toggle() {
+    if (playing()) { stop(); return; }
+    btn.disabled = true; label.textContent = 'Loading…';
+    lookup().then(function (u) {
+      btn.disabled = false;
+      if (!u) { label.textContent = 'Preview unavailable'; setTimeout(function () { label.textContent = 'Play preview'; }, 2500); return; }
+      if (!audioEl) {
+        audioEl = new Audio(u);
+        audioEl.addEventListener('ended', function () { setPlaying(false); });
+      }
+      audioEl.play().then(function () { setPlaying(true); }).catch(function () { setPlaying(false); });
+    });
+  }
+  items.forEach(function (it, i) {
+    it.addEventListener('click', function () {
+      if (order[0] === i) { if (i === 0) toggle(); return; }
+      stop();
+      order = [i].concat(order.filter(function (x) { return x !== i; }));
+      render();
+    });
+  });
+  btn.addEventListener('click', toggle);
+  render();
 })();
 </script>
