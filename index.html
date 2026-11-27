@@ -287,6 +287,11 @@ body.page-active .nav-logo .av {
 .av-pixel { background: #3DBA7A; color: #0C2E1D; }
 .av-cartoon { background: #E8E0D4; color: #3A3226; }
 .av-photo { background: #4A7C5F; }
+/* Eye tracker, in the first avatar circle (see the script at the end of the page).
+   The circle is the ball; the eyes take the ghost's ink colour. */
+.av-pixel .eyt-ball { display: block; width: 100%; height: 100%; overflow: visible; }
+.av-pixel .eyt-eye { fill: #0C2E1D; }
+
 
 .nav-links {
   display: flex;
@@ -2120,9 +2125,7 @@ body.game-active .footer-links a {
 <nav id="main-nav" role="navigation" aria-label="Site navigation">
   <a class="nav-logo" href="#/" aria-label="Ugo Possenti · home">
     <div class="avatar-stack" aria-hidden="true">
-      <div class="av av-pixel"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg></div>
-      <div class="av av-cartoon"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="15" r="4"/><circle cx="18" cy="15" r="4"/><path d="M14 15a2 2 0 0 0-2-2 2 2 0 0 0-2 2"/><path d="M2.5 13 5 7c.7-1.3 1.4-2 3-2"/><path d="M21.5 13 19 7c-.7-1.3-1.5-2-3-2"/></svg></div>
-      <div class="av av-photo" style="font-size:1.1rem;color:#C4DDD0;">U</div>
+      <div class="av av-pixel"></div>
     </div>
   </a>
   <div class="nav-right">
@@ -2146,9 +2149,7 @@ body.game-active .footer-links a {
     <div class="home-inner content">
 
       <div class="home-avatars" aria-hidden="true">
-        <div class="av av-pixel" style="width:56px;height:56px;font-size:26px;border:3px solid var(--bg);"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg></div>
-        <div class="av av-cartoon" style="width:56px;height:56px;font-size:26px;border:3px solid var(--bg);"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="15" r="4"/><circle cx="18" cy="15" r="4"/><path d="M14 15a2 2 0 0 0-2-2 2 2 0 0 0-2 2"/><path d="M2.5 13 5 7c.7-1.3 1.4-2 3-2"/><path d="M21.5 13 19 7c-.7-1.3-1.5-2-3-2"/></svg></div>
-        <div class="av av-photo" style="width:56px;height:56px;font-size:1.3rem;color:#C4DDD0;font-weight:600;border:3px solid var(--bg);background:#4A7C5F;">U</div>
+        <div class="av av-pixel" style="width:56px;height:56px;font-size:26px;border:3px solid var(--bg);"></div>
       </div>
 
       <h1 class="home-title" id="bio">Hi, I'm Ugo.</h1>
@@ -4130,5 +4131,205 @@ const READING_LIST = [
   }
 
   renderReadings();
+})();
+</script>
+<script>
+(function(){var a=document.getElementById("mail-link");if(!a)return;a.addEventListener("click",function(e){e.preventDefault();location.href="mailto:"+a.dataset.u+"@"+a.dataset.d;});})();
+</script>
+<script>
+/* ══ Eye tracker ═══════════════════════════════════════════
+   Adapted from Bencho's "Eye tracker" (MIT, bencho.dev/licence),
+   rewritten from React to plain DOM for this site. It replaces the
+   ghost in the avatar circles (nav + hero): the circle is the ball,
+   the two eyes watch the cursor wherever it is on the page.
+
+   ── THE EYES ARE ON THE BALL, NOT IN FRONT OF IT ───────────
+   The easy version slides two shapes toward the pointer, and it
+   reads as stickers on a disc. Here each eye is a point on the
+   sphere's surface: looking left turns the ball, so an eye
+   travels along the curve, and the one heading for the rim
+   moves less and narrows as it turns away from you while the
+   other swings wide. That foreshortening is the whole trick —
+   it is what makes a flat circle read as something round.
+
+   One turn (yaw and pitch) is the state, sprung toward where
+   the pointer is; both eyes are read off it, so they can never
+   disagree. It relaxes back to facing you when the pointer
+   leaves the window, and it blinks on its own now and then.
+
+   Written straight to the DOM every frame, never through state:
+   a pointer move is not a render.
+
+   Left out from the original: the chat bubble on poke, the shape
+   morphing and the idle mark mode — none of them are used here. */
+(function () {
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  var still = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  var R = 50; /* the ball's radius, in the 100-unit viewBox */
+  /* ── the eyes: a style, and where they rest ─────────────────
+     Two rounded rectangles, the same size as each other. Any
+     difference in SIZE between the two is depth, worked out from
+     the turn, never drawn in. */
+  var BASE = { w: 9, h: 15, r: 4.5 }; /* "Slant" */
+  /* half the gap between the eyes, as a fraction of the radius */
+  var GAP = 0.19;
+  /* how far a look to a corner tilts the pair, in degrees at the
+     rim — a glance up and right leans them back, like the logo */
+  var TILT = 64;
+  var BALL = 'M50 0 A50 50 0 1 1 49.99 0 Z';
+
+  var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
+  var uid = 0;
+
+  function EyeTracker(host, opts) {
+    opts = opts || {};
+    /* how far the ball turns toward the pointer, 0..100 */
+    var follow = opts.follow == null ? 60 : opts.follow;
+    /* how much the turn overshoots and settles, 0..100 */
+    var bounce = opts.bounce == null ? 30 : opts.bounce;
+    /* the eyes' size against the body; a small mark wants them
+       bigger than a big one does to read at all */
+    var eyeScale = opts.eyeScale == null ? 1 : opts.eyeScale;
+    var eye = { w: BASE.w * eyeScale, h: BASE.h * eyeScale, r: BASE.r * eyeScale };
+
+    var clipId = 'eyt-clip-' + (++uid);
+    var svg = document.createElementNS(SVGNS, 'svg');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    svg.setAttribute('class', 'eyt-ball');
+    svg.innerHTML =
+      '<defs><clipPath id="' + clipId + '"><path d="' + BALL + '"/></clipPath></defs>' +
+      '<g clip-path="url(#' + clipId + ')">' +
+      '<g class="eyt-e"><rect class="eyt-eye"/></g>' +
+      '<g class="eyt-e"><rect class="eyt-eye"/></g>' +
+      '</g>';
+    host.textContent = '';
+    host.appendChild(svg);
+    var eyes = svg.querySelectorAll('.eyt-e');
+
+    /* where the face is on the ball (fractions of the radius),
+       its speed, and where it is heading — one spring on a point,
+       read as a turn when the eyes are drawn */
+    var t = { x: 0, y: 0, vx: 0, vy: 0, tx: 0, ty: 0 };
+    var raf = 0, prev = 0, blink = 0;
+    var nextBlink = performance.now() + 2200;
+
+    function draw(now) {
+      /* a blink is 160ms down and up, as a squash on each eye */
+      var lid = 1;
+      if (now > nextBlink) {
+        blink = now;
+        nextBlink = now + 2600 + Math.random() * 3200;
+      }
+      var since = now - blink;
+      if (since < 160) lid = 1 - 0.9 * Math.sin((since / 160) * Math.PI);
+
+      /* the turn that brings the front of the ball to the face's
+         spot: yaw about the vertical, pitch about the horizontal */
+      var as = function (v) { return Math.asin(clamp(v, -0.92, 0.92)); };
+      var yaw = as(t.x);
+      var pitch = -as(t.y);
+      var cy = Math.cos(yaw), sy = Math.sin(yaw);
+      var cp = Math.cos(pitch), sp = Math.sin(pitch);
+      /* the pair leans with a diagonal look and stands level on
+         the axes: up-right and down-left lean one way, the other
+         two the other, nothing straight on */
+      var tilt = TILT * t.x * t.y;
+      /* bigger eyes stand a little further apart */
+      var g0 = GAP * Math.max(1, eyeScale * 0.8);
+
+      [-g0, g0].forEach(function (x0, i) {
+        var g = eyes[i];
+        /* the eye as a point on the unit sphere, either side of
+           the front, turned with the ball */
+        var z0 = Math.sqrt(1 - x0 * x0);
+        var x1 = x0 * cy + z0 * sy;
+        var z1 = -x0 * sy + z0 * cy;
+        var y2 = -z1 * sp;
+        var z2 = z1 * cp;
+        /* depth: the eye nearer the rim is further from you, so it
+           is smaller all over and narrower still across the turn */
+        var near = clamp(z2, 0, 1);
+        var k = 0.45 + 0.55 * near;
+        var sx = k * (0.7 + 0.3 * near);
+        /* ── the size is written as a size, never as a scale ──
+           A scale stretches the corner with the shape: an eye
+           narrowed for depth or squashed by a blink had elliptical
+           corners, rounder on one side than the other. Writing the
+           width and height directly keeps every corner the same
+           radius, clamped so it never exceeds half a side. */
+        var w = eye.w * sx;
+        var h = Math.max(0.6, eye.h * k * lid);
+        var rect = g.firstElementChild;
+        rect.setAttribute('x', (-w / 2).toFixed(2));
+        rect.setAttribute('y', (-h / 2).toFixed(2));
+        rect.setAttribute('width', w.toFixed(2));
+        rect.setAttribute('height', h.toFixed(2));
+        rect.setAttribute('rx', Math.min(eye.r, w / 2, h / 2).toFixed(2));
+        g.setAttribute('transform',
+          'translate(' + (50 + x1 * R).toFixed(2) + ' ' + (50 + y2 * R).toFixed(2) + ') rotate(' + tilt.toFixed(2) + ')');
+        g.style.opacity = z2 < 0.05 ? '0' : '1';
+      });
+    }
+
+    /* ── it only runs while it can be seen ───────────────────
+       Off screen or in a background tab the loop stops; it starts
+       again the moment the ball comes back into view */
+    var seen = true;
+    function tick(now) {
+      if (!seen || document.hidden) { raf = 0; prev = 0; return; }
+      var dt = prev ? Math.min(2.5, (now - prev) / 16.67) : 1;
+      prev = now;
+      if (still) {
+        t.x = t.tx;
+        t.y = t.ty;
+      } else {
+        /* one spring for both axes; Bounce loosens the damping */
+        var k = 0.06;
+        var d = 0.34 - (clamp(bounce, 0, 100) / 100) * 0.22;
+        t.vx += ((t.tx - t.x) * k - t.vx * d) * dt;
+        t.vy += ((t.ty - t.y) * k - t.vy * d) * dt;
+        t.x += t.vx * dt;
+        t.y += t.vy * dt;
+      }
+      draw(now);
+      raf = requestAnimationFrame(tick);
+    }
+    function resume() { if (!raf && seen && !document.hidden) raf = requestAnimationFrame(tick); }
+    raf = requestAnimationFrame(tick);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) { seen = entries[0].isIntersecting; resume(); }).observe(host);
+    }
+    document.addEventListener('visibilitychange', resume);
+
+    /* ── the face goes where you are ──────────────────────────
+       A spot out along the pointer's direction, further the
+       further away you are — so on top of it the face is dead
+       centre, and off in a corner it is out by that corner's
+       rim, turned, one eye smaller and the pair leaning.
+       Here the "card" it watches is the whole window, so the
+       reach is measured against the viewport. */
+    window.addEventListener('pointermove', function (e) {
+      var r = host.getBoundingClientRect();
+      if (!r.width) return;
+      var dx = e.clientX - (r.left + r.width / 2);
+      var dy = e.clientY - (r.top + r.height / 2);
+      var d = Math.hypot(dx, dy) || 1;
+      var reach = Math.max(60, Math.min(window.innerWidth, window.innerHeight) * 0.28);
+      /* the original lets a far pointer turn the ball to 0.85 of the way to the
+         rim; on a 32px mark that leaves one eye on the edge, so it stops at 0.55 */
+      var far = Math.min(0.55, Math.tanh(d / reach) * (clamp(follow, 0, 100) / 100) * 1.5);
+      t.tx = (dx / d) * far;
+      t.ty = (dy / d) * far;
+    }, { passive: true });
+    var rest = function () { t.tx = 0; t.ty = 0; };
+    document.documentElement.addEventListener('pointerleave', rest);
+  }
+
+  /* the first (green) avatar, in the nav and in the hero: the ghost's
+     place. The circle already is the ball, so the body is left
+     transparent and shows the avatar's own green. */
+  document.querySelectorAll('.nav-logo .av-pixel').forEach(function (n) { EyeTracker(n, { eyeScale: 1.5 }); });
+  document.querySelectorAll('.home-avatars .av-pixel').forEach(function (n) { EyeTracker(n, { eyeScale: 1.25 }); });
 })();
 </script>
