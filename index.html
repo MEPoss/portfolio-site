@@ -643,11 +643,15 @@ h2.page-title {
    text beside it is taller, the panel keeps the cover's own edge colour
    (--media-bg) so the picture and the space under it read as one. */
 .feature-media {
-  flex: 0 0 46%; align-self: stretch; background: var(--media-bg, var(--card-bg));
+  flex: 0 0 46%; position: relative; min-height: 15rem; background: var(--media-bg, var(--card-bg));
   border-right: 1px solid var(--divider);
 }
-.feature-media[data-center] { display: flex; align-items: center; }
-.feature-media img { display: block; width: 100%; height: auto; aspect-ratio: 900 / 692; }
+/* The covers are cropped and padded to a square with their own background, so the
+   picture fills the panel at any height and the crop only ever trims empty margin. */
+.feature-media img {
+  position: absolute; inset: 0; display: block; width: 100%; height: 100%;
+  object-fit: cover; object-position: var(--media-pos, top);
+}
 .feature-body { display: flex; flex-direction: column; gap: 0.55rem; padding: 1.5rem 1.6rem; flex: 1; min-width: 0; }
 .feature-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .pill {
@@ -689,7 +693,7 @@ a.project-row:hover .project-arrow { color: var(--accent); }
 .project-body a { color: var(--accent); text-underline-offset: 3px; }
 @media (max-width: 760px) {
   .feature-card { flex-direction: column; }
-  .feature-media { flex: none; border-right: 0; border-bottom: 1px solid var(--divider); }
+  .feature-media { flex: none; min-height: 0; aspect-ratio: 1.3; border-right: 0; border-bottom: 1px solid var(--divider); }
   .project-row { grid-template-columns: 5.5rem 1fr 1.5rem; row-gap: 0.6rem; }
   .project-year { grid-column: 1 / -1; padding-top: 0; }
   .project-thumb { grid-column: 1; }
@@ -1117,6 +1121,90 @@ body.game-active .about-avatar-row .av {
 
 .tool-link:hover { background: var(--accent-dim); }
 .tool-link .tool-icon { font-size: 1.1rem; line-height: 1; }
+
+
+/* ── Tools dock: icons on a floating bar, the one you point at shows what it is
+   (an idea borrowed from marco.fyi). Sounds are synthesised in the script, no files. */
+.dock-card-wrap { padding: 0.75rem; }
+.dock-stage {
+  position: relative; border-radius: 22px; padding: 2.2rem 1rem 3.4rem;
+  background: color-mix(in srgb, var(--text) 4%, var(--surface));
+}
+.dock-hint { position: absolute; top: 0.8rem; right: 1.2rem; display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--text-muted); }
+.dock-panel {
+  position: relative; border: 1px solid var(--divider); border-radius: 16px; padding: 0.85rem 0.9rem 0.95rem;
+  margin-bottom: 1.1rem; min-height: 8.5rem;
+  --notch-x: 50%;
+}
+.dock-panel::after {
+  content: ''; position: absolute; left: var(--notch-x); bottom: -7px; width: 12px; height: 12px;
+  background: color-mix(in srgb, var(--text) 4%, var(--surface)); border-right: 1px solid var(--divider); border-bottom: 1px solid var(--divider);
+  transform: translateX(-50%) rotate(45deg); transition: left 0.25s cubic-bezier(0.24, 1.34, 0.38, 1);
+}
+.dock-head { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.7rem; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+.dock-head-icon { width: 20px; height: 20px; border-radius: 5px; }
+.dock-cards { display: flex; flex-wrap: wrap; gap: 0.7rem; animation: dockIn 0.2s ease; }
+@keyframes dockIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.dock-item {
+  flex: 1 1 11rem; max-width: 17rem; display: block; background: var(--surface); border: 1px solid var(--divider);
+  border-radius: 10px; padding: 0.7rem 0.9rem; box-shadow: var(--shadow-sm); color: inherit; text-decoration: none;
+}
+.dock-item strong { display: block; font-size: 0.95rem; font-weight: 600; color: var(--text); padding-bottom: 0.45rem; border-bottom: 1px solid var(--divider); margin-bottom: 0.45rem; }
+.dock-item span { font-size: 0.82rem; color: var(--text-muted); line-height: 1.45; }
+a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
+.dock {
+  display: flex; gap: 0.55rem; padding: 0.7rem; border-radius: 20px; background: var(--surface);
+  border: 1px solid var(--divider); box-shadow: var(--shadow-sm);
+}
+.dock-btn {
+  all: unset; box-sizing: border-box; cursor: pointer; flex: 1 1 0; min-width: 0; max-width: 64px; aspect-ratio: 1;
+  border-radius: 16px; display: grid; place-items: center;
+  transition: transform 0.2s cubic-bezier(0.24, 1.34, 0.38, 1), box-shadow 0.15s, background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.dock-btn img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; }
+.dock-btn[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--accent); background: var(--accent-dim); transform: scale(1.06); }
+.dock-btn:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+.dock-sound {
+  all: unset; box-sizing: border-box; cursor: pointer; position: absolute; left: 1rem; bottom: 0.8rem; width: 34px; height: 34px;
+  border-radius: 50%; border: 2px solid var(--divider); color: var(--text-muted); display: grid; place-items: center;
+  transition: color 0.15s, border-color 0.15s;
+}
+.dock-sound:hover, .dock-sound:focus-visible { color: var(--text); border-color: var(--text-muted); }
+.dock-sound svg { width: 16px; height: 16px; }
+.dock-sound[aria-pressed="true"] .dock-sound-off, .dock-sound[aria-pressed="false"] .dock-sound-on { display: none; }
+@media (max-width: 560px) { .dock { gap: 0.3rem; padding: 0.5rem; border-radius: 16px; } .dock-btn { border-radius: 10px; } .dock-hint { display: none; } }
+@media (prefers-reduced-motion: reduce) { .dock-btn, .dock-panel::after { transition: none; } .dock-cards { animation: none; } }
+
+/* ── Listening: the sleeve with its record sliding out (idea from marco.fyi) ── */
+.now-card {
+  max-width: 24rem; padding: 1.5rem; margin-bottom: 3.5rem;
+  background: var(--surface); border: 1px solid var(--divider); border-radius: 16px; box-shadow: var(--shadow-sm);
+}
+.record { position: relative; width: 100%; aspect-ratio: 1.4; margin-bottom: 1.5rem; }
+.record-sleeve {
+  position: absolute; left: 0; top: 50%; width: 72%; height: auto; aspect-ratio: 1563 / 1412; transform: translateY(-50%);
+  border-radius: 3px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22); z-index: 2; object-fit: cover;
+}
+.record-vinyl {
+  position: absolute; right: 0; top: 50%; width: 56%; aspect-ratio: 1; margin-top: -28%; z-index: 1; border-radius: 50%;
+  background:
+    conic-gradient(from 30deg, transparent 0 18%, rgba(255,255,255,0.09) 24%, transparent 30%, transparent 68%, rgba(255,255,255,0.09) 74%, transparent 80%),
+    repeating-radial-gradient(circle, #0a0a0a 0 2px, #1b1b1b 2px 3px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  transition: transform 0.6s cubic-bezier(0.24, 1.34, 0.38, 1);
+}
+.record-label {
+  position: absolute; inset: 33%; border-radius: 50%; border: 3px solid #222;
+  background: #111 url("images/music/grand-national.jpg") 50% 52% / 430% no-repeat;
+}
+.record-label::after { content: ''; position: absolute; left: 50%; top: 50%; width: 9%; aspect-ratio: 1; border-radius: 50%; background: var(--surface); transform: translate(-50%, -50%); }
+.now-card:hover .record-vinyl, .now-card:focus-within .record-vinyl { transform: translateX(9%); animation: vinylSpin 4s linear 0.5s infinite; }
+@keyframes vinylSpin { to { transform: translateX(9%) rotate(360deg); } }
+.now-text { font-size: 1.05rem; line-height: 1.75; color: var(--text-muted); margin: 0; }
+.now-text a { color: var(--text); font-weight: 500; text-decoration: underline dotted; text-decoration-thickness: 2px; text-underline-offset: 5px; }
+.now-text a:hover { color: var(--accent); }
+@media (prefers-reduced-motion: reduce) { .record-vinyl { transition: none; } .now-card:hover .record-vinyl, .now-card:focus-within .record-vinyl { animation: none; } }
 
 .tools-pending {
   font-size: 0.85rem;
@@ -2276,7 +2364,7 @@ body.game-active .footer-links a {
           </div>
         </a>
         <a class="feature-card" href="#/ideas/google-takeout-fixer" aria-label="Google Photos Takeout Fixer, open source project">
-          <div class="feature-media" data-center style="--media-bg:#fefefe"><img src="images/ideas/takeout-feature.jpg" alt="Google Photos Takeout Fixer after a finished run: 33,501 files processed" width="900" height="692" loading="lazy" decoding="async"></div>
+          <div class="feature-media" style="--media-bg:#fefefe; --media-pos:center"><img src="images/ideas/takeout-feature.jpg" alt="Google Photos Takeout Fixer after a finished run: 33,501 files processed" width="900" height="692" loading="lazy" decoding="async"></div>
           <div class="feature-body">
             <div class="feature-tags"><span class="pill">macOS &amp; Linux</span><span class="pill">Open source</span></div>
             <h4 class="feature-title">Google Photos Takeout Fixer</h4>
@@ -2390,13 +2478,27 @@ body.game-active .footer-links a {
 
       <h3 class="about-section-title">Tools I use</h3>
       <div class="tools-panel">
-        <div class="tools-card">
-          <!-- Add your real tools + links here, e.g.:
-          <div class="tools-grid">
-            <a class="tool-link" href="https://figma.com" target="_blank" rel="noopener noreferrer"><span class="tool-icon">🎨</span> Figma</a>
+        <div class="tools-card dock-card-wrap">
+          <div class="dock-stage" id="tools-dock">
+            <span class="dock-hint" aria-hidden="true"><svg class="lucide" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M4 3l16 7-7 2-2 7z"/></svg> Look around…</span>
+            <div class="dock-panel" aria-live="polite">
+              <div class="dock-head"><img class="dock-head-icon" src="images/tools/figma.png" alt="" width="20" height="20"><span class="dock-head-name">Figma</span></div>
+              <div class="dock-cards"></div>
+            </div>
+            <div class="dock" role="toolbar" aria-label="Tools I use">
+            <button class="dock-btn" type="button" data-i="0" aria-pressed="false" aria-label="Raycast"><img src="images/tools/raycast.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="1" aria-pressed="false" aria-label="Figma"><img src="images/tools/figma.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="2" aria-pressed="false" aria-label="Claude"><img src="images/tools/claude.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="3" aria-pressed="false" aria-label="Vercel"><img src="images/tools/vercel.svg" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="4" aria-pressed="false" aria-label="brOS"><img src="images/tools/bros.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="5" aria-pressed="false" aria-label="Warp"><img src="images/tools/warp.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="6" aria-pressed="false" aria-label="Paper"><img src="images/tools/paper.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="7" aria-pressed="false" aria-label="BatFi"><img src="images/tools/batfi.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="8" aria-pressed="false" aria-label="Thaw"><img src="images/tools/thaw.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="9" aria-pressed="false" aria-label="Vorssaint"><img src="images/tools/vorssaint.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            </div>
+            <button class="dock-sound" type="button" aria-pressed="true" aria-label="Sound on"><svg class="lucide dock-sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg><svg class="lucide dock-sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></svg></button>
           </div>
-          -->
-          <p class="tools-pending">List coming soon.</p>
         </div>
       </div>
 
@@ -2406,6 +2508,15 @@ body.game-active .footer-links a {
         <span class="not-designing-chip"><svg class="lucide lucide-lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/></svg>Video games</span>
         <span class="not-designing-chip"><svg class="lucide lucide-lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>Comics</span>
         <span class="not-designing-chip"><svg class="lucide lucide-lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>Dreaming about the stars</span>
+      </div>
+
+      <h3 class="about-section-title">Listening</h3>
+      <div class="now-card">
+        <div class="record">
+          <div class="record-vinyl" aria-hidden="true"><span class="record-label"></span></div>
+          <img class="record-sleeve" src="images/music/grand-national.jpg" alt="Cover of Grand National by The John Butler Trio" width="900" height="813" loading="lazy" decoding="async">
+        </div>
+        <p class="now-text">Currently listening to <a href="https://music.apple.com/search?term=John%20Butler%20Trio%20Funky%20Tonight" target="_blank" rel="noopener noreferrer">Funky Tonight</a> by <a href="https://music.apple.com/search?term=John%20Butler%20Trio" target="_blank" rel="noopener noreferrer">John Butler Trio</a> from the album <a href="https://music.apple.com/search?term=John%20Butler%20Trio%20Grand%20National" target="_blank" rel="noopener noreferrer">Grand National</a>.</p>
       </div>
 
       <h3 class="about-section-title">Readings</h3>
@@ -4354,5 +4465,115 @@ const READING_LIST = [
      transparent and shows the avatar's own green. */
   document.querySelectorAll('.nav-logo .av-pixel').forEach(function (n) { EyeTracker(n, { eyeScale: 1.5 }); });
   document.querySelectorAll('.home-avatars .av-pixel').forEach(function (n) { EyeTracker(n, { eyeScale: 1.25 }); });
+})();
+</script>
+<script>
+/* ══ Tools dock ═══════════════════════════════════════════
+   Point at (or tap, or arrow-key to) a tool and the panel above says what it is
+   for. Sounds are made with the Web Audio API, so there is nothing to download;
+   browsers only allow audio after a click or key press, so hover sounds start once
+   you have interacted with the page, and the speaker button turns them off. */
+(function () {
+  var root = document.getElementById('tools-dock');
+  if (!root) return;
+  var TOOLS = [
+    { name: 'Raycast',   icon: 'raycast.png',   kind: 'Launcher',       desc: 'Apps, snippets and quick commands from one key.', url: 'https://www.raycast.com', host: 'raycast.com' },
+    { name: 'Figma',     icon: 'figma.png',     kind: 'UI design',      desc: 'Interfaces, prototypes and design systems.', url: 'https://www.figma.com', host: 'figma.com' },
+    { name: 'Claude',    icon: 'claude.png',    kind: 'AI pair',        desc: 'Thinking partner for design and code.', url: 'https://claude.ai', host: 'claude.ai' },
+    { name: 'Vercel',    icon: 'vercel.svg',    kind: 'Hosting',        desc: 'Where this site lives.', url: 'https://vercel.com', host: 'vercel.com' },
+    { name: 'brOS',      icon: 'bros.png',      kind: 'Browser',        desc: 'The Mac browser I built.', url: '#/ideas/bros', host: 'Open project', internal: true },
+    { name: 'Warp',      icon: 'warp.png',      kind: 'Terminal',       desc: 'Where the command line happens.', url: 'https://www.warp.dev', host: 'warp.dev' },
+    { name: 'Paper',     icon: 'paper.png',     kind: 'Design canvas',  desc: 'Designing in HTML on a canvas.', url: 'https://paper.design', host: 'paper.design' },
+    { name: 'BatFi',     icon: 'batfi.png',     kind: 'Battery',        desc: 'Keeps the Mac battery charge in check.' },
+    { name: 'Thaw',      icon: 'thaw.png',      kind: 'Menu bar',       desc: 'Keeps the menu bar tidy.' },
+    { name: 'Vorssaint', icon: 'vorssaint.png', kind: 'Mac utility',    desc: 'A small utility in the menu bar.' }
+  ];
+  var btns = Array.prototype.slice.call(root.querySelectorAll('.dock-btn'));
+  var panel = root.querySelector('.dock-panel');
+  var headIcon = root.querySelector('.dock-head-icon');
+  var headName = root.querySelector('.dock-head-name');
+  var cards = root.querySelector('.dock-cards');
+  var soundBtn = root.querySelector('.dock-sound');
+  var cur = -1;
+
+  /* ── sound ── */
+  var on = true;
+  try { on = localStorage.getItem('dock-sound') !== 'off'; } catch (e) {}
+  var ctx = null;
+  function audio() {
+    if (!ctx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      try { ctx = new AC(); } catch (e) { return null; }
+    }
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx.state === 'running' ? ctx : null;
+  }
+  function blip(freq, dur, type, vol, glide) {
+    var c = audio(); if (!c || !on) return;
+    var t = c.currentTime, o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t);
+    if (glide) o.frequency.exponentialRampToValueAtTime(freq * glide, t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.02);
+  }
+  /* a soft tick that climbs a little for each icon, a two-note pop on select */
+  function tick(i) { blip(480 + i * 38, 0.07, 'sine', 0.05); }
+  function pop(i) { blip(420 + i * 38, 0.12, 'triangle', 0.07, 1.6); setTimeout(function () { blip(640 + i * 38, 0.1, 'sine', 0.045); }, 55); }
+  function setSound(v, quiet) {
+    on = v;
+    soundBtn.setAttribute('aria-pressed', String(v));
+    soundBtn.setAttribute('aria-label', v ? 'Sound on' : 'Sound off');
+    try { localStorage.setItem('dock-sound', v ? 'on' : 'off'); } catch (e) {}
+    if (v && !quiet) { audio(); blip(540, 0.1, 'triangle', 0.06, 1.5); }
+  }
+  setSound(on, true);
+  soundBtn.addEventListener('click', function () { setSound(!on); });
+
+  /* ── panel ── */
+  function item(title, sub, href, internal) {
+    var el = document.createElement(href ? 'a' : 'div');
+    el.className = 'dock-item';
+    if (href) { el.href = href; if (!internal) { el.target = '_blank'; el.rel = 'noopener noreferrer'; } }
+    var b = document.createElement('strong'); b.textContent = title;
+    var s = document.createElement('span'); s.textContent = sub;
+    el.appendChild(b); el.appendChild(s);
+    return el;
+  }
+  function select(i, how) {
+    if (i === cur) return;
+    var t = TOOLS[i];
+    cur = i;
+    btns.forEach(function (b, k) { b.setAttribute('aria-pressed', String(k === i)); b.tabIndex = k === i ? 0 : -1; });
+    headIcon.src = 'images/tools/' + t.icon;
+    headName.textContent = t.name;
+    var fresh = cards.cloneNode(false);
+    fresh.appendChild(item(t.kind, t.desc));
+    if (t.url) fresh.appendChild(item(t.internal ? 'Project' : 'Website', t.host, t.url, t.internal));
+    cards.replaceWith(fresh); cards = fresh;
+    var b = btns[i], r = b.getBoundingClientRect(), pr = panel.getBoundingClientRect();
+    panel.style.setProperty('--notch-x', (r.left + r.width / 2 - pr.left) + 'px');
+    if (how === 'hover') tick(i); else if (how === 'click') pop(i);
+  }
+  btns.forEach(function (b, i) {
+    b.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') select(i, 'hover'); });
+    b.addEventListener('click', function () { audio(); if (i === cur) pop(i); else select(i, 'click'); });
+    b.addEventListener('keydown', function (e) {
+      var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      var n = (i + d + btns.length) % btns.length;
+      btns[n].focus(); select(n, 'click');
+    });
+  });
+  window.addEventListener('resize', function () { var i = cur; cur = -1; if (i > -1) select(i, 'none'); });
+  /* the About page is display:none until routed to, so place the notch when it appears */
+  var first = function () { var r = btns[1].getBoundingClientRect(); if (r.width) { select(1, 'none'); return true; } return false; };
+  if (!first() && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting && first()) io.disconnect(); });
+    io.observe(root);
+  }
 })();
 </script>
