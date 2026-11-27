@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1E3A5F"/>
+      <stop offset="1" stop-color="#2D1B4E"/>
+    </linearGradient>
+    <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+      <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.05"/>
+    </pattern>
+  </defs>
+
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <rect width="800" height="500" fill="url(#grid)"/>
+
+  <!-- soft glow -->
+  <circle cx="620" cy="120" r="180" fill="#38BF77" opacity="0.10"/>
+
+  <!-- stacked photo cards -->
+  <g transform="translate(230,150)">
+    <rect x="26" y="26" width="200" height="150" rx="10" fill="#0C0C0B" opacity="0.35" transform="rotate(6 126 101)"/>
+    <rect x="14" y="14" width="200" height="150" rx="10" fill="#0C0C0B" opacity="0.55" transform="rotate(-4 114 89)"/>
+    <rect x="0" y="0" width="200" height="150" rx="10" fill="#F5F4F0"/>
+    <rect x="14" y="14" width="172" height="94" rx="6" fill="#1E3A5F"/>
+    <circle cx="45" cy="45" r="12" fill="#F5F4F0" opacity="0.85"/>
+    <path d="M14 92 L60 60 L96 84 L130 50 L186 92 Z" fill="#38BF77" opacity="0.85"/>
+    <rect x="14" y="122" width="90" height="8" rx="4" fill="#1E1D1A" opacity="0.25"/>
+    <rect x="14" y="136" width="60" height="8" rx="4" fill="#1E1D1A" opacity="0.15"/>
+  </g>
+
+  <!-- GPS pin badge -->
+  <g transform="translate(500,300)">
+    <circle cx="0" cy="0" r="30" fill="#38BF77"/>
+    <path d="M0 -12c-6.6 0-12 5.4-12 12 0 9 12 22 12 22s12-13 12-22c0-6.6-5.4-12-12-12z" fill="#0C0C0B" transform="translate(0,-4) scale(0.7)"/>
+    <circle cx="0" cy="-8" r="3.5" fill="#0C0C0B" transform="translate(0,-4) scale(0.7)"/>
+  </g>
+
+  <!-- clock/date badge -->
+  <g transform="translate(190,330)">
+    <circle cx="0" cy="0" r="26" fill="#0C0C0B" stroke="#38BF77" stroke-width="2"/>
+    <line x1="0" y1="0" x2="0" y2="-13" stroke="#EAE8E2" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="0" y1="0" x2="9" y2="4" stroke="#EAE8E2" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+</svg>

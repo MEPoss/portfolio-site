@@ -1,0 +1,17 @@
+{
+  "name": "Ugo Possenti - Product Designer",
+  "short_name": "Ugo Possenti",
+  "description": "Product Designer based in Italy. Building digital experiences at Treedom.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0C0C0B",
+  "theme_color": "#38BF77",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

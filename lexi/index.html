@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="it" id="html-root">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lexi: gioca con il tuo dizionario</title>
+<meta name="description" content="Lexi è il gioco per iOS del 2014 firmato Grafite: lancia ogni parola nell'angolo giusto, femminile o maschile, singolare o plurale. Il progetto non è più attivo, ma qui puoi ancora giocare la demo.">
+<meta name="theme-color" content="#ff9d97">
+<link rel="canonical" href="https://www.ugopossenti.com/lexi/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lexi">
+<meta property="og:locale" content="it_IT">
+<meta property="og:url" content="https://www.ugopossenti.com/lexi/">
+<meta property="og:title" content="Lexi: gioca con il tuo dizionario">
+<meta property="og:description" content="Il Flappy Bird dei sostantivi (iOS, 2014): lancia la parola nell'angolo giusto. Il progetto non è più attivo, ma la demo è giocabile.">
+<meta property="og:image" content="https://www.ugopossenti.com/lexi/og-light.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Lexi, gioca con il tuo dizionario, su sfondo corallo con cerchi pastello e un iPhone 5C">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lexi: gioca con il tuo dizionario">
+<meta name="twitter:description" content="Il Flappy Bird dei sostantivi (iOS, 2014): lancia la parola nell'angolo giusto. Demo giocabile.">
+<meta name="twitter:image" content="https://www.ugopossenti.com/lexi/og-light.png">
+<link rel="icon" href="icon-256.png">
+<script src="/analytics.js"></script>
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/nunito-300.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="phone.css">
+<link rel="stylesheet" href="style.css">
+<script>
+  // Dentro il portfolio (iframe) compare il pulsante "Portfolio".
+  try { if (window.self !== window.top) document.documentElement.classList.add('embedded'); } catch (e) { document.documentElement.classList.add('embedded'); }
+</script>
+</head>
+<body>
+<a class="skip" href="#gioca">Vai alla demo</a>
+
+<header class="nav" id="top">
+  <div class="wrap nav-inner">
+    <a class="back-portfolio" href="/#/ideas" target="_top">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      <span>Portfolio</span>
+    </a>
+    <a class="brand" href="#top"><img src="icon-256.png" alt="" width="28" height="28"><span>Lexi</span></a>
+    <nav class="nav-links" aria-label="Sezioni">
+      <a href="#come-si-gioca">Come si gioca</a>
+      <a href="#gioca">Gioca</a>
+      <a href="#schermate">Schermate</a>
+      <a href="#storia">Storia</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="hero" aria-labelledby="h-title">
+<div class="hero-stage">
+  <div class="hero-dots" aria-hidden="true">
+    <i class="dot-c y" style="--x:32.7%;--y:2%;--d:0.0s;--t:9s" aria-hidden="true"></i>
+    <i class="dot-c b" style="--x:74.4%;--y:2%;--d:1.3s;--t:11s" aria-hidden="true"></i>
+    <i class="dot-c b" style="--x:0%;--y:22%;--d:2.6s;--t:13s" aria-hidden="true"></i>
+    <i class="dot-c r" style="--x:100%;--y:15%;--d:3.9s;--t:15s" aria-hidden="true"></i>
+    <i class="dot-c g" style="--x:86%;--y:40%;--d:5.2s;--t:17s" aria-hidden="true"></i>
+    <i class="dot-c r" style="--x:10%;--y:48%;--d:6.5s;--t:9s" aria-hidden="true"></i>
+    <i class="dot-c y" style="--x:96%;--y:66%;--d:0.8s;--t:11s" aria-hidden="true"></i>
+    <i class="dot-c y" style="--x:0%;--y:76%;--d:2.1s;--t:13s" aria-hidden="true"></i>
+    <i class="dot-c g" style="--x:20%;--y:96%;--d:3.4s;--t:15s" aria-hidden="true"></i>
+    <i class="dot-c r" style="--x:80%;--y:96%;--d:4.7s;--t:17s" aria-hidden="true"></i>
+    <i class="dot-c g" style="--x:6%;--y:6%;--d:6.0s;--t:9s" aria-hidden="true"></i>
+    <i class="dot-c y" style="--x:88%;--y:22%;--d:0.3s;--t:11s" aria-hidden="true"></i>
+  </div>
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <p class="status"><span class="dot" aria-hidden="true"></span>Progetto del 2014 · non più attivo</p>
+      <h1 id="h-title">Lexi</h1>
+      <p class="tagline">Gioca con il tuo dizionario</p>
+      <p class="lead">Una parola compare al centro dello schermo e tu la lanci verso l'angolo giusto: femminile o maschile? Singolare o plurale? Lexi trasformava il vocabolario italiano in un gioco da tenere in tasca.</p>
+      <div class="cta-row">
+        <a class="btn btn-coral" href="#gioca">Prova la demo</a>
+        <a class="btn btn-ghost" href="#storia">Com'è nata</a>
+      </div>
+    </div>
+
+    <div class="hero-phone">
+      <div class="phone" id="phone">
+        <span class="pb pb-mute"></span><span class="pb pb-up"></span><span class="pb pb-down"></span><span class="pb pb-power"></span>
+        <i class="cam"></i><i class="speaker"></i>
+        <div class="screen">
+          <video id="heroVideo" muted loop playsinline preload="metadata" poster="assets/preview-poster.jpg" aria-label="Anteprima dell'app Lexi in funzione">
+            <source src="assets/preview.mp4" type="video/mp4">
+          </video>
+          <button class="video-ctl" id="videoCtl" type="button" aria-label="Riproduci o metti in pausa l'anteprima" aria-pressed="false">
+            <svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            <svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+          </button>
+          <button class="sound" id="soundBtn" type="button" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path class="wave" d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/><path class="mute" d="m17 9 5 6m0-6-5 6"/></svg>
+        <span class="sr-only">Audio</span>
+      </button>
+        </div>
+        <i class="home-btn"></i>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ COME SI GIOCA ═══ -->
+<section class="sec" id="come-si-gioca" aria-labelledby="h-how">
+  <div class="wrap">
+    <p class="eyebrow">Come si gioca</p>
+    <h2 id="h-how">Una parola. <span class="soft">Quattro risposte.</span></h2>
+    <p class="sec-lead">Compare un sostantivo al centro dello schermo: devi lanciarlo verso uno dei quattro angoli. Ogni lato dello schermo porta un'informazione, e l'angolo è il punto in cui due informazioni si incontrano. Nell'app ogni parola aveva 3 secondi per essere lanciata, sempre meno col procedere della partita: il tempo rimasto si leggeva dagli angoli, che si allontanavano piano dalla parola.</p>
+
+    <figure class="axes reveal">
+      <div class="axes-box" role="img" aria-label="Schema dello schermo: sinistra femminile, destra maschile, sopra plurale, sotto singolare. Gli angoli sono le combinazioni.">
+        <i class="ax-c ax-green"></i><i class="ax-c ax-blue"></i><i class="ax-c ax-coral"></i><i class="ax-c ax-yellow"></i>
+        <span class="ax-label ax-top"><svg viewBox="0 0 64 24" aria-hidden="true"><use href="#plural"/></svg>Plurale</span>
+        <span class="ax-label ax-bottom"><svg viewBox="0 0 64 24" aria-hidden="true"><use href="#singular"/></svg>Singolare</span>
+        <span class="ax-label ax-left"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#venus"/></svg>Femminile</span>
+        <span class="ax-label ax-right"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#mars"/></svg>Maschile</span>
+        <span class="ax-word">mano</span>
+      </div>
+      <figcaption>«Mano»: a sinistra (femminile) e in basso (singolare). Quindi si lancia in basso a sinistra.</figcaption>
+    </figure>
+
+    <div class="rules">
+      <article class="rule r-green reveal">
+        <div class="sym"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#venus"/></svg><svg viewBox="0 0 64 24" class="num" aria-hidden="true"><use href="#plural"/></svg></div>
+        <span class="pos">in alto a sinistra</span><h3>Femminile plurale</h3><p>le <b>mani</b>, le <b>ossa</b>, le <b>uova</b></p>
+      </article>
+      <article class="rule r-blue reveal">
+        <div class="sym"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#mars"/></svg><svg viewBox="0 0 64 24" class="num" aria-hidden="true"><use href="#plural"/></svg></div>
+        <span class="pos">in alto a destra</span><h3>Maschile plurale</h3><p>i <b>capelli</b>, gli <b>gnocchi</b>, i <b>panorami</b></p>
+      </article>
+      <article class="rule r-coral reveal">
+        <div class="sym"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#venus"/></svg><svg viewBox="0 0 64 24" class="num" aria-hidden="true"><use href="#singular"/></svg></div>
+        <span class="pos">in basso a sinistra</span><h3>Femminile singolare</h3><p>la <b>mano</b>, la <b>crisi</b>, la <b>serie</b></p>
+      </article>
+      <article class="rule r-yellow reveal">
+        <div class="sym"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#mars"/></svg><svg viewBox="0 0 64 24" class="num" aria-hidden="true"><use href="#singular"/></svg></div>
+        <span class="pos">in basso a destra</span><h3>Maschile singolare</h3><p>il <b>problema</b>, il <b>pigiama</b>, il <b>braccio</b></p>
+      </article>
+    </div>
+
+    <h3 class="modes-title">Tre modalità, più un angolo per te</h3>
+    <div class="modes">
+      <div class="mode m-coral reveal"><b>Classico</b><span>Tre secondi per ogni parola, sempre meno. Se scadono, game over.</span></div>
+      <div class="mode m-green reveal"><b>Tempo</b><span>Niente limite per parola: sessanta secondi, quante ne indovini?</span></div>
+      <div class="mode m-yellow reveal"><b>Arcade</b><span>Tre cuori. Ogni errore ne costa uno, poi la partita finisce.</span></div>
+      <div class="mode m-blue reveal"><b>Altro</b><span>Suggerisci un sostantivo a Lexi e scrivici.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DEMO GIOCABILE ═══ -->
+<section class="sec sec-play" id="gioca" aria-labelledby="h-play">
+  <div class="wrap">
+    <p class="eyebrow">Demo giocabile</p>
+    <h2 id="h-play">Provala <span class="soft">adesso.</span></h2>
+    <p class="sec-lead">Trascina la parola verso l'angolo giusto (o tocca direttamente l'angolo). Una versione web in stile Arcade, con una novantina di parole scelte a mano: tre cuori, nessun timer, nessun account.</p>
+
+    <div class="game" id="game" aria-live="off">
+      <span class="edge e-top" aria-hidden="true"><svg viewBox="0 0 64 24"><use href="#plural"/></svg></span>
+      <span class="edge e-bottom" aria-hidden="true"><svg viewBox="0 0 64 24"><use href="#singular"/></svg></span>
+      <span class="edge e-left" aria-hidden="true"><svg viewBox="0 0 64 64"><use href="#venus"/></svg></span>
+      <span class="edge e-right" aria-hidden="true"><svg viewBox="0 0 64 64"><use href="#mars"/></svg></span>
+
+      <button class="pad p-green" data-g="f" data-n="p" type="button" aria-label="Femminile plurale"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#venus"/></svg><svg viewBox="0 0 64 24" class="num" aria-hidden="true"><use href="#plural"/></svg></button>
+      <button class="pad p-blue" data-g="m" data-n="p" type="button" aria-label="Maschile plurale"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#mars"/></svg><svg viewBox="0 0 64 24" class="num" aria-hidden="true"><use href="#plural"/></svg></button>
+      <button class="pad p-coral" data-g="f" data-n="s" type="button" aria-label="Femminile singolare"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#venus"/></svg><svg viewBox="0 0 64 24" class="num" aria-hidden="true"><use href="#singular"/></svg></button>
+      <button class="pad p-yellow" data-g="m" data-n="s" type="button" aria-label="Maschile singolare"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#mars"/></svg><svg viewBox="0 0 64 24" class="num" aria-hidden="true"><use href="#singular"/></svg></button>
+
+      <div class="game-center">
+        <div class="word-box" id="word" role="status" aria-live="polite">Lanciamo!</div>
+        <div class="score" id="score">0</div>
+        <div class="hearts" id="hearts" role="img" aria-label="Cuori rimasti: 3"></div>
+        <p class="feedback" id="feedback" aria-live="polite">Lancia la parola verso un angolo</p>
+      </div>
+
+      <div class="overlay" id="startOverlay">
+        <div class="overlay-card">
+          <img src="assets/icon-512.png" alt="" width="84" height="84">
+          <h3>Pronto?</h3>
+          <p>Lancia la parola verso l'angolo giusto: sinistra femminile, destra maschile, sopra plurale, sotto singolare. Tre errori e si finisce.</p>
+          <button class="btn btn-coral" id="startBtn" type="button">Lanciamo!</button>
+        </div>
+      </div>
+      <div class="overlay" id="endOverlay" hidden>
+        <div class="overlay-card">
+          <p class="small">Punteggio</p>
+          <div class="big" id="finalScore">0</div>
+          <p id="finalMsg"></p>
+          <button class="btn btn-coral" id="againBtn" type="button">Rigioca</button>
+        </div>
+      </div>
+    </div>
+    <ul class="legend" aria-hidden="true">
+      <li><i class="c-green"></i>Femminile plurale</li><li><i class="c-blue"></i>Maschile plurale</li><li><i class="c-coral"></i>Femminile singolare</li><li><i class="c-yellow"></i>Maschile singolare</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══ SCHERMATE ═══ -->
+<section class="sec" id="schermate" aria-labelledby="h-shots">
+  <div class="wrap">
+    <p class="eyebrow">Schermate</p>
+    <h2 id="h-shots">Bianco, quattro colori <span class="soft">e niente altro.</span></h2>
+    <p class="sec-lead">Nessun menu, nessuna decorazione. Gli angoli colorati sono i pulsanti, la parola sta al centro, il resto è aria.</p>
+  </div>
+  <div class="shots" tabindex="0" aria-label="Galleria di schermate, scorri in orizzontale">
+    <figure><img src="assets/shots/s1.png" alt="Schermata iniziale con il logo α e le quattro modalità" width="320" height="568" loading="lazy"><figcaption>Home</figcaption></figure>
+    <figure><img src="assets/shots/s2.png" alt="Modalità Classico, pronta a partire" width="320" height="568" loading="lazy"><figcaption>Classico</figcaption></figure>
+    <figure><img src="assets/shots/s4.png" alt="Modalità Tempo con cronometro da 60 secondi" width="320" height="568" loading="lazy"><figcaption>Tempo</figcaption></figure>
+    <figure><img src="assets/shots/s5.png" alt="Modalità Arcade con tre cuori" width="320" height="568" loading="lazy"><figcaption>Arcade</figcaption></figure>
+    <figure><img src="assets/shots/s7.png" alt="Risultato con la definizione della parola e il punteggio" width="320" height="568" loading="lazy"><figcaption>Risultato e definizione</figcaption></figure>
+    <figure><img src="assets/shots/s3.png" alt="Condivisione del punteggio su Twitter" width="320" height="568" loading="lazy"><figcaption>Condividi</figcaption></figure>
+    <figure><img src="assets/shots/s6.png" alt="Schermata per suggerire un sostantivo a Lexi" width="320" height="568" loading="lazy"><figcaption>Suggerisci una parola</figcaption></figure>
+  </div>
+</section>
+
+<!-- ═══ NUMERI ═══ -->
+<section class="sec sec-stats" aria-label="Lexi in numeri">
+  <div class="wrap stats">
+    <div><b data-count="43000" data-suffix="+">43.000+</b><span>sostantivi nel database</span></div>
+    <div><b data-count="3">3</b><span>modalità di gioco</span></div>
+    <div><b data-count="3" data-suffix="″">3″</b><span>per lanciare ogni parola</span></div>
+    <div><b>2014</b><span>l'anno in cui è nato</span></div>
+  </div>
+</section>
+
+<!-- ═══ STORIA ═══ -->
+<section class="sec" id="storia" aria-labelledby="h-story">
+  <div class="wrap story">
+    <div>
+      <p class="eyebrow">La storia</p>
+      <h2 id="h-story">Il Flappy Bird <span class="soft">dei sostantivi.</span></h2>
+      <p class="sec-lead">Così la chiamai il giorno dell'uscita. L'idea mi è venuta una mattina di agosto 2014: quasi ogni sostantivo italiano si riconosce da due variabili, genere e numero. E se le trasformassimo in un gioco? Il nome viene dal greco <i>lexis</i>, l'elocuzione, la forma da dare alle idee. È stato il primo gioco di Grafite, il laboratorio che l'ha incubato.</p>
+      <p class="sec-lead">Il design ha preso forma con Enrico Artuso, mentre Davide Di Febbo scriveva il codice. Il nodo più difficile è stato il catalogo dei sostantivi con definizione, genere e numero: siamo partiti da file trovati su un forum e li abbiamo rivisti e controllati a mano. Senza quelli, Lexi sarebbe rimasta nel cassetto. <a class="inline" href="https://www.tasc.blog/2014/11/10/lexi-flappy-bird-dei-sostantivi-firmato-grafite/">Leggi l'articolo del 2014 →</a></p>
+      <div class="notice" role="note">
+        <b>Lexi non è più attiva.</b>
+        <span>L'app è stata pubblicata su iOS, ma oggi non è più disponibile. Questa pagina è un archivio ricostruito nel 2026 a partire dai file originali, con una demo che funziona ancora.</span>
+      </div>
+    </div>
+    <ol class="timeline">
+      <li><time>Agosto 2014</time><b>L'idea</b><span>Una mattina d'agosto l'idea, subito proposta a Grafite. Poi i primi bozzetti e la ricerca di chi potesse scrivere il codice.</span></li>
+      <li><time>Estate-autunno 2014</time><b>Design, codice e parole</b><span>Palette di quattro colori, tipografia Freight Sans, simbolo α inclinato di 72,5°, il database dei sostantivi e la prima pagina «Presto su iOS» su getlexiapp.com.</span></li>
+      <li><time>10 novembre 2014</time><b>Su App Store</b><span>Lexi esce per iPhone e iPod touch con iOS 7 o successivo, con i punteggi su Game Center e una landing nuova: <a href="classic.html">guarda la versione originale</a>.</span></li>
+      <li class="now"><time>Oggi</time><b>Archivio</b><span>Il progetto non è più attivo. Resta come esercizio di design e come ricordo.</span></li>
+    </ol>
+  </div>
+
+  <div class="wrap">
+    <figure class="guides reveal">
+      <img src="assets/guidelines.jpg" alt="Le design guidelines originali di Lexi: schermata menu, schermata di gioco, tipografia e palette di quattro colori" width="1400" height="933" loading="lazy">
+      <figcaption>Le design guidelines originali: colori, tipografia, geometria del simbolo α.</figcaption>
+    </figure>
+    <div class="palette" role="list" aria-label="Palette originale">
+      <div role="listitem" style="--c:#ff9d97"><b>#FF9D97</b><span>Corallo</span></div>
+      <div role="listitem" style="--c:#a5ecb1"><b>#A5ECB1</b><span>Verde</span></div>
+      <div role="listitem" style="--c:#ffe57f"><b>#FFE57F</b><span>Giallo</span></div>
+      <div role="listitem" style="--c:#7fbcff"><b>#7FBCFF</b><span>Blu</span></div>
+      <div role="listitem" style="--c:#494949"><b>#494949</b><span>Grafite</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec credits" aria-labelledby="h-credits">
+  <div class="wrap">
+    <h2 id="h-credits" class="sr-only">Crediti</h2>
+    <dl>
+      <div><dt>Concept</dt><dd>Ugo Possenti</dd></div>
+      <div><dt>Design</dt><dd>Enrico Artuso &amp; Ugo Possenti</dd></div>
+      <div><dt>Sviluppo</dt><dd>Davide Di Febbo</dd></div>
+      <div><dt>Sito</dt><dd>Alex Ghirelli</dd></div>
+    </dl>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <span class="grafite"><img src="assets/grafite.png" alt="Grafite" width="96" height="75" loading="lazy"></span>
+    <p class="inc">Lexi è nata dentro Grafite, il laboratorio che l'ha incubata.</p>
+    <p>Lexi · 2014 · pagina d'archivio ricostruita nel 2026 · <a href="classic.html">Landing originale</a> · <a href="/#/ideas" target="_top">Torna al portfolio</a></p>
+  </div>
+</footer>
+
+<!-- simboli -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="venus" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"><circle cx="32" cy="24" r="14"/><path d="M32 38v20M22 49h20"/></g></symbol>
+    <symbol id="mars" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><circle cx="25" cy="39" r="14"/><path d="M35 29 52 12M38 12h14v14"/></g></symbol>
+    <symbol id="plural" viewBox="0 0 64 24"><g fill="currentColor"><circle cx="21" cy="12" r="7"/><circle cx="43" cy="12" r="7"/></g></symbol>
+    <symbol id="singular" viewBox="0 0 64 24"><circle cx="32" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="4"/></symbol>
+  </defs>
+</svg>
+
+<script src="words.js"></script>
+<script src="main.js"></script>
+</body>
+</html>

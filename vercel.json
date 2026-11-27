@@ -1,0 +1,28 @@
+{
+  "rewrites": [
+    {
+      "source": "/bros",
+      "destination": "https://bros.ugopossenti.com/"
+    },
+    {
+      "source": "/bros/",
+      "destination": "https://bros.ugopossenti.com/"
+    },
+    {
+      "source": "/bros/:path*",
+      "destination": "https://bros.ugopossenti.com/:path*"
+    },
+    {
+      "source": "/infostud",
+      "destination": "https://openstud.ugopossenti.com/"
+    },
+    {
+      "source": "/infostud/",
+      "destination": "https://openstud.ugopossenti.com/"
+    },
+    {
+      "source": "/infostud/:path*",
+      "destination": "https://openstud.ugopossenti.com/:path*"
+    }
+  ]
+}

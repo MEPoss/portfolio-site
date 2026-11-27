@@ -1,0 +1,14 @@
+/* ── iPhone 5C (proporzioni reali 59,2 × 124,4 mm; schermo 640×1136) ───── */
+.phone{position:relative;width:min(290px,72vw);aspect-ratio:765/1600;
+  background:url(assets/phone-5c.webp) center/100% 100% no-repeat;
+  filter:drop-shadow(0 30px 28px rgba(30,30,40,.28)) drop-shadow(0 8px 10px rgba(30,30,40,.16))}
+.phone>*{position:absolute}
+/* il mockup è un'immagine: cam, altoparlante, tasti e home sono già nel disegno */
+.phone::before,.phone .cam,.phone .speaker,.phone .home-btn,.phone .pb{display:none}
+.screen{left:8.76%;width:83.4%;top:14.88%;aspect-ratio:638/1132;background:#fff;overflow:hidden}
+.screen video{display:block;width:100%;height:100%;object-fit:cover}
+.video-ctl{position:absolute;right:10px;bottom:10px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(40,40,44,.62);color:#fff;display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(6px)}
+.video-ctl svg{width:18px;height:18px;grid-area:1/1}
+.video-ctl .i-pause{display:none}
+.video-ctl[aria-pressed="true"] .i-play{display:none}
+.video-ctl[aria-pressed="true"] .i-pause{display:block}

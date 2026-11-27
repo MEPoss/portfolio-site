@@ -1,0 +1,813 @@
+<!doctype html>
+<html lang="en" id="html-root">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pantry: Grocery List and Price Tracker for iPhone</title>
+<meta name="description" content="A grocery list for iPhone that remembers what you paid and where, so you know the cheapest store. No account, no tracking: everything stays on your phone.">
+<meta name="keywords" content="grocery list app, shopping list iPhone, price tracker, compare supermarket prices, cheapest store, unit price, SwiftUI, offline, no account, privacy">
+<meta name="author" content="Ugo Possenti">
+<meta name="application-name" content="Pantry">
+<meta name="apple-mobile-web-app-title" content="Pantry">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://www.ugopossenti.com/pantry/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pantry">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="it_IT">
+<meta property="og:url" content="https://www.ugopossenti.com/pantry/">
+<meta property="og:title" content="Pantry: Grocery List and Price Tracker for iPhone">
+<meta property="og:description" content="A grocery list for iPhone that remembers what you paid and where, so you know the cheapest store. No account, no tracking: everything stays on your phone.">
+<meta property="og:image" content="https://www.ugopossenti.com/pantry/og-v2.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Pantry app icon and the headline “Your list. Your prices. One page.” on a notebook page with red margin lines.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pantry: Grocery List and Price Tracker for iPhone">
+<meta name="twitter:description" content="A grocery list for iPhone that remembers what you paid and where, so you know the cheapest store. No account, no tracking: everything stays on your phone.">
+<meta name="twitter:image" content="https://www.ugopossenti.com/pantry/og-v2.png">
+<meta name="twitter:image:alt" content="Pantry app icon and the headline “Your list. Your prices. One page.” on a notebook page with red margin lines.">
+<meta name="theme-color" content="#F5F5F0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#100F0D" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="icon-bot-256.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="/analytics.js"></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Pantry","alternateName":"Pantry: Grocery List and Price Tracker","url":"https://www.ugopossenti.com/pantry/","description":"A grocery list for iPhone that remembers what you paid and where, so you know the cheapest store. No account, no tracking: everything stays on your phone.","operatingSystem":"iOS 17+","applicationCategory":"ShoppingApplication","inLanguage":["en","it"],"image":"https://www.ugopossenti.com/pantry/og-v2.png","screenshot":["https://www.ugopossenti.com/pantry/img/list-light.jpg","https://www.ugopossenti.com/pantry/img/detail-light.jpg","https://www.ugopossenti.com/pantry/img/log-light.jpg"],"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"author":{"@type":"Person","name":"Ugo Possenti"}}
+</script>
+<script>
+/* Apply the saved theme before first paint, so there's no flash. */
+(function(){try{var t=localStorage.getItem("pantry-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})();
+</script>
+<style>
+:root{
+  --bg:#F5F5F0; --bg2:#F2F2EE; --card:#FFFFFC; --ink:#2E2E2C; --ink2:rgba(46,46,44,.72);
+  --brown:#4A3B2A; --store:#8A3B2E; --track:#E9E0C8; --rule:#B5AD92; --green:#3C8A45;
+  --al:#D64550; --ad:#E2606C; --a:var(--al); --on-a:#fff;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--cbx-bg:#3A352C;--cbx-bd:rgba(255,255,255,.32);--bg:#100F0D;--bg2:#141210;--card:#332E27;--ink:#EDEAE3;--ink2:rgba(237,234,227,.74);--brown:#D8C9A8;--store:#D4A373;--track:#463F33;--rule:#5C544A;--green:#3F9E49;--a:var(--ad);color-scheme:dark}
+}
+:root[data-theme="dark"]{--cbx-bg:#3A352C;--cbx-bd:rgba(255,255,255,.32);--bg:#100F0D;--bg2:#141210;--card:#332E27;--ink:#EDEAE3;--ink2:rgba(237,234,227,.74);--brown:#D8C9A8;--store:#D4A373;--track:#463F33;--rule:#5C544A;--green:#3F9E49;--a:var(--ad);color-scheme:dark}
+:root[data-theme="light"]{color-scheme:light}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--a);outline-offset:3px;border-radius:4px}
+/* The app's notebook margin: two vertical accent lines, fixed behind the whole page */
+:root{--m:clamp(8px,4vw,60px);--cbx-bg:#EFEFEA;--cbx-bd:rgba(0,0,0,.55)}
+body::before,body::after{content:"";position:fixed;top:0;bottom:0;width:1.5px;background:color-mix(in srgb,var(--a) 85%,transparent);pointer-events:none;z-index:30}
+body::before{left:var(--m)}
+body::after{left:calc(var(--m) + 4px)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 max(24px,calc(var(--m) + 16px))}
+.skip{position:absolute;left:-999px}.skip:focus{left:12px;top:12px;background:var(--card);padding:8px 12px;z-index:99}
+.ic{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.125em}
+
+/* nav */
+nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px dashed var(--rule)}
+nav .wrap{display:flex;align-items:center;gap:16px;height:60px}
+.mark{display:flex;align-items:center;gap:10px;text-decoration:none;font:600 19px var(--sans);letter-spacing:-.015em}
+.mark img{width:28px;height:28px;border-radius:7px}
+nav .links{display:flex;gap:22px;margin-left:auto;font-size:14px}
+nav .links a{text-decoration:none;color:var(--ink2);padding:10px 0}
+nav .links a:hover{color:var(--ink)}
+.back-portfolio{display:inline-flex;align-items:center;gap:6px;color:var(--ink2);text-decoration:none;font-size:14px;padding:7px 11px 7px 8px;border-radius:9px;margin-left:-8px}
+.back-portfolio:hover{color:var(--ink);background:var(--card)}
+.back-portfolio .ic{width:16px;height:16px}
+.back-sep{width:1px;height:22px;background:var(--rule)}
+.lang{display:flex;border:1px solid var(--rule);border-radius:99px;overflow:hidden;font:600 12px var(--sans)}
+.lang button{all:unset;cursor:pointer;padding:7px 11px;color:var(--ink2);min-height:16px}
+.lang button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.theme-toggle{all:unset;box-sizing:border-box;cursor:pointer;width:36px;height:36px;border:1px solid var(--rule);border-radius:99px;display:grid;place-items:center;color:var(--ink2)}
+.theme-toggle:hover{color:var(--ink);background:var(--card)}
+.theme-toggle .ic{width:17px;height:17px}
+.theme-toggle .i-sun{display:none}
+:root[data-theme="dark"] .theme-toggle .i-sun{display:block}
+:root[data-theme="dark"] .theme-toggle .i-moon{display:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .theme-toggle .i-sun{display:block}:root:not([data-theme="light"]) .theme-toggle .i-moon{display:none}}
+@media(max-width:760px){nav .links a.opt{display:none}nav .links{gap:14px}}
+
+/* type */
+/* Titles use the system font, like the app's own "Shopping List" title (SF Pro, regular weight) */
+h1,h2,h3{font-family:var(--sans);font-weight:400;letter-spacing:-.025em;line-height:1.1;margin:0}
+h3{font-weight:600;letter-spacing:-.015em}
+h1,h2,h3{text-wrap:balance}
+.ln{display:block}
+.lead{text-wrap:pretty}
+.lead{font-size:clamp(18px,2.2vw,21px);color:var(--ink2);max-width:34em}
+section{padding:84px 0;border-top:1px dashed var(--rule)}
+h2{font-size:clamp(30px,4.6vw,48px);max-width:16em}
+p{margin:0 0 1em}
+.muted{color:var(--ink2)}
+
+/* hero */
+.hero{padding:0;border-top:0;position:relative}
+.hero-stage{position:relative;overflow:hidden;padding:44px 0 0;text-align:center}
+.hero-copy{position:relative;z-index:2}
+html[lang="it"] .hero h1 em{display:block}
+.hero h1{margin:16px auto 18px;max-width:18em;font-size:clamp(38px,5.2vw,62px);text-wrap:balance}
+.hero .lead{margin-inline:auto}
+.hero .cta{justify-content:center;margin:24px 0 12px}
+.hero-device{position:relative;z-index:1;display:flex;justify-content:center;margin-top:52px;padding-bottom:64px}
+.hero-device .phone{--pw:min(330px,74vw)}
+/* Scroll-driven hero (enabled by JS; static layout without it or with reduced motion):
+   the hero is taller than the screen and its stage stays pinned while the phone,
+   tilted back and oversized, rises, straightens and settles. --e goes 0 → 1 with scroll. */
+.has-motion .hero{height:calc(100vh + 95vh);height:calc(100svh + 95svh);--e:0}
+.has-motion .hero-stage{position:sticky;top:60px;height:calc(100vh - 60px);height:calc(100svh - 60px);padding-bottom:0}
+.has-motion .hero-copy{transform:translateY(calc((1 - var(--e)) * 11vh));transform:translateY(calc((1 - var(--e)) * 11svh))}
+.has-motion .hero-device{padding-bottom:0;transform-origin:50% 0;will-change:transform;
+  transform:translateY(calc((1 - var(--e)) * 190px)) scale(calc(1 + (1 - var(--e)) * .22))}
+.has-motion .hero-device .phone{transform:perspective(1100px) rotateX(calc((1 - var(--e)) * 38deg));transform-origin:50% 25%;will-change:transform}
+.has-motion .hero-stage::before{content:"";position:absolute;left:50%;top:38%;width:min(900px,120vw);aspect-ratio:1;border-radius:50%;transform:translate(-50%,calc(var(--e) * -8%)) scale(calc(.8 + var(--e) * .35));background:radial-gradient(closest-side,color-mix(in srgb,var(--a) 22%,transparent),transparent);opacity:calc(.35 + var(--e) * .65);pointer-events:none}
+h1{font-size:clamp(40px,7vw,76px);margin:18px 0 22px}
+h1 em{font-style:normal;color:var(--a)}
+.cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:30px 0 14px}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 24px;border-radius:99px;font:700 16px var(--sans);text-decoration:none;border:0;cursor:pointer}
+.btn.primary{background:var(--a);color:var(--on-a);font-size:19px}
+.btn.ghost{border:1.5px solid var(--ink);color:var(--ink)}
+.ic.fill{fill:currentColor;stroke:none}
+.get-btn .ic{width:22px;height:22px}
+.get-btn .spinner{display:none;width:20px;height:20px;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .7s linear infinite}
+.get-btn.loading{cursor:progress}
+.get-btn.loading .ic{display:none}
+.get-btn.loading .spinner{display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+dialog#doorDialog{border:1px solid var(--rule);border-radius:22px;background:var(--card);color:var(--ink);padding:28px 26px 24px;max-width:min(420px,calc(100vw - 32px));width:100%;text-align:center;box-shadow:0 30px 80px -20px rgba(0,0,0,.5)}
+dialog#doorDialog[open]{animation:pop .22s ease both}
+dialog#doorDialog::backdrop{background:rgba(16,15,13,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+#doorDialog img{width:64px;height:64px;border-radius:15px;box-shadow:0 10px 22px -10px rgba(60,40,10,.5);margin:0 auto 14px}
+#doorDialog h3{font-size:26px;margin-bottom:10px}
+#doorDialog p{margin:0 0 10px;color:var(--ink2)}
+#doorDialog .fine{font-size:14px;margin-bottom:18px}
+.pill{display:inline-flex;align-items:center;min-height:48px;padding:0 24px;border-radius:99px;font:700 16px var(--sans);background:var(--track);color:var(--brown)}
+.fine{font-size:14px;color:var(--ink2)}
+
+/* phone: a real screenshot in a device frame. Light/dark shot follows the page theme. */
+.phone{--pw:min(300px,78vw);position:relative;width:var(--pw);border-radius:15%/7%;background:#111;padding:calc(var(--pw) * .034);box-shadow:0 30px 60px -20px rgba(60,40,10,.45),0 0 0 1.5px #3a3a3a inset;margin:0 auto;flex:none}
+:root[data-theme="dark"] .phone{box-shadow:0 30px 60px -20px rgba(0,0,0,.7),0 0 0 1.5px #444 inset}
+.phone .scr{border-radius:12%/5.4%;overflow:hidden;line-height:0;background:#000}
+.phone img{width:100%;height:auto;display:block}
+.shot.dk{display:none}
+:root[data-theme="dark"] .shot.lt{display:none}
+:root[data-theme="dark"] .shot.dk{display:block}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .shot.lt{display:none}
+  :root:not([data-theme="light"]) .shot.dk{display:block}
+}
+
+/* tabs */
+.deck{display:grid;grid-template-columns:280px 1fr;gap:48px;align-items:center}
+.tabs{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.tabs button{all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;gap:14px;align-items:baseline;padding:14px 16px;border-radius:12px;border:1px dashed transparent;transition:background .2s}
+.tabs button:hover{background:color-mix(in srgb,var(--track) 55%,transparent)}
+.tabs button[aria-selected=true]{background:var(--card);border:1px solid var(--rule);box-shadow:0 6px 18px -10px rgba(70,50,20,.35)}
+.tabs .t{display:flex;align-items:center;gap:9px;font:600 19px var(--sans);letter-spacing:-.01em}
+.tabs .t .ic{width:19px;height:19px;color:var(--a);flex:none}
+.tabs .d{display:block;font:400 14px/1.4 var(--sans);color:var(--ink2);margin-top:2px}
+.stage{display:grid;place-items:center}
+.pane[hidden]{display:none}
+.pane{animation:rise .35s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(max-width:860px){.deck{grid-template-columns:1fr;gap:28px}.tabs{grid-auto-flow:column;grid-auto-columns:max-content;overflow-x:auto;gap:6px;padding-bottom:6px}.tabs .d{display:none}.tabs button{padding:10px 14px;white-space:nowrap}}
+
+/* letter */
+.letter{display:grid;grid-template-columns:1fr 1.5fr;gap:48px;align-items:start}
+.letter blockquote{margin:0;font:400 clamp(24px,3.2vw,34px)/1.2 var(--sans);letter-spacing:-.025em;color:var(--ink)}
+.letter .sig{font:600 14px var(--mono);letter-spacing:.06em;color:var(--store);margin-top:18px}
+.letter .body{font-size:18px}
+.letter .body::first-letter{font:600 68px/.8 var(--sans);letter-spacing:-.02em;float:left;padding:6px 10px 0 0;color:var(--a)}
+@media(max-width:860px){.letter{grid-template-columns:1fr;gap:20px}}
+
+/* feature sections */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;margin-top:28px}
+.split.flip .copy{order:2}
+.copy h3{font-size:clamp(24px,3vw,32px);margin-bottom:14px}
+.points{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:14px}
+.points li{display:flex;gap:16px;align-items:flex-start}
+/* checkbox, as in the app's list rows: soft square, inner shadow, green tick */
+.cbx{all:unset;box-sizing:border-box;position:relative;flex:none;cursor:pointer;width:26px;height:26px;margin-top:1px;border-radius:6px;
+  background:var(--cbx-bg);border:1px solid var(--cbx-bd);box-shadow:inset 0 2px 2px rgba(0,0,0,.18);display:grid;place-items:center;color:#fff;transition:background .2s,border-color .2s,transform .2s}
+.cbx::after{content:"";position:absolute;inset:-9px}
+.cbx::before{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) scale(0);margin-top:-2px;transition:transform .18s ease}
+.cbx[aria-checked=true]{background:var(--green);border-color:var(--green)}
+.cbx[aria-checked=true]::before{transform:rotate(45deg) scale(1)}
+.cbx:active{transform:scale(.92)}
+.points li .lead-ic{width:26px;height:26px;margin-top:1px;color:var(--a)}
+.points li span{transition:opacity .25s;text-decoration-thickness:1.5px}
+.cbx[aria-checked=true]+span{text-decoration-line:line-through;opacity:.62}
+.points b{font-weight:700}
+.duo{display:flex;gap:18px;justify-content:center;align-items:flex-start}
+.duo .phone{--pw:min(230px,42vw)}
+.duo .phone+.phone{margin-top:40px}
+@media(max-width:860px){.split{grid-template-columns:1fr;gap:32px}.split.flip .copy{order:0}}
+
+
+/* app icons showcase */
+.iconpick{display:flex;justify-content:center;align-items:flex-start;gap:clamp(20px,5vw,64px);margin-top:48px;flex-wrap:wrap}
+.ico{all:unset;box-sizing:border-box;cursor:pointer;display:grid;justify-items:center;gap:6px;text-align:center}
+.ico .tile{position:relative;display:block;isolation:isolate;border-radius:22.5%;margin-bottom:10px;transition:transform .25s ease}
+.ico .tile{width:clamp(112px,18vw,168px);aspect-ratio:1}
+.ico img{display:block;width:100%;height:auto;border-radius:22.5%;box-shadow:0 22px 40px -16px rgba(60,40,10,.6)}
+.ico:hover .tile{transform:translateY(-5px)}
+.ico.lg .tile::before{content:"";position:absolute;inset:-34%;z-index:-1;background:radial-gradient(closest-side,color-mix(in srgb,var(--a) 30%,transparent),transparent)}
+.ico .tile::after{content:"";position:absolute;inset:-8px;border-radius:calc(22.5% + 8px);border:3px solid var(--a);opacity:0;transform:scale(.96);transition:opacity .2s,transform .2s;pointer-events:none}
+.ico[aria-checked=true] .tile::after{opacity:1;transform:none}
+/* the check badge sits exactly on the selection ring's corner, above it, with a clean centred tick */
+.badge{position:absolute;z-index:2;right:calc(6.59% - 19.66px);bottom:calc(6.59% - 19.66px);width:28px;height:28px;border-radius:50%;background:var(--a) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5.5 12.5l4.2 4.2L18.5 7.8'/%3E%3C/svg%3E") center/64% no-repeat;box-shadow:0 3px 8px -2px rgba(0,0,0,.45);opacity:0;transform:scale(.6);transition:opacity .2s,transform .2s;pointer-events:none}
+.ico[aria-checked=true] .badge{opacity:1;transform:none}
+.ico b{font:600 17px var(--sans);letter-spacing:-.01em}
+.ico small{font-size:14px;color:var(--ink2)}
+.ico small.tag{background:var(--track);color:var(--brown);font-weight:700;font-size:13px;padding:3px 11px;border-radius:99px}
+.ico.lock{cursor:not-allowed}
+.ico.lock .tile{display:grid;place-items:center;border:2px dashed var(--rule);color:var(--ink2);
+  background:repeating-linear-gradient(135deg,transparent 0 9px,color-mix(in srgb,var(--rule) 30%,transparent) 9px 10px),var(--card)}
+.ico.lock .tile::after{display:none}
+.ico.lock .tile .ic{width:34%;height:34%}
+.ico.lock:hover .tile{transform:none}
+.ico.nope .tile{animation:nope .4s ease}
+.egg{margin:30px auto 0;text-align:center;font:600 15px var(--mono);letter-spacing:.02em;color:var(--store);animation:rise .35s ease both}
+.egg[hidden]{display:none}
+.egg a{color:var(--a);text-underline-offset:3px}
+@keyframes nope{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}60%{transform:translateX(7px)}80%{transform:translateX(-3px)}}
+
+
+/* micro-animations for the detail icons: on hover only */
+#icons .lead{margin-top:18px}
+.grid3 b .ic{transform-origin:50% 50%}
+@keyframes a-zap{0%,100%{transform:none;opacity:1}25%{transform:scale(1.3) rotate(-10deg)}45%{opacity:.35}60%{opacity:1;transform:scale(1.15) rotate(6deg)}}
+@keyframes a-down{0%,100%{transform:none}35%{transform:translateY(5px)}65%{transform:translateY(-2px)}}
+@keyframes a-wobble{0%,100%{transform:none}20%{transform:rotate(-14deg)}45%{transform:rotate(11deg)}70%{transform:rotate(-5deg)}}
+@keyframes a-swing{0%,100%{transform:none}30%{transform:rotate(-20deg) translateY(-1px)}60%{transform:rotate(12deg)}}
+@keyframes a-shake{0%,100%{transform:none}15%{transform:translateX(-3px)}30%{transform:translateX(3px)}45%{transform:translateX(-3px)}60%{transform:translateX(3px)}80%{transform:translateX(-1px)}}
+@keyframes a-flip{0%,100%{transform:none}50%{transform:rotateY(180deg) scale(1.1)}}
+@keyframes a-wave{0%,100%{transform:none}25%{transform:rotate(-16deg)}55%{transform:rotate(10deg)}80%{transform:rotate(-4deg)}}
+@keyframes a-pull{0%,100%{transform:none}30%{transform:translateY(6px)}55%{transform:translateY(-2px)}80%{transform:translateY(2px)}}
+@keyframes a-slide{0%,100%{transform:none}25%{transform:translateX(-5px)}60%{transform:translateX(5px)}85%{transform:translateX(-2px)}}
+.grid3 div:hover b .ic{animation-duration:.7s;animation-timing-function:ease-in-out;animation-fill-mode:both}
+.grid3 div:hover b .ic[data-a=zap]{animation-name:a-zap}
+.grid3 div:hover b .ic[data-a=az]{animation-name:a-down}
+.grid3 div:hover b .ic[data-a=trash]{animation-name:a-wobble}
+.grid3 div:hover b .ic[data-a=ruler]{animation-name:a-swing}
+.grid3 div:hover b .ic[data-a=vibrate]{animation-name:a-shake}
+.grid3 div:hover b .ic[data-a=lang]{animation-name:a-flip}
+.grid3 div:hover b .ic[data-a=flag]{animation-name:a-wave;transform-origin:15% 90%}
+.grid3 div:hover b .ic[data-a=pull]{animation-name:a-pull}
+.grid3 div:hover b .ic[data-a=swipe]{animation-name:a-slide}
+
+/* paper grid */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:36px;border-top:1px solid var(--rule)}
+.grid3 div{padding:22px 22px 24px 0;border-bottom:1px dashed var(--rule)}
+.grid3 b{display:flex;align-items:center;gap:9px;font:600 17px var(--sans);letter-spacing:-.01em;margin-bottom:4px}
+.grid3 b .ic{width:18px;height:18px;color:var(--a)}
+.grid3 span{font-size:15px;color:var(--ink2);display:block;line-height:1.45}
+@media(max-width:860px){.grid3{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.grid3{grid-template-columns:1fr}}
+
+/* privacy */
+.priv{background:var(--card);border:1px solid var(--rule);border-radius:20px;padding:clamp(24px,5vw,48px);display:grid;grid-template-columns:1.1fr 1fr;gap:40px;margin-top:36px}
+.priv ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.priv li{display:flex;gap:12px;align-items:flex-start}
+.priv li::before{content:"✓";color:var(--green);font-weight:800}
+@media(max-width:860px){.priv{grid-template-columns:1fr}}
+
+/* final */
+.final{text-align:center}
+.final h2{margin:0 auto 18px;max-width:14em}
+.final .cta{justify-content:center}
+.icons{display:flex;gap:18px;justify-content:center;margin:28px 0}
+.icons img{width:84px;height:84px;border-radius:20px;box-shadow:0 14px 28px -12px rgba(60,40,10,.5)}
+
+footer{border-top:1px dashed var(--rule);padding:36px 0 56px;font-size:14px;color:var(--ink2)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between}
+.accents{display:flex;gap:10px;margin:20px 0 0 -8px;flex-wrap:wrap;align-items:center}
+.accents button{all:unset;cursor:pointer;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;position:relative}
+.accents button::before{content:"";width:28px;height:28px;border-radius:50%;background:var(--sw);border:1px solid var(--ink2)}
+.accents button[aria-pressed=true]::after{content:"✓";position:absolute;color:#fff;font-weight:800;font-size:14px}
+</style>
+</head>
+<body>
+<!-- Lucide icons (https://lucide.dev, ISC licence), inlined as a sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-list-checks" viewBox="0 0 24 24"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></symbol>
+  <symbol id="i-square-pen" viewBox="0 0 24 24"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></symbol>
+  <symbol id="i-circle-plus" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></symbol>
+  <symbol id="i-arrow-down-a-z" viewBox="0 0 24 24"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M20 8h-5"/><path d="M15 10V6.5a2.5 2.5 0 0 1 5 0V10"/><path d="M15 14h5l-5 6h5"/></symbol>
+  <symbol id="i-trash-2" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></symbol>
+  <symbol id="i-ruler" viewBox="0 0 24 24"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/></symbol>
+  <symbol id="i-vibrate" viewBox="0 0 24 24"><path d="m2 8 2 2-2 2 2 2-2 2"/><path d="m22 8-2 2 2 2-2 2 2 2"/><path d="M8 8v8a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2z"/></symbol>
+  <symbol id="i-languages" viewBox="0 0 24 24"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></symbol>
+  <symbol id="i-apple" viewBox="0 0 24 24"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></symbol>
+  <symbol id="i-arrow-down-to-line" viewBox="0 0 24 24"><path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/></symbol>
+  <symbol id="i-move-horizontal" viewBox="0 0 24 24"><path d="m18 8 4 4-4 4"/><path d="M2 12h20"/><path d="m6 8-4 4 4 4"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-type" viewBox="0 0 24 24"><path d="M12 4v16"/><path d="M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2"/><path d="M9 20h6"/></symbol>
+  <symbol id="i-undo-2" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/></symbol>
+</svg>
+
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+<nav>
+  <div class="wrap" id="navrow">
+    <a class="mark" href="#top"><img src="icon-bot-256.png" alt="" width="28" height="28">Pantry</a>
+    <div class="links">
+      <a href="#tour" data-i18n="nav_tour">Tour</a>
+      <a class="opt" href="#prices" data-i18n="nav_prices">Prices</a>
+      <a class="opt" href="#privacy" data-i18n="nav_privacy">Privacy</a>
+    </div>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="it" aria-pressed="false">IT</button>
+    </div>
+    <button class="theme-toggle" id="themeBtn" type="button" aria-label="Switch theme" title="Switch theme">
+      <svg class="ic i-moon"><use href="#i-moon"/></svg><svg class="ic i-sun"><use href="#i-sun"/></svg>
+    </button>
+  </div>
+</nav>
+
+<main id="main">
+<header class="hero" id="top">
+  <div class="hero-stage">
+    <div class="wrap hero-copy">
+      <h1><span data-i18n="h1a">Your list.</span> <span data-i18n="h1b">Your prices.</span> <em data-i18n="h1c">One page.</em></h1>
+      <p class="lead" data-i18n="lead">Pantry is a grocery list that remembers what you paid and where. Tick things off in the aisle, and next week you already know which store is cheapest.</p>
+      <div class="cta">
+        <button type="button" class="btn primary get-btn"><svg class="ic fill" aria-hidden="true"><use href="#i-apple"/></svg><span class="spinner" aria-hidden="true"></span><span data-i18n="get">Get Pantry</span></button>
+        <a class="btn ghost" href="#tour" data-i18n="tourbtn">Take the tour</a>
+      </div>
+      <p class="fine" data-i18n="fine">iPhone · iOS 17 or later · The app has no account and doesn't track you</p>
+    </div>
+    <div class="hero-device">
+      <div class="phone"><div class="scr">
+        <img class="shot lt" src="img/list-light.jpg" width="588" height="1280" alt="Pantry shopping list in light mode: milk ×2, eggs, coffee ticked off, bananas and pasta, each with the price paid and the store." fetchpriority="high">
+        <img class="shot dk" src="img/list-dark.jpg" width="588" height="1280" alt="Pantry shopping list in dark mode: milk ×2, eggs, coffee ticked off, bananas and pasta, each with the price paid and the store.">
+      </div></div>
+    </div>
+  </div>
+</header>
+
+<section id="tour">
+  <div class="wrap">
+    <h2 data-i18n="h_tour">A notebook that does the maths for you.</h2>
+    <div class="deck" style="margin-top:44px">
+      <ul class="tabs" role="tablist" aria-label="Pantry screens">
+        <li><button role="tab" aria-selected="true" aria-controls="p1" id="t1"><span><span class="t"><svg class="ic"><use href="#i-list-checks"/></svg><span data-i18n="t1">List</span></span><span class="d" data-i18n="t1d">Pull down to add, swipe to edit, tick to cross out.</span></span></button></li>
+        <li><button role="tab" aria-selected="false" aria-controls="p2" id="t2" tabindex="-1"><span><span class="t"><svg class="ic"><use href="#i-search"/></svg><span data-i18n="t2">Search</span></span><span class="d" data-i18n="t2d">Every product you've ever bought, one tap from the list.</span></span></button></li>
+        <li><button role="tab" aria-selected="false" aria-controls="p3" id="t3" tabindex="-1"><span><span class="t"><svg class="ic"><use href="#i-tag"/></svg><span data-i18n="t3">Prices</span></span><span class="d" data-i18n="t3d">Every store side by side, cheapest first.</span></span></button></li>
+        <li><button role="tab" aria-selected="false" aria-controls="p4" id="t4" tabindex="-1"><span><span class="t"><svg class="ic"><use href="#i-square-pen"/></svg><span data-i18n="t4">Log price</span></span><span class="d" data-i18n="t4d">Price, quantity, unit. Pantry works out the rest.</span></span></button></li>
+        <li><button role="tab" aria-selected="false" aria-controls="p5" id="t5" tabindex="-1"><span><span class="t"><svg class="ic"><use href="#i-settings"/></svg><span data-i18n="t5">Settings</span></span><span class="d" data-i18n="t5d">Eight accent colours, night mode, app icons.</span></span></button></li>
+      </ul>
+      <div class="stage">
+        <div class="pane" id="p1" role="tabpanel" aria-labelledby="t1"><div class="phone"><div class="scr">
+          <img class="shot lt" src="img/list-light.jpg" width="588" height="1280" loading="lazy" alt="The shopping list screen, light mode.">
+          <img class="shot dk" src="img/list-dark.jpg" width="588" height="1280" loading="lazy" alt="The shopping list screen, dark mode.">
+        </div></div></div>
+        <div class="pane" id="p2" role="tabpanel" aria-labelledby="t2" hidden><div class="phone"><div class="scr">
+          <img class="shot lt" src="img/search-light.jpg" width="588" height="1280" loading="lazy" alt="The search screen listing every product with its best price and a quick-add button, light mode.">
+          <img class="shot dk" src="img/search-dark.jpg" width="588" height="1280" loading="lazy" alt="The search screen listing every product with its best price and a quick-add button, dark mode.">
+        </div></div></div>
+        <div class="pane" id="p3" role="tabpanel" aria-labelledby="t3" hidden><div class="phone"><div class="scr">
+          <img class="shot lt" src="img/detail-light.jpg" width="588" height="1280" loading="lazy" alt="Olive oil's product page with the price at each store, light mode.">
+          <img class="shot dk" src="img/detail-dark.jpg" width="588" height="1280" loading="lazy" alt="Olive oil's product page with the price at each store, dark mode.">
+        </div></div></div>
+        <div class="pane" id="p4" role="tabpanel" aria-labelledby="t4" hidden><div class="phone"><div class="scr">
+          <img class="shot lt" src="img/log-light.jpg" width="588" height="1280" loading="lazy" alt="The Log Price screen with store, price paid and price per unit fields, light mode.">
+          <img class="shot dk" src="img/log-dark.jpg" width="588" height="1280" loading="lazy" alt="The Log Price screen with store, price paid and price per unit fields, dark mode.">
+        </div></div></div>
+        <div class="pane" id="p5" role="tabpanel" aria-labelledby="t5" hidden><div class="phone"><div class="scr">
+          <img class="shot lt" src="img/settings-light.jpg" width="588" height="1280" loading="lazy" alt="Settings: accent colours, night mode, currency, haptics and app icon, light mode.">
+          <img class="shot dk" src="img/settings-dark.jpg" width="588" height="1280" loading="lazy" alt="Settings: accent colours, night mode, currency, haptics and app icon, dark mode.">
+        </div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="letter">
+      <blockquote data-i18n="quote">“A list should get out of your way, and then remember everything for you.”</blockquote>
+      <div>
+        <p class="body" data-i18n="note1">I built Pantry because every shopping app I tried wanted an account first and a subscription second. I wanted the opposite: a page of paper that opens instantly, and quietly keeps the prices I pay so next week's shop is a little cheaper.</p>
+        <p class="muted" data-i18n="note2">It's a small SwiftUI app, made slowly and on purpose. Everything stays on the phone.</p>
+        <div class="sig">— Ugo Possenti</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="list">
+  <div class="wrap">
+    <h2 data-i18n-html="h_a"><span class="ln">Add it in a second.</span> <span class="ln">Cross it out with a flourish.</span></h2>
+    <div class="split">
+      <div class="copy">
+        <p class="lead" data-i18n="a_lead">Pull the page down and type. That's the whole add flow. No sheet, no form, no “save” button.</p>
+        <ul class="points">
+          <li><button type="button" class="cbx" role="checkbox" aria-checked="false" aria-labelledby="pt-a1"></button><span id="pt-a1" data-i18n-html="a1"><b>Pull to add.</b> A blank notebook line appears at the top, with suggestions from items you already know.</span></li>
+          <li><button type="button" class="cbx" role="checkbox" aria-checked="false" aria-labelledby="pt-a2"></button><span id="pt-a2" data-i18n-html="a2"><b>Swipe for more.</b> Delete, or reduce a quantity from ×4 to ×3 without removing the item.</span></li>
+          <li><button type="button" class="cbx" role="checkbox" aria-checked="false" aria-labelledby="pt-a3"></button><span id="pt-a3" data-i18n-html="a3"><b>Undo, always.</b> Removed something by accident? A banner brings it back.</span></li>
+          <li><button type="button" class="cbx" role="checkbox" aria-checked="false" aria-labelledby="pt-a4"></button><span id="pt-a4" data-i18n-html="a4"><b>Satisfying ticks.</b> The line draws across the name as you check it off, with a soft haptic.</span></li>
+        </ul>
+      </div>
+      <div class="duo">
+        <div class="phone"><div class="scr">
+          <img class="shot lt" src="img/draft-light.jpg" width="588" height="1280" loading="lazy" alt="Typing a new item on a blank notebook line at the top of the list, light mode.">
+          <img class="shot dk" src="img/draft-dark.jpg" width="588" height="1280" loading="lazy" alt="Typing a new item on a blank notebook line at the top of the list, dark mode.">
+        </div></div>
+        <div class="phone"><div class="scr">
+          <img class="shot lt" src="img/list-light.jpg" width="588" height="1280" loading="lazy" alt="The list with coffee ticked off and crossed out, light mode.">
+          <img class="shot dk" src="img/list-dark.jpg" width="588" height="1280" loading="lazy" alt="The list with coffee ticked off and crossed out, dark mode.">
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="prices">
+  <div class="wrap">
+    <h2 data-i18n="h_b">Which store was cheapest? Pantry remembers.</h2>
+    <div class="split flip">
+      <div class="copy">
+        <p class="lead" data-i18n="b_lead">Log what you paid once. From then on, every row on your list shows the best price you've ever found, and where.</p>
+        <ul class="points">
+          <li><button type="button" class="cbx" role="checkbox" aria-checked="false" aria-labelledby="pt-b1"></button><span id="pt-b1" data-i18n-html="b1"><b>Per-unit maths.</b> Pay €5.99 for a litre, or €2.99 for 500&nbsp;ml. Pantry compares the unit price, not the sticker.</span></li>
+          <li><button type="button" class="cbx" role="checkbox" aria-checked="false" aria-labelledby="pt-b2"></button><span id="pt-b2" data-i18n-html="b2"><b>Stores side by side.</b> Every purchase, sorted cheapest first, editable in place.</span></li>
+          <li><button type="button" class="cbx" role="checkbox" aria-checked="false" aria-labelledby="pt-b3"></button><span id="pt-b3" data-i18n-html="b3"><b>Your stores, your names.</b> Keep a list of your supermarkets and pick them with one tap.</span></li>
+          <li><button type="button" class="cbx" role="checkbox" aria-checked="false" aria-labelledby="pt-b4"></button><span id="pt-b4" data-i18n-html="b4"><b>Any currency.</b> Euro, dollar, pound, switchable any time.</span></li>
+        </ul>
+      </div>
+      <div class="duo">
+        <div class="phone"><div class="scr">
+          <img class="shot lt" src="img/detail-light.jpg" width="588" height="1280" loading="lazy" alt="Olive oil's price at each store, light mode.">
+          <img class="shot dk" src="img/detail-dark.jpg" width="588" height="1280" loading="lazy" alt="Olive oil's price at each store, dark mode.">
+        </div></div>
+        <div class="phone"><div class="scr">
+          <img class="shot lt" src="img/log-light.jpg" width="588" height="1280" loading="lazy" alt="Logging a price, light mode.">
+          <img class="shot dk" src="img/log-dark.jpg" width="588" height="1280" loading="lazy" alt="Logging a price, dark mode.">
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="paper">
+  <div class="wrap">
+    <h2 data-i18n="h_c">Made to be read at arm's length, in a bright aisle or a dark kitchen.</h2>
+    <div class="split">
+      <div class="copy">
+        <p class="lead" data-i18n="c_lead">Warm paper by day, near-black by night. Try the accent colours below: this page follows along.</p>
+        <div class="accents" role="group" aria-label="Accent colour" id="accents"></div>
+        <ul class="points">
+          <li><svg class="ic lead-ic" aria-hidden="true"><use href="#i-moon"/></svg><span data-i18n-html="c1"><b>Night mode on a schedule.</b> Or follow the system, whichever you prefer.</span></li>
+          <li><svg class="ic lead-ic" aria-hidden="true"><use href="#i-type"/></svg><span data-i18n-html="c2"><b>Readable by design.</b> Text scales with your system size setting, and colours are tuned for contrast in both modes.</span></li>
+        </ul>
+      </div>
+      <div class="stage">
+        <div class="phone"><div class="scr">
+          <img class="shot lt" src="img/settings-light.jpg" width="588" height="1280" loading="lazy" alt="Settings: accent colours, night mode, currency, haptics and app icon, light mode.">
+          <img class="shot dk" src="img/settings-dark.jpg" width="588" height="1280" loading="lazy" alt="Settings: accent colours, night mode, currency, haptics and app icon, dark mode.">
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="icons">
+  <div class="wrap">
+    <h2 data-i18n="h_i">Choose the icon that greets you.</h2>
+    <p class="lead" data-i18n="i_lead">Pantry comes with more than one app icon. Pick your favourite in Settings, and keep an eye out: a third one is still hiding.</p>
+    <div class="iconpick" role="radiogroup" aria-label="App icon">
+      <button type="button" class="ico sm" role="radio" aria-checked="false">
+        <span class="tile"><img src="icon-512.png" width="512" height="512" loading="lazy" alt=""><span class="badge" aria-hidden="true"></span></span>
+        <b data-i18n="i1">Default</b><small data-i18n="i1d">The notebook</small>
+      </button>
+      <button type="button" class="ico lg" role="radio" aria-checked="true" data-egg>
+        <span class="tile"><img src="icon-bot-512.png" width="512" height="512" loading="lazy" alt=""><span class="badge" aria-hidden="true"></span></span>
+        <b data-i18n="i2">Bot</b><small class="tag" data-i18n="i2d">Our favourite</small>
+      </button>
+      <button type="button" class="ico sm lock" role="radio" aria-checked="false" aria-disabled="true">
+        <span class="tile"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg></span>
+        <b data-i18n="i3">Secret</b><small data-i18n="i3d">To unlock · coming soon</small>
+      </button>
+    </div>
+    <p class="egg" role="status" hidden data-i18n-html="egg">Beep boop. Inspired by the work of <a href="https://tapbots.com/" target="_blank" rel="noopener">Tapbots</a>.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 data-i18n="h_rest">The details a list should get right.</h2>
+    <div class="grid3">
+      <div><b><svg class="ic"><use href="#i-zap"/></svg><span data-i18n="g1">Search and add</span></b><span data-i18n="g1d">One tap on a past product puts it on the list. Search for something new and create it on the spot.</span></div>
+      <div><b><svg class="ic"><use href="#i-arrow-down-a-z"/></svg><span data-i18n="g3">Sort A–Z</span></b><span data-i18n="g3d">One button appears when the list gets untidy.</span></div>
+      <div><b><svg class="ic"><use href="#i-trash-2"/></svg><span data-i18n="g4">Remove checked</span></b><span data-i18n="g4d">Clear everything you've ticked off in one go, with undo.</span></div>
+      <div><b><svg class="ic"><use href="#i-ruler"/></svg><span data-i18n="g5">Custom units</span></b><span data-i18n="g5d">Pieces, kg, packs, litres, or invent your own: jar, dozen.</span></div>
+      <div><b><svg class="ic"><use href="#i-vibrate"/></svg><span data-i18n="g6">Haptics</span></b><span data-i18n="g6d">Subtle feedback on every action, and a switch to turn it off.</span></div>
+      <div><b><svg class="ic"><use href="#i-languages"/></svg><span data-i18n="g7">English and Italian</span></b><span data-i18n="g7d">The whole app speaks both.</span></div>
+      <div><b><svg class="ic"><use href="#i-flag"/></svg><span data-i18n="g8">Guided start</span></b><span data-i18n="g8d">Onboarding has you add your first real items in seconds.</span></div>
+      <div><b><svg class="ic"><use href="#i-arrow-down-to-line"/></svg><span data-i18n="g9">Pull to add</span></b><span data-i18n="g9d">Pull the list down to add an item in a second.</span></div>
+      <div><b><svg class="ic"><use href="#i-move-horizontal"/></svg><span data-i18n="g10">Swipe actions</span></b><span data-i18n="g10d">Swipe a row to delete it or change its quantity.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="privacy">
+  <div class="wrap">
+    <h2 data-i18n="h_priv">Nothing leaves your phone.</h2>
+    <div class="priv">
+      <p class="lead" style="margin:0" data-i18n="priv_lead">Pantry has no sign-up, no servers and no analytics. Your lists and prices are stored on your device and nowhere else.</p>
+      <ul>
+        <li data-i18n="pv1">No account or login</li>
+        <li data-i18n="pv2">No tracking, no ads</li>
+        <li data-i18n="pv3">No network requests</li>
+        <li data-i18n="pv4">Works fully offline</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2 data-i18n="f_h" style="margin-top:14px">A calmer way to do the weekly shop.</h2>
+    <div class="cta"><button type="button" class="btn primary get-btn"><svg class="ic fill" aria-hidden="true"><use href="#i-apple"/></svg><span class="spinner" aria-hidden="true"></span><span data-i18n="get">Get Pantry</span></button></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Ugo Possenti</span>
+    <span data-i18n="foot">Made with SwiftUI and a lot of ticks.</span>
+  </div>
+</footer>
+
+<dialog id="doorDialog" aria-labelledby="doorTitle" aria-describedby="doorBody">
+  <img src="icon-256.png" alt="" width="64" height="64">
+  <h3 id="doorTitle"></h3>
+  <p id="doorBody"></p>
+  <p class="fine" id="doorNote"></p>
+  <button type="button" class="btn primary" id="doorClose" data-i18n="ok" style="font-size:17px">Got it</button>
+</dialog>
+
+<script>
+(function(){
+  var T={
+    it:{
+      skip:"Vai al contenuto",nav_tour:"Tour",nav_prices:"Prezzi",nav_privacy:"Privacy",
+      h1a:"La tua lista.",h1b:"I tuoi prezzi.",h1c:"Una pagina.",
+      lead:"Pantry è una lista della spesa che ricorda quanto hai pagato e dove. Spunta le cose in corsia, e la settimana dopo sai già qual è il negozio più conveniente.",
+      get:"Scarica Pantry",ok:"Ho capito",tourbtn:"Fai il tour",fine:"iPhone · iOS 17 o successivo · L'app non ha account e non ti traccia",
+      h_tour:"Un quaderno che fa i conti per te.",
+      t1:"Lista",t1d:"Tira giù per aggiungere, scorri per modificare, spunta per barrare.",
+      t2:"Cerca",t2d:"Ogni prodotto che hai mai comprato, a un tocco dalla lista.",
+      t3:"Prezzi",t3d:"Tutti i negozi affiancati, dal più economico.",
+      t4:"Registra prezzo",t4d:"Prezzo, quantità, unità. Al resto pensa Pantry.",
+      t5:"Impostazioni",t5d:"Otto colori d'accento, modalità notte, icone dell'app.",
+      quote:"“Una lista dovrebbe togliersi di mezzo, e poi ricordare tutto al posto tuo.”",
+      note1:"Ho creato Pantry perché ogni app della spesa che provavo voleva prima un account e poi un abbonamento. Volevo l'opposto: una pagina di carta che si apre subito e custodisce in silenzio i prezzi che pago, così la spesa della settimana dopo costa un po' meno.",
+      note2:"È una piccola app SwiftUI, fatta con calma e di proposito. Tutto resta sul telefono.",
+      h_a:"<span class=\"ln\">Aggiungi in un secondo.</span> <span class=\"ln\">Barra con un tratto.</span>",
+      a_lead:"Tira giù la pagina e scrivi. Tutto qui. Niente fogli, niente moduli, niente tasto «salva».",
+      a1:"<b>Tira per aggiungere.</b> In cima compare una riga vuota del quaderno, con suggerimenti dagli articoli che già conosci.",
+      a2:"<b>Scorri per fare di più.</b> Elimina, o riduci una quantità da ×4 a ×3 senza togliere l'articolo.",
+      a3:"<b>Annulla, sempre.</b> Hai tolto qualcosa per sbaglio? Un banner lo riporta indietro.",
+      a4:"<b>Spunte soddisfacenti.</b> La riga attraversa il nome mentre lo spunti, con una lieve vibrazione.",
+      h_b:"Quale negozio costava meno? Pantry se lo ricorda.",
+      b_lead:"Registra quanto hai pagato una volta. Da lì, ogni riga della lista mostra il miglior prezzo che hai trovato, e dove.",
+      b1:"<b>Conti al prezzo unitario.</b> Un litro a 5,99 € o 500&nbsp;ml a 2,99 €? Pantry confronta il prezzo per unità, non il cartellino.",
+      b2:"<b>Negozi affiancati.</b> Ogni acquisto, dal più economico, modificabile al volo.",
+      b3:"<b>I tuoi negozi, i tuoi nomi.</b> Tieni l'elenco dei tuoi supermercati e scegli con un tocco.",
+      b4:"<b>Qualsiasi valuta.</b> Euro, dollaro, sterlina, cambiabili quando vuoi.",
+      h_c:"Si legge bene tra gli scaffali, e anche in cucina a luci spente.",
+      c_lead:"Carta calda di giorno, quasi nero di notte. Prova i colori d'accento qui sotto: la pagina li segue.",
+      c1:"<b>Modalità notte a orario.</b> Oppure segui il sistema, come preferisci.",
+      c2:"<b>Leggibile per progetto.</b> Il testo segue la dimensione di sistema e i colori sono calibrati per il contrasto in entrambe le modalità.",
+      h_i:"Scegli l'icona che ti accoglie.",i_lead:"Pantry ha più di un'icona. Scegli la tua preferita dalle Impostazioni, e tieni gli occhi aperti: una terza è ancora nascosta.",
+      egg:"Beep boop. Ispirata dal lavoro di <a href=\"https://tapbots.com/\" target=\"_blank\" rel=\"noopener\">Tapbots</a>.",
+      i1:"Predefinita",i1d:"Il quaderno",i2:"Bot",i2d:"La nostra preferita",i3:"Segreta",i3d:"Da sbloccare · in arrivo",
+      h_rest:"I dettagli che una lista deve azzeccare.",
+      g1:"Cerca e aggiungi",g1d:"Un tocco su un prodotto passato e finisce in lista. Cerca qualcosa di nuovo e crealo al volo.",
+      g3:"Ordina A–Z",g3d:"Un pulsante compare quando la lista si fa disordinata.",
+      g4:"Rimuovi spuntati",g4d:"Cancella tutto ciò che hai spuntato in un colpo, con annulla.",
+      g5:"Unità personalizzate",g5d:"Pezzi, kg, confezioni, litri, o inventa le tue: barattolo, dozzina.",
+      g6:"Feedback tattile",g6d:"Vibrazioni discrete a ogni azione, con un interruttore per spegnerle.",
+      g7:"Inglese e italiano",g7d:"Tutta l'app parla entrambe le lingue.",
+      g8:"Avvio guidato",g8d:"L'onboarding ti fa aggiungere i primi articoli veri in pochi secondi.",
+      g9:"Tira per aggiungere",g9d:"Tira giù la lista per aggiungere un articolo in un attimo.",
+      g10:"Gesture con lo swipe",g10d:"Scorri una riga per eliminarla o cambiarne la quantità.",
+      h_priv:"Niente lascia il tuo telefono.",
+      priv_lead:"Pantry non ha registrazione, server né analitiche. Liste e prezzi restano sul tuo dispositivo e basta.",
+      pv1:"Nessun account o login",pv2:"Nessun tracciamento, nessuna pubblicità",pv3:"Nessuna richiesta di rete",pv4:"Funziona del tutto offline",
+      f_h:"Un modo più calmo di fare la spesa settimanale.",
+      foot:"Fatta con SwiftUI e tante spunte."
+    },
+    ui:{en:{door_title:"Not available yet.",door_body:"Pantry isn't on the App Store yet, so there's nothing to download.",door_counted:"Your tap was counted anonymously and helps me see if people want it. Thank you!",door_not_counted:"Your browser asks not to be tracked, so this tap was not counted. Thank you for your interest!",theme_to_dark:"Switch to dark mode",theme_to_light:"Switch to light mode",back:"Portfolio"},it:{door_title:"Non è ancora disponibile.",door_body:"Pantry non è ancora sull'App Store, quindi non c'è nulla da scaricare.",door_counted:"Il tuo tocco è stato contato in forma anonima e mi aiuta a capire se interessa. Grazie!",door_not_counted:"Il tuo browser chiede di non essere tracciato, quindi questo tocco non è stato contato. Grazie dell'interesse!",theme_to_dark:"Passa al tema scuro",theme_to_light:"Passa al tema chiaro",back:"Portfolio"}}
+  };
+  var META={
+    en:{title:"Pantry: Grocery List and Price Tracker for iPhone",desc:"A grocery list for iPhone that remembers what you paid and where, so you know the cheapest store. No account, no tracking: everything stays on your phone.",locale:"en_US"},
+    it:{title:"Pantry: lista della spesa e tracker dei prezzi per iPhone",desc:"Una lista della spesa per iPhone che ricorda quanto hai pagato e dove, così sai sempre qual è il negozio più conveniente. Nessun account, nessun tracciamento: tutto resta sul tuo telefono.",locale:"it_IT"}
+  };
+  var root=document.documentElement,en=[],lang="en";
+  document.querySelectorAll("[data-i18n],[data-i18n-html]").forEach(function(el){
+    var k=el.getAttribute("data-i18n")||el.getAttribute("data-i18n-html");
+    en.push({k:k,el:el,html:el.hasAttribute("data-i18n-html")||/<b>/.test(el.innerHTML),v:el.innerHTML});
+  });
+  function setLang(l,persist){
+    lang=l;root.lang=l;
+    en.forEach(function(o){
+      var v=l==="it"&&T.it[o.k]!=null?T.it[o.k]:o.v;
+      if(o.html)o.el.innerHTML=v;else o.el.textContent=v.replace(/<[^>]+>/g,"");
+    });
+    document.querySelectorAll(".lang button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.lang===l)});
+    var M=META[l];
+    document.title=M.title;
+    [["meta[name='description']",M.desc],["meta[property='og:title']",M.title],["meta[property='og:description']",M.desc],["meta[property='og:locale']",M.locale],
+     ["meta[name='twitter:title']",M.title],["meta[name='twitter:description']",M.desc]].forEach(function(p){var e=document.querySelector(p[0]);if(e)e.setAttribute("content",p[1])});
+    try{if(window.self!==window.top)window.parent.document.title=M.title}catch(e){}
+    tidyTitles();
+    updateThemeLabel();
+    if(typeof renderDoors==="function")renderDoors();
+    if(persist){try{localStorage.setItem("pantry-lang",l)}catch(e){}}
+  }
+  /* never leave a single word alone on the last line of a title */
+  function noWidow(el){var t=el.textContent.trim(),i=t.lastIndexOf(" ");if(i>0)el.textContent=t.slice(0,i)+"\u00a0"+t.slice(i+1)}
+  function tidyTitles(){[].slice.call(document.querySelectorAll("h2[data-i18n],h3[data-i18n]")).forEach(noWidow)}
+  document.querySelectorAll(".lang button").forEach(function(b){b.addEventListener("click",function(){setLang(b.dataset.lang,true)})});
+
+  /* theme: saved choice, otherwise the system setting */
+  var darkMQ=window.matchMedia?window.matchMedia("(prefers-color-scheme: dark)"):null,saved=null;
+  try{var st=localStorage.getItem("pantry-theme");if(st==="light"||st==="dark")saved=st}catch(e){}
+  function effective(){return saved||(darkMQ&&darkMQ.matches?"dark":"light")}
+  function updateThemeLabel(){
+    var b=document.getElementById("themeBtn"),t=T.ui[lang][effective()==="dark"?"theme_to_light":"theme_to_dark"];
+    b.setAttribute("aria-label",t);b.setAttribute("title",t);
+  }
+  function applyTheme(t){root.setAttribute("data-theme",t);updateThemeLabel()}
+  document.getElementById("themeBtn").addEventListener("click",function(){
+    saved=effective()==="dark"?"light":"dark";
+    try{localStorage.setItem("pantry-theme",saved)}catch(e){}
+    applyTheme(saved);
+  });
+  if(darkMQ&&darkMQ.addEventListener)darkMQ.addEventListener("change",function(){if(!saved)applyTheme(effective())});
+  applyTheme(effective());
+
+  var sl=null;try{sl=localStorage.getItem("pantry-lang")}catch(e){}
+  setLang(sl||((navigator.language||"en").slice(0,2)==="it"?"it":"en"));
+
+  /* tabs */
+  var tabs=[].slice.call(document.querySelectorAll('[role=tab]'));
+  function show(i){tabs.forEach(function(t,j){var on=i===j;t.setAttribute("aria-selected",on);t.tabIndex=on?0:-1;document.getElementById(t.getAttribute("aria-controls")).hidden=!on})}
+  tabs.forEach(function(t,i){
+    t.addEventListener("click",function(){show(i);track("tour_tab",{tab:i+1})});
+    t.addEventListener("keydown",function(e){
+      var n=e.key==="ArrowDown"||e.key==="ArrowRight"?1:e.key==="ArrowUp"||e.key==="ArrowLeft"?-1:0;
+      if(n){e.preventDefault();var j=(i+n+tabs.length)%tabs.length;show(j);tabs[j].focus()}
+    });
+  });
+
+  /* checkboxes in the feature lists */
+  [].slice.call(document.querySelectorAll(".cbx")).forEach(function(b){
+    b.addEventListener("click",function(){b.setAttribute("aria-checked",b.getAttribute("aria-checked")!=="true")});
+  });
+
+  /* detail icons: tag each one with the animation that plays on hover */
+  (function(){
+    var map={"i-zap":"zap","i-arrow-down-a-z":"az","i-trash-2":"trash","i-ruler":"ruler","i-vibrate":"vibrate","i-languages":"lang","i-flag":"flag","i-arrow-down-to-line":"pull","i-move-horizontal":"swipe"};
+    var items=[].slice.call(document.querySelectorAll(".grid3 > div"));
+    items.forEach(function(it){
+      var u=it.querySelector("b .ic use");if(!u)return;
+      var id=(u.getAttribute("href")||"").replace("#","");
+      if(map[id])it.querySelector("b .ic").setAttribute("data-a",map[id]);
+    });
+  })();
+
+  /* app icon picker: choose one, the secret one can't be unlocked yet */
+  (function(){
+    var group=document.querySelector(".iconpick");if(!group)return;
+    var opts=[].slice.call(group.querySelectorAll(".ico"));
+    opts.forEach(function(o){
+      o.addEventListener("click",function(){
+        if(o.classList.contains("lock")){o.classList.remove("nope");void o.offsetWidth;o.classList.add("nope");return}
+        opts.forEach(function(x){x.setAttribute("aria-checked",x===o)});
+        /* easter egg: the Bot icon says where it comes from */
+        var egg=group.parentNode.querySelector(".egg");
+        if(egg){
+          if(o.hasAttribute("data-egg")){var show=egg.hidden;egg.hidden=!show;if(show)track("easter_egg",{name:"bot"})}
+          else egg.hidden=true;
+        }
+      });
+    });
+  })();
+
+  /* accents */
+  var A=[["Red","#D64550","#E2606C"],["Orange","#C06B29","#E3A15C"],["Amber","#A67A2E","#E3B563"],["Green","#3C8A45","#5FCB68"],["Teal","#278A80","#4FBDB1"],["Blue","#3A7CA5","#5FA8D3"],["Purple","#8E5DB0","#B084D1"],["Pink","#C9598A","#E07EAC"]];
+  var box=document.getElementById("accents");
+  A.forEach(function(a,i){
+    var b=document.createElement("button");b.type="button";b.setAttribute("aria-label",a[0]);b.setAttribute("aria-pressed",i===0);b.style.setProperty("--sw",a[1]);
+    b.addEventListener("click",function(){
+      root.style.setProperty("--al",a[1]);root.style.setProperty("--ad",a[2]);
+      box.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed",x===b)});
+    });
+    box.appendChild(b);
+  });
+
+
+  /* Anonymous analytics live in /analytics.js (shared by all pages, see the notes there). */
+  function track(name,props){if(window.pxTrack)window.pxTrack(name,props)}
+
+  /* fake door: "Get Pantry" shows a short loader, then says (in a modal) that it's not available yet */
+  var dlg=document.getElementById("doorDialog"),busy=false,lastBtn=null;
+  function fillDoor(){
+    var u=T.ui[lang],counted=window.pxEnabled&&window.pxEnabled();
+    document.getElementById("doorTitle").textContent=u.door_title;noWidow(document.getElementById("doorTitle"));
+    document.getElementById("doorBody").textContent=u.door_body;
+    document.getElementById("doorNote").textContent=counted?u.door_counted:u.door_not_counted;
+  }
+  function renderDoors(){if(dlg&&dlg.open)fillDoor()}
+  [].slice.call(document.querySelectorAll(".get-btn")).forEach(function(b){
+    b.addEventListener("click",function(){
+      if(busy)return;busy=true;lastBtn=b;
+      track("download_click",{where:b.closest("section,header").id||"final"});
+      b.classList.add("loading");b.setAttribute("aria-busy","true");
+      setTimeout(function(){
+        b.classList.remove("loading");b.removeAttribute("aria-busy");busy=false;
+        fillDoor();
+        if(dlg.showModal)dlg.showModal();else dlg.setAttribute("open","");
+      },800);
+    });
+  });
+  document.getElementById("doorClose").addEventListener("click",function(){dlg.close()});
+  dlg.addEventListener("click",function(e){if(e.target===dlg)dlg.close()});
+  dlg.addEventListener("close",function(){if(lastBtn)lastBtn.focus()});
+
+  /* hero scroll motion: sets --e (0 → 1) on the hero while its stage is pinned */
+  (function(){
+    var hero=document.getElementById("top");
+    if(!hero||!window.matchMedia||matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+    root.classList.add("has-motion");
+    var queued=false;
+    function update(){
+      queued=false;
+      var nav=60,range=hero.offsetHeight-(window.innerHeight-nav);
+      var p=range>0?Math.min(1,Math.max(0,(nav-hero.getBoundingClientRect().top)/range)):1;
+      hero.style.setProperty("--e",(p*p*(3-2*p)).toFixed(4));
+    }
+    function queue(){if(!queued){queued=true;requestAnimationFrame(update)}}
+    addEventListener("scroll",queue,{passive:true});addEventListener("resize",queue);
+    update();
+  })();
+
+  /* Embedded mode: when this page is shown inside a host site's iframe, the host handles
+     navigation and theme. Standing alone, none of this exists. */
+  (function(){
+    var embedded=false;
+    try{embedded=window.self!==window.top}catch(e){embedded=true}
+    if(!embedded)return;
+
+    var back=document.createElement("a");
+    back.className="back-portfolio";back.href="/#/ideas";back.target="_top";
+    back.innerHTML='<svg class="ic"><use href="#i-chevron-left"/></svg><span>'+T.ui[lang].back+'</span>';
+    var sep=document.createElement("span");sep.className="back-sep";sep.setAttribute("aria-hidden","true");
+    var row=document.getElementById("navrow");row.insertBefore(sep,row.firstChild);row.insertBefore(back,row.firstChild);
+    back.addEventListener("click",function(e){
+      try{window.top.location.hash="#/ideas";e.preventDefault()}catch(err){}
+    });
+
+    /* external links open in a new tab */
+    document.addEventListener("click",function(e){
+      var a=e.target.closest&&e.target.closest('a[href^="http"]');
+      if(!a)return;e.preventDefault();window.open(a.href,"_blank","noopener");
+    });
+
+    /* the host decides the theme: our toggle drives the host's, then follows its state */
+    document.addEventListener("click",function(e){
+      if(!(e.target.closest&&e.target.closest("#themeBtn")))return;
+      var host=null;try{host=window.parent.document.getElementById("theme-toggle")}catch(err){}
+      if(!host)return;
+      e.stopImmediatePropagation();host.click();
+    },true);
+    try{
+      var pr=window.parent.document.documentElement;
+      var sync=function(){var t=pr.getAttribute("data-theme");saved=(t==="light"||t==="dark")?t:null;applyTheme(effective())};
+      sync();
+      new MutationObserver(sync).observe(pr,{attributes:true,attributeFilter:["data-theme"]});
+    }catch(e){}
+  })();
+})();
+</script>
+</body>
+</html>
