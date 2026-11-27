@@ -667,7 +667,7 @@ h2.page-title {
 }
 .project-list { list-style: none; margin: 0; padding: 0; }
 .project-row {
-  display: grid; grid-template-columns: 5.5rem 7.25rem 1fr 1.5rem; gap: 0 1.5rem; align-items: start;
+  display: grid; grid-template-columns: 5.5rem 7.25rem 1fr; gap: 0 1.5rem; align-items: start;
   padding: 1.1rem 0; text-decoration: none; color: inherit;
 }
 .project-year { font-family: 'Geist Pixel', 'DM Sans', sans-serif; font-size: 1.15rem; color: var(--text-muted); padding-top: 0.15rem; }
@@ -680,7 +680,9 @@ h2.page-title {
 .project-main { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
 .project-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
 .project-title { font-size: 1.05rem; font-weight: 600; color: var(--text); margin: 0; }
-.project-arrow { color: var(--text-muted); padding-top: 0.2rem; }
+.project-arrow { display: inline-flex; color: var(--text-muted); margin-left: -0.2rem; transition: color 0.15s, transform 0.2s cubic-bezier(0.24, 1.34, 0.38, 1); }
+.project-arrow svg { width: 1.1rem; height: 1.1rem; }
+a.project-row:hover .project-arrow { transform: translateX(3px); }
 a.project-row:hover .project-title { color: var(--accent); }
 a.project-row:hover .project-arrow { color: var(--accent); }
 .project-rule { border: 0; border-top: 1px solid var(--divider); margin: 1.25rem 0; }
@@ -694,7 +696,7 @@ a.project-row:hover .project-arrow { color: var(--accent); }
 @media (max-width: 760px) {
   .feature-card { flex-direction: column; }
   .feature-media { flex: none; min-height: 0; aspect-ratio: 1.3; border-right: 0; border-bottom: 1px solid var(--divider); }
-  .project-row { grid-template-columns: 5.5rem 1fr 1.5rem; row-gap: 0.6rem; }
+  .project-row { grid-template-columns: 5.5rem 1fr; row-gap: 0.6rem; }
   .project-year { grid-column: 1 / -1; padding-top: 0; }
   .project-thumb { grid-column: 1; }
   .project-note { padding-left: 0; }
@@ -1266,7 +1268,7 @@ a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
 @keyframes vinylSpin { to { transform: rotate(360deg); } }
 .record-label {
   position: absolute; inset: 33%; border-radius: 50%; border: 3px solid #222;
-  background: #111 url("images/music/grand-national.jpg") 50% 52% / 430% no-repeat;
+  background: #111 var(--label, none) 50% 52% / 430% no-repeat;
 }
 .record-label::after { content: ''; position: absolute; left: 50%; top: 50%; width: 9%; aspect-ratio: 1; border-radius: 50%; background: var(--surface); transform: translate(-50%, -50%); }
 .now-text { font-size: 1.05rem; line-height: 1.75; color: var(--text-muted); margin: 0; min-height: 5.3em; }
@@ -1809,22 +1811,34 @@ p.body-text:last-child { margin-bottom: 0; }
   line-height: 1.65;
 }
 
-/* ── BACK LINK ───────────────────────────────────────── */
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: var(--text-muted);
-  text-decoration: none;
-  margin-bottom: 2rem;
-  transition: color 0.2s;
-}
 
-.back-link:hover { color: var(--accent); }
-.back-link svg { transition: transform 0.2s; }
-.back-link:hover svg { transform: translateX(-3px); }
+/* Phone screens in a row, each with a short caption */
+.phone-strip { list-style: none; margin: 2rem 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem 1.25rem; }
+@media (max-width: 520px) { .phone-strip { grid-template-columns: repeat(2, 1fr); } }
+.phone-strip li { display: flex; flex-direction: column; gap: 0.6rem; }
+.phone-strip img { display: block; width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--card-border); box-shadow: var(--shadow-sm); }
+.phone-strip span { font-size: 0.8rem; line-height: 1.4; color: var(--text-muted); }
+
+.overlay-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; align-items: start; margin: 1.5rem 0; }
+.overlay-pair figure { margin: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+.overlay-pair img { display: block; width: 100%; height: auto; border-radius: 16px; box-shadow: var(--shadow-sm); }
+.overlay-pair figcaption { font-size: 0.8rem; line-height: 1.4; color: var(--text-muted); }
+@media (max-width: 520px) { .overlay-pair { grid-template-columns: 1fr; } }
+
+.flow-figure { margin: 2.5rem 0; }
+.flow-figure .case-image { margin: 0; height: auto; background: #f4f4f2; }
+.flow-figure a { display: block; cursor: zoom-in; }
+.flow-figure figcaption { margin-top: 0.7rem; font-size: 0.8rem; line-height: 1.5; color: var(--text-muted); }
+
+/* ── BREADCRUMB ─────────────────────────────────────── */
+.crumbs {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;
+  font-size: 0.82rem; font-weight: 500; color: var(--text-muted); margin-bottom: 2rem;
+}
+.crumbs a { color: inherit; text-decoration: none; transition: color 0.2s; }
+.crumbs a:hover, .crumbs a:focus-visible { color: var(--accent); }
+.crumb-sep { opacity: 0.45; }
+.crumbs [aria-current] { color: var(--text); }
 
 /* ── KONAMI EASTER EGG ───────────────────────────────── */
 #konami-overlay {
@@ -2470,10 +2484,7 @@ body.game-active .footer-links a {
   <!-- ══ IDEAS ══════════════════════════════════════════ -->
   <div id="page-ideas" class="page" role="region" aria-label="Side Projects">
     <div class="ideas-inner content">
-      <a class="back-link" href="#/" aria-label="Back to home">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-        Back
-      </a>
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="#/">Home</a><span class="crumb-sep" aria-hidden="true">/</span><span aria-current="page">Side Projects</span></nav>
       <h2 class="page-title">Side Projects</h2>
       <p class="ideas-intro">Things I build on my own time. Three are out now and free to try.</p>
 
@@ -2536,38 +2547,90 @@ body.game-active .footer-links a {
       <p class="project-note">2018 – 2024: design work, <a href="#/#design">see the case studies</a></p>
       <hr class="project-rule">
       <ul class="project-list">
+        <li><a class="project-row" href="#/ideas/config-battle" aria-label="Koffeeg, a team prototype for ConfigBattle 2024">
+          <span class="project-year">2024</span>
+          <img class="project-thumb" src="images/ideas/config-battle.jpg" alt="" width="1200" height="630" loading="lazy" decoding="async">
+          <div class="project-main">
+            <div class="project-head"><h4 class="project-title">Koffeeg at ConfigBattle</h4><span class="project-arrow" aria-hidden="true"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></div>
+            <p class="idea-card-meta">iOS prototype · Team challenge · 2024</p>
+            <p class="idea-card-body project-body">A coffee finder for the halls of Config, designed with a team in one battle. <strong>We won. Glory only, but still.</strong></p>
+          </div>
+        </a></li>
         <li><a class="project-row" href="#/ideas/infostud" aria-label="Infostud App, Material Design redesign of the Sapienza Android app">
           <span class="project-year">2017</span>
           <img class="project-thumb" src="images/ideas/infostud.jpg" alt="" width="1200" height="630" loading="lazy" decoding="async">
           <div class="project-main">
-            <div class="project-head"><h4 class="project-title">Infostud App</h4></div>
+            <div class="project-head"><h4 class="project-title">Infostud App</h4><span class="project-arrow" aria-hidden="true"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></div>
             <p class="idea-card-meta">Open Source Android · 2017</p>
             <p class="idea-card-body project-body">Released to 120,000 Sapienza students. A mobile way into academic resources and student services. <strong>Key insight: clarity and minimal cognitive load come first at scale.</strong></p>
           </div>
-          <span class="project-arrow" aria-hidden="true"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
         </a></li>
         <li><a class="project-row" href="#/ideas/lexi" aria-label="Lexi Vocabulary App, iOS game from 2014 (no longer active)">
           <span class="project-year">2014</span>
           <img class="project-thumb" src="images/ideas/lexi.jpg" alt="" width="1200" height="630" loading="lazy" decoding="async">
           <div class="project-main">
-            <div class="project-head"><h4 class="project-title">Lexi Vocabulary App</h4></div>
+            <div class="project-head"><h4 class="project-title">Lexi Vocabulary App</h4><span class="project-arrow" aria-hidden="true"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></div>
             <p class="idea-card-meta">iOS Game · 2014 · No longer active</p>
             <p class="idea-card-body project-body">Gamified micro-learning, from research to App Store release. <strong>Key learning: streaks and rewards need careful adaptation for education.</strong></p>
           </div>
-          <span class="project-arrow" aria-hidden="true"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
         </a></li>
       </ul>
           </div>
 
   </div>
 
+  <!-- ══ CONFIG BATTLE ═════════════════════════════════ -->
+  <div id="page-config-battle" class="page" role="region" aria-label="Koffeeg, ConfigBattle 2024">
+    <div class="case-hero" style="background:#FF8F63">
+      <div class="case-hero-phones">
+        <img class="case-hero-phone case-hero-phone-1" src="images/config/1-map.png" alt="">
+        <img class="case-hero-phone case-hero-phone-2" src="images/config/2-booking.png" alt="">
+        <img class="case-hero-phone case-hero-phone-3" src="images/config/5-ar.png" alt="">
+      </div>
+    </div>
+    <div class="case-inner content">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="#/">Home</a><span class="crumb-sep" aria-hidden="true">/</span><a href="#/ideas">Side Projects</a><span class="crumb-sep" aria-hidden="true">/</span><span aria-current="page">Koffeeg</span></nav>
+      <header class="case-header">
+        <p class="section-label" aria-hidden="true">ConfigBattle 2024</p>
+        <h1 class="case-title">Koffeeg</h1>
+        <p class="case-tagline">A team prototype for the hardest problem at a huge conference: finding the coffee.</p>
+        <div class="case-meta-grid" role="list">
+          <div class="case-meta-item" role="listitem"><div class="case-meta-label">Event</div><div class="case-meta-value">ConfigBattle, Figma Config 2024, San Francisco</div></div>
+          <div class="case-meta-item" role="listitem"><div class="case-meta-label">Format</div><div class="case-meta-value">Team challenge, designed together with a few other designers</div></div>
+          <div class="case-meta-item" role="listitem"><div class="case-meta-label">Platform</div><div class="case-meta-value">iOS prototype, built in Figma</div></div>
+          <div class="case-meta-item" role="listitem"><div class="case-meta-label">Result</div><div class="case-meta-value">We won. Glory only, but it was fun anyway</div></div>
+        </div>
+      </header>
+
+      <section class="case-section" aria-labelledby="cb-idea">
+        <h2 id="cb-idea" class="section-heading">The idea</h2>
+        <p class="body-text">At Config the lines are long and the halls are huge, and what everybody needs is coffee. Koffeeg is a tiny app for exactly that: it shows you where the coffee is, gets you there, and tells you when it is ready.</p>
+      </section>
+
+      <section class="case-section" aria-labelledby="cb-flow">
+        <p class="section-label" aria-hidden="true">The flow</p>
+        <h2 id="cb-flow" class="section-heading">From “where?” to “here”</h2>
+        <ol class="phone-strip">
+          <li><img src="images/config/1-map.png" alt="Isometric map of the venue floors with a green “You're here” pin and the coffee stations" loading="lazy" decoding="async"><span>Find your coffee on a map of the floors</span></li>
+          <li><img src="images/config/2-booking.png" alt="Coffee station 1 screen with a photo, a Reserve button and a VIP delivery button" loading="lazy" decoding="async"><span>Reserve it, or pay for VIP delivery</span></li>
+          <li><img src="images/config/3-success.png" alt="Success screen with a steaming cup and confetti" loading="lazy" decoding="async"><span>Confetti, because it is coffee</span></li>
+          <li><img src="images/config/4-countdown.png" alt="Countdown screen with an arrow pointing the way and five minutes left" loading="lazy" decoding="async"><span>A countdown with an arrow to follow</span></li>
+          <li><img src="images/config/5-ar.png" alt="Camera view of the conference hall with a speech bubble saying your coffee is here" loading="lazy" decoding="async"><span>A camera view that points to your cup</span></li>
+          <li><img src="images/config/7-lock.png" alt="Lock screen notification saying coffee is now ready" loading="lazy" decoding="async"><span>A notification when it is ready</span></li>
+        </ol>
+      </section>
+
+      <section class="case-section" aria-labelledby="cb-glory">
+        <h2 id="cb-glory" class="section-heading">The glory</h2>
+        <p class="body-text">We won, which at ConfigBattle pays out in glory only. No trophy to put on a shelf, just a great time in San Francisco with the team.</p>
+      </section>
+    </div>
+  </div>
+
   <!-- ══ ABOUT ═════════════════════════════════════════ -->
   <div id="page-about" class="page" role="region" aria-label="About">
     <div class="about-inner content">
-      <a class="back-link" href="#/" aria-label="Back to home">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-        Back
-      </a>
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="#/">Home</a><span class="crumb-sep" aria-hidden="true">/</span><span aria-current="page">About</span></nav>
       <h2 class="page-title">About</h2>
 
       <div class="about-intro">
@@ -2589,10 +2652,13 @@ body.game-active .footer-links a {
         <div class="crate">
           <div class="crate-inner">
             <button class="crate-item" type="button" data-i="0" aria-label="John Butler Trio, Grand National"><span class="crate-card">
-              <span class="crate-vinyl" aria-hidden="true"><span class="crate-disc"><span class="record-label"></span></span></span>
+              <span class="crate-vinyl" aria-hidden="true" style="--label: url('images/music/grand-national.jpg')"><span class="crate-disc"><span class="record-label"></span></span></span>
               <img class="record-sleeve" src="images/music/grand-national.jpg" alt="" width="900" height="813" loading="lazy" decoding="async">
             </span></button>
-            <button class="crate-item is-empty" type="button" data-i="1" aria-label="Empty sleeve"><span class="crate-card"><span class="record-sleeve"></span></span></button>
+            <button class="crate-item" type="button" data-i="1" aria-label="Zero 7, When It Falls"><span class="crate-card">
+              <span class="crate-vinyl" aria-hidden="true" style="--label: url('images/music/when-it-falls.jpg')"><span class="crate-disc"><span class="record-label"></span></span></span>
+              <img class="record-sleeve" src="images/music/when-it-falls.jpg" alt="" width="600" height="600" loading="lazy" decoding="async">
+            </span></button>
             <button class="crate-item is-empty" type="button" data-i="2" aria-label="Empty sleeve"><span class="crate-card"><span class="record-sleeve"></span></span></button>
             <button class="crate-item is-empty" type="button" data-i="3" aria-label="Empty sleeve"><span class="crate-card"><span class="record-sleeve"></span></span></button>
           </div>
@@ -2660,14 +2726,6 @@ body.game-active .footer-links a {
         </div>
       </div>
 
-      <h3 class="about-section-title">When not designing…</h3>
-      <div class="not-designing">
-        <span class="not-designing-chip"><svg class="lucide lucide-lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>Reading</span>
-        <span class="not-designing-chip"><svg class="lucide lucide-lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/></svg>Video games</span>
-        <span class="not-designing-chip"><svg class="lucide lucide-lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>Comics</span>
-        <span class="not-designing-chip"><svg class="lucide lucide-lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>Dreaming about the stars</span>
-      </div>
-
       <h3 class="about-section-title">Readings</h3>
       <p class="readings-subtitle">What I've been reading.</p>
       <div id="readings-list"><p class="readings-loading" style="color:var(--text-muted);font-size:0.85rem;">Loading…</p></div>
@@ -2689,10 +2747,7 @@ body.game-active .footer-links a {
   <div id="page-esa" class="page" role="region" aria-label="ESA case study">
     <div class="case-hero-placeholder" style="background:linear-gradient(135deg, #0B2545, #13315C);" aria-hidden="true"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m13.5 6.5-3.148-3.148a1.205 1.205 0 0 0-1.704 0L6.352 5.648a1.205 1.205 0 0 0 0 1.704L9.5 10.5"/><path d="M16.5 7.5 19 5"/><path d="m17.5 10.5 3.148 3.148a1.205 1.205 0 0 1 0 1.704l-2.296 2.296a1.205 1.205 0 0 1-1.704 0L13.5 14.5"/><path d="M9 21a6 6 0 0 0-6-6"/><path d="M9.352 10.648a1.205 1.205 0 0 0 0 1.704l2.296 2.296a1.205 1.205 0 0 0 1.704 0l4.296-4.296a1.205 1.205 0 0 0 0-1.704l-2.296-2.296a1.205 1.205 0 0 0-1.704 0z"/></svg></div>
     <div class="case-inner content">
-      <a class="back-link" href="#/" aria-label="Back to home">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-        Back
-      </a>
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="#/">Home</a><span class="crumb-sep" aria-hidden="true">/</span><span aria-current="page">ESA Satellite Monitoring</span></nav>
 
       <header class="case-header">
         <h1 class="case-title">ESA Satellite Tree Monitoring System</h1>
@@ -2827,10 +2882,7 @@ body.game-active .footer-links a {
       </div>
     </div>
     <div class="case-inner content">
-      <a class="back-link" href="#/" aria-label="Back to home">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-        Back
-      </a>
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="#/">Home</a><span class="crumb-sep" aria-hidden="true">/</span><span aria-current="page">Digital School Register</span></nav>
 
       <header class="case-header">
         <h1 class="case-title">Digital School Register</h1>
@@ -2863,7 +2915,20 @@ body.game-active .footer-links a {
           <li><div><strong>Device fragmentation:</strong> Personal phones to decade-old school computers</div></li>
           <li><div><strong>Support burden:</strong> Younger teachers become unofficial IT support</div></li>
         </ul>
-        <img class="case-image" src="images/register-flowchart.png" alt="Flowchart mapping the grade-reporting compliance workflow across teachers, directors, and the ministry">
+        <figure class="flow-figure">
+          <a href="images/register/flow-overview-full.jpg" target="_blank" rel="noopener noreferrer" aria-label="Open the full flow map at full size, opens in a new tab"><img class="case-image" src="images/register/flow-overview.jpg" alt="The full flow map of the teacher app: ten areas, from the agenda and signing a lesson to the class register, student profile, circulars, parent meetings and proposed grades, connected by decision points" width="4000" height="2295" loading="lazy" decoding="async"></a>
+          <figcaption>The full flow map of the teacher app: agenda, signing a lesson, class register, student profile, circulars, parent meetings, teacher register and proposed grades. Click to open it at full size.</figcaption>
+        </figure>
+        <h3 class="subsection-heading">Reading the map</h3>
+        <p class="body-text">Every screen sits next to the decision that leads to it, with notes in orange for behavior and blue for navigation, so every screen can be read in context.</p>
+        <figure class="flow-figure">
+          <a href="images/register/flow-home.jpg" target="_blank" rel="noopener noreferrer" aria-label="Open this detail at full size, opens in a new tab"><img class="case-image" src="images/register/flow-home.jpg" alt="Detail of the flow map showing how the home screen changes depending on whether the school has morning and afternoon timetables and whether the teacher's timetable is preloaded" width="2600" height="1829" loading="lazy" decoding="async"></a>
+          <figcaption>The home screen changes with the school's timetable (morning and afternoon, or one only) and with whether the teacher's timetable is already loaded.</figcaption>
+        </figure>
+        <figure class="flow-figure">
+          <a href="images/register/flow-grades.jpg" target="_blank" rel="noopener noreferrer" aria-label="Open this detail at full size, opens in a new tab"><img class="case-image" src="images/register/flow-grades.jpg" alt="Detail of the flow map for proposed grades, branching on grade type, school level, and whether a grade, judgment or learning-gap record already exists" width="2600" height="1968" loading="lazy" decoding="async"></a>
+          <figcaption>Proposed grades are the most branched flow: the forms change with the type of grade, the school level, and whether a grade, a judgment or a learning-gap note already exists.</figcaption>
+        </figure>
       </section>
 
       <section class="case-section" aria-labelledby="reg-iter1">
@@ -2919,6 +2984,26 @@ body.game-active .footer-links a {
         <img class="case-image" src="images/register-lightdark.png" alt="Light and dark mode variants of the final Digital School Register interface">
       </section>
 
+      <section class="case-section" aria-labelledby="reg-screens">
+        <p class="section-label" aria-hidden="true">The app</p>
+        <h2 id="reg-screens" class="section-heading">Final screens</h2>
+        <p class="body-text">The teacher app on phone, in the school's own language. Every screen is built around what a teacher does between two lessons: sign in, see the day, take attendance, enter grades.</p>
+        <ol class="phone-strip">
+          <li><img src="images/register/app-login.png" alt="Sign-in screen with saved school accounts, school code search, SPID login and a remember-me switch" width="414" height="896" loading="lazy" decoding="async"><span>Sign-in with saved school accounts, or SPID</span></li>
+          <li><img src="images/register/app-dashboard.png" alt="Home screen showing today's lessons as cards, a banner with five unread circulars and a day picker" width="414" height="972" loading="lazy" decoding="async"><span>Home: the day's lessons and unread circulars</span></li>
+          <li><img src="images/register/app-class.png" alt="Class register with a list of students and quick toggles for absence, canteen and remote learning" width="414" height="920" loading="lazy" decoding="async"><span>Class register: attendance, canteen and remote learning in one list</span></li>
+          <li><img src="images/register/app-teacher.png" alt="Teacher register as a grid of students and dates with colored grade tags and filters" width="414" height="896" loading="lazy" decoding="async"><span>Teacher register: the full grid with filters</span></li>
+          <li><img src="images/register/app-grades.png" alt="Proposed grades screen with color-coded scores per student for attendance, written, oral and practical" width="414" height="1002" loading="lazy" decoding="async"><span>Proposed grades, color-coded at a glance</span></li>
+          <li><img src="images/register/app-circulars.png" alt="Circulars list with read and unread states and reply status" width="414" height="896" loading="lazy" decoding="async"><span>Circulars with read and reply status</span></li>
+        </ol>
+        <h3 class="subsection-heading">Forms as overlays</h3>
+        <p class="body-text">Longer tasks open as overlays so teachers never lose their place in the register.</p>
+        <div class="overlay-pair">
+          <figure><img src="images/register/overlay-signature.png" alt="New signature form with school, class, subject, lesson hour, lesson type and students" width="415" height="1470" loading="lazy" decoding="async"><figcaption>Signing a lesson in one form</figcaption></figure>
+          <figure><img src="images/register/overlay-judgment.png" alt="Compose judgment overlay with ready-made phrases grouped by topic that can be added with one tap" width="414" height="853" loading="lazy" decoding="async"><figcaption>Writing a judgment from ready-made phrases</figcaption></figure>
+        </div>
+      </section>
+
       <section class="case-section" aria-labelledby="reg-outcomes">
         <p class="section-label" aria-hidden="true">Final</p>
         <h2 id="reg-outcomes" class="section-heading">Outcomes</h2>
@@ -2963,10 +3048,7 @@ body.game-active .footer-links a {
   <div id="page-dashboard" class="page" role="region" aria-label="Treedom B2B Dashboard case study">
     <div class="case-hero-placeholder" style="background:linear-gradient(135deg, #1F6B45, #123C27);" aria-hidden="true"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></div>
     <div class="case-inner content">
-      <a class="back-link" href="#/" aria-label="Back to home">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-        Back
-      </a>
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="#/">Home</a><span class="crumb-sep" aria-hidden="true">/</span><span aria-current="page">B2B Dashboard</span></nav>
 
       <header class="case-header">
         <h1 class="case-title">Treedom B2B Dashboard</h1>
@@ -3099,10 +3181,7 @@ body.game-active .footer-links a {
       <img class="case-hero-single" src="images/designsystem-hero-fg.png" alt="">
     </div>
     <div class="case-inner content">
-      <a class="back-link" href="#/" aria-label="Back to home">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-        Back
-      </a>
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="#/">Home</a><span class="crumb-sep" aria-hidden="true">/</span><span aria-current="page">Design System</span></nav>
 
       <header class="case-header">
         <h1 class="case-title">Treedom Design System</h1>
@@ -3336,6 +3415,7 @@ const routes = {
   '/ideas/bros': 'page-bros',
   '/ideas/lexi': 'page-lexi',
   '/ideas/infostud': 'page-infostud',
+  '/ideas/config-battle': 'page-config-battle',
 };
 
 function getRoute() {
@@ -4846,18 +4926,19 @@ const READING_LIST = [
   var btn = card.querySelector('.play-btn');
   var label = btn.querySelector('.play-label');
   var order = items.map(function (_, i) { return i; });
-  var audioEl = null, previewUrl = null, loading = false;
-  var TEXT = [
-    'Currently listening to <a href="https://music.apple.com/search?term=John%20Butler%20Trio%20Funky%20Tonight" target="_blank" rel="noopener noreferrer">Funky Tonight</a> by <a href="https://music.apple.com/search?term=John%20Butler%20Trio" target="_blank" rel="noopener noreferrer">John Butler Trio</a> from the album <a href="https://music.apple.com/search?term=John%20Butler%20Trio%20Grand%20National" target="_blank" rel="noopener noreferrer">Grand National</a>.',
-    'An empty sleeve, for the next record.'
+  var RECORDS = [
+    { q: 'John Butler Trio Funky Tonight', track: 'Funky Tonight', album: /Grand National/i, text: 'Currently listening to <a href="https://music.apple.com/search?term=John%20Butler%20Trio%20Funky%20Tonight" target="_blank" rel="noopener noreferrer">Funky Tonight</a> by <a href="https://music.apple.com/search?term=John%20Butler%20Trio" target="_blank" rel="noopener noreferrer">John Butler Trio</a> from the album <a href="https://music.apple.com/search?term=John%20Butler%20Trio%20Grand%20National" target="_blank" rel="noopener noreferrer">Grand National</a>.' },
+    { q: 'Zero 7 Speed Dial No. 2', track: 'Speed Dial No. 2', album: /When It Falls/i, text: 'Currently listening to <a href="https://www.youtube.com/watch?v=5ru1HXrIeWM&amp;t=134s" target="_blank" rel="noopener noreferrer">Speed Dial No. 2</a> by <a href="https://music.apple.com/search?term=Zero%207" target="_blank" rel="noopener noreferrer">Zero 7</a> from the album <a href="https://music.apple.com/search?term=Zero%207%20When%20It%20Falls" target="_blank" rel="noopener noreferrer">When It Falls</a>.' }
   ];
+  var EMPTY = 'An empty sleeve, for the next record.';
+  var previews = [], loading = [], audios = [];
   function playing() { return card.hasAttribute('data-playing'); }
   function setPlaying(v) {
     if (v) card.setAttribute('data-playing', ''); else card.removeAttribute('data-playing');
     btn.setAttribute('aria-pressed', String(v));
     label.textContent = v ? 'Pause' : 'Play preview';
   }
-  function stop() { if (audioEl) { audioEl.pause(); audioEl.currentTime = 0; } setPlaying(false); }
+  function stop() { audios.forEach(function (a) { if (a) { a.pause(); a.currentTime = 0; } }); setPlaying(false); }
   function render() {
     items.forEach(function (it, i) {
       var d = order.indexOf(i);
@@ -4865,39 +4946,43 @@ const READING_LIST = [
       if (d === 0) it.setAttribute('data-front', ''); else it.removeAttribute('data-front');
     });
     var front = order[0];
-    text.innerHTML = front === 0 ? TEXT[0] : TEXT[1];
-    btn.hidden = front !== 0;
+    text.innerHTML = RECORDS[front] ? RECORDS[front].text : EMPTY;
+    btn.hidden = !RECORDS[front];
   }
-  function lookup() {
-    if (previewUrl || loading) return Promise.resolve(previewUrl);
-    loading = true;
-    return fetch('https://itunes.apple.com/search?term=' + encodeURIComponent('John Butler Trio Funky Tonight') + '&entity=song&limit=10')
+  function lookup(i) {
+    if (previews[i] || loading[i]) return Promise.resolve(previews[i] || null);
+    loading[i] = true;
+    var rec = RECORDS[i];
+    return fetch('https://itunes.apple.com/search?term=' + encodeURIComponent(rec.q) + '&entity=song&limit=10')
       .then(function (r) { return r.json(); })
       .then(function (d) {
-        var hit = (d.results || []).filter(function (x) { return x.trackName === 'Funky Tonight' && /Grand National/i.test(x.collectionName || ''); })[0]
-               || (d.results || []).filter(function (x) { return x.trackName === 'Funky Tonight'; })[0];
-        previewUrl = hit && hit.previewUrl || null;
-        return previewUrl;
+        var hit = (d.results || []).filter(function (x) { return x.trackName === rec.track && rec.album.test(x.collectionName || ''); })[0]
+               || (d.results || []).filter(function (x) { return x.trackName === rec.track; })[0];
+        previews[i] = hit && hit.previewUrl || null;
+        return previews[i];
       })
       .catch(function () { return null; })
-      .then(function (u) { loading = false; return u; });
+      .then(function (u) { loading[i] = false; return u; });
   }
   function toggle() {
+    var i = order[0];
+    if (!RECORDS[i]) return;
     if (playing()) { stop(); return; }
     btn.disabled = true; label.textContent = 'Loading…';
-    lookup().then(function (u) {
+    lookup(i).then(function (u) {
       btn.disabled = false;
+      if (order[0] !== i) { label.textContent = 'Play preview'; return; }
       if (!u) { label.textContent = 'Preview unavailable'; setTimeout(function () { label.textContent = 'Play preview'; }, 2500); return; }
-      if (!audioEl) {
-        audioEl = new Audio(u);
-        audioEl.addEventListener('ended', function () { setPlaying(false); });
+      if (!audios[i]) {
+        audios[i] = new Audio(u);
+        audios[i].addEventListener('ended', function () { setPlaying(false); });
       }
-      audioEl.play().then(function () { setPlaying(true); }).catch(function () { setPlaying(false); });
+      audios[i].play().then(function () { setPlaying(true); }).catch(function () { setPlaying(false); });
     });
   }
   items.forEach(function (it, i) {
     it.addEventListener('click', function () {
-      if (order[0] === i) { if (i === 0) toggle(); return; }
+      if (order[0] === i) { toggle(); return; }
       stop();
       order = [i].concat(order.filter(function (x) { return x !== i; }));
       render();
