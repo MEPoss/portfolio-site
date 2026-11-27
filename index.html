@@ -763,6 +763,7 @@ svg.lucide {
 
 /* ── READINGS PAGE ───────────────────────────────────── */
 .readings-inner,
+.about-inner { max-width: 920px; }
 .about-inner {
   position: relative;
   z-index: 1;
@@ -1150,7 +1151,7 @@ body.game-active .about-avatar-row .av {
   transform: translateX(-50%) rotate(45deg); transition: left 0.25s cubic-bezier(0.24, 1.34, 0.38, 1);
 }
 .dock-head { display: flex; align-items: center; gap: 0.5rem; padding: 0.15rem 0.45rem 0.6rem; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
-.dock-links { margin-left: auto; display: flex; gap: 0.4rem; padding-right: 2.6rem; }
+.dock-links { margin-left: auto; display: flex; gap: 0.4rem; }
 .dock-link {
   display: inline-flex; align-items: center; gap: 0.3em; font-size: 0.76rem; letter-spacing: 0; text-transform: none;
   padding: 0.2rem 0.65rem; border: 1px solid var(--divider); border-radius: 999px; color: var(--text-muted);
@@ -1173,11 +1174,13 @@ a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
 .dock {
   display: flex; gap: 0.3rem; padding: var(--gap); border-radius: var(--r-in); background: var(--surface);
   border: 1px solid var(--divider);
+  overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;
 }
+.dock::-webkit-scrollbar { display: none; }
 /* each button is its icon plus a 3px margin; the ring sits on the button's edge, so its
    radius is the icon's radius (22.5% of the icon) plus that margin */
 .dock-btn {
-  all: unset; box-sizing: border-box; cursor: pointer; position: relative; flex: 1 1 0; min-width: 0; max-width: 76px;
+  all: unset; box-sizing: border-box; cursor: pointer; position: relative; flex: 1 0 0; min-width: 44px; max-width: 76px;
   aspect-ratio: 1; padding: 3px; border-radius: 26%;
   transition: transform 0.2s cubic-bezier(0.24, 1.34, 0.38, 1), box-shadow 0.15s, background 0.15s;
   -webkit-tap-highlight-color: transparent;
@@ -1185,9 +1188,11 @@ a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
 .dock-btn img.dock-icon { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; border-radius: 22.5%; }
 .dock-btn[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); transform: translateY(-2px); }
 .dock-btn:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+.dock-btn { cursor: grab; }
+.dock-btn.is-dragging { transition: none; z-index: 3; cursor: grabbing; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35)); }
+.dock.is-sorting { cursor: grabbing; user-select: none; -webkit-user-select: none; }
 .dock-sound {
-  all: unset; box-sizing: border-box; cursor: pointer; position: absolute; z-index: 2;
-  top: calc(var(--gap) + 0.4rem); right: calc(var(--gap) + 0.55rem); width: 30px; height: 30px;
+  all: unset; box-sizing: border-box; cursor: pointer; flex: none; margin-left: 0.45rem; width: 30px; height: 30px;
   border-radius: 50%; border: 1.5px solid var(--divider); color: var(--text-muted); display: grid; place-items: center;
   background: var(--surface); transition: color 0.15s, border-color 0.15s;
 }
@@ -1196,10 +1201,12 @@ a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
 .dock-sound[aria-pressed="true"] .dock-sound-off, .dock-sound[aria-pressed="false"] .dock-sound-on { display: none; }
 @media (max-width: 560px) {
   .dock-stage { --gap: 8px; --r-in: 18px; }
-  .dock { gap: 0.1rem; }
+  .dock { gap: 0.25rem; }
+  .dock-btn { flex: 0 0 auto; width: 60px; min-width: 0; max-width: none; }
   .dock-panel { height: 12rem; }
-  .dock-head { flex-wrap: wrap; padding-right: 2.6rem; }
-  .dock-links { margin-left: 0; padding-right: 0; width: 100%; }
+  .dock-head { flex-wrap: wrap; padding-right: 2.6rem; position: relative; }
+  .dock-links { margin-left: 0; width: 100%; }
+  .dock-sound { position: absolute; top: -3px; right: 0.45rem; margin: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .dock-btn, .dock-panel::after { transition: none; } .dock-cards { animation: none; } }
 
@@ -1307,23 +1314,32 @@ a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
   background: var(--surface); border: 1px solid var(--divider); border-radius: 16px; box-shadow: var(--shadow-sm);
   min-height: 21rem;
 }
-.about-intro .about-bio { position: relative; z-index: 1; max-width: 23rem; }
+.about-intro { padding-right: calc(38% + 0.5rem); }
+.about-intro .about-bio { position: relative; z-index: 1; }
 .about-intro .about-bio p { font-size: 1.05rem; line-height: 1.75; margin-bottom: 1.25rem; }
 .about-intro .about-bio strong { color: var(--text); font-weight: 500; }
-.about-stickers { position: absolute; top: 0; right: 0; bottom: 0; width: 36%; pointer-events: none; }
-.sticker { position: absolute; display: block; height: auto; filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18)); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
-.st-tree { width: 66%; right: -12%; top: -5%; transform: rotate(8deg); }
-.st-arrow { width: 26%; left: 30%; top: 40%; transform: rotate(-12deg); }
-.st-eye { width: 52%; right: -12%; top: 58%; transform: rotate(-6deg); }
-.about-intro:hover .st-tree { transform: rotate(12deg) translateY(4px); }
-.about-intro:hover .st-arrow { transform: rotate(-4deg) translate(6px, -6px); }
-.about-intro:hover .st-eye { transform: rotate(2deg) translateY(-5px); }
-.about-row { display: grid; grid-template-columns: 0.8fr 1.4fr; gap: 1.5rem; margin-bottom: 3.5rem; align-items: stretch; }
+.about-stickers { position: absolute; top: 0; right: 0; bottom: 0; width: 38%; pointer-events: none; }
+.sticker { position: absolute; display: block; height: auto; filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18)); }
+.st-tree { width: 62%; right: -8%; top: -7%; transform: rotate(-12deg); }
+.st-arrow { width: 24%; left: 14%; top: 50%; transform: rotate(-8deg); }
+.st-ball { width: 28%; left: 8%; top: 8%; transform: rotate(10deg); }
+.st-eye { width: 46%; right: -8%; top: 60%; transform: rotate(-6deg); }
+.about-row { display: grid; grid-template-columns: 0.8fr 1.4fr; gap: 1.5rem; margin-bottom: 3.5rem; align-items: start; }
 .about-row .now-card { max-width: none; margin: 0; padding: 1.25rem 1.25rem 1.5rem; }
 .about-row .crate { padding-top: 2.6rem; margin-bottom: 1rem; }
 .about-row .now-text { font-size: 0.95rem; line-height: 1.7; }
 .exp-card { padding: 0.75rem; border-radius: 16px; }
 .exp-list { display: flex; flex-direction: column; }
+.exp-toggle { all: unset; box-sizing: border-box; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; margin: 0.35rem 1rem 0.5rem; padding: 0.3rem 0; font-size: 0.88rem; color: var(--text-muted); transition: color 0.15s; }
+.exp-toggle svg { width: 1em; height: 1em; transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1); }
+.exp-toggle:hover, .exp-toggle:focus-visible { color: var(--accent); }
+.exp-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.exp-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+.exp-more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+.exp-more-inner { overflow: hidden; min-height: 0; opacity: 0; transition: opacity 0.25s; }
+.exp-more.is-open { grid-template-rows: 1fr; }
+.exp-more.is-open .exp-more-inner { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .exp-more, .exp-more-inner, .exp-toggle svg { transition: none; } }
 .exp-row { display: flex; justify-content: space-between; align-items: center; gap: 1.25rem; padding: 0.95rem 1rem; border-radius: 10px; transition: background-color 0.15s; }
 .exp-row:hover { background: color-mix(in srgb, var(--text) 5%, transparent); }
 .exp-title { font-size: 1rem; font-weight: 500; color: var(--text); }
@@ -1339,7 +1355,6 @@ a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
   .exp-row { flex-direction: column; align-items: flex-start; gap: 0.35rem; }
   .exp-date { order: -1; font-size: 0.8rem; color: var(--text-muted); }
 }
-@media (prefers-reduced-motion: reduce) { .sticker { transition: none; } }
 
 /* ── CASE STUDY PAGES ────────────────────────────────── */
 .case-inner {
@@ -2563,7 +2578,8 @@ body.game-active .footer-links a {
         </div>
         <div class="about-stickers" aria-hidden="true">
           <img class="sticker st-tree" src="images/stickers/treedom.png" alt="" width="392" height="299">
-          <img class="sticker st-arrow" src="images/stickers/arrow.png" alt="" width="332" height="332">
+          <img class="sticker st-ball" src="images/stickers/ball.png" alt="" width="332" height="332">
+          <img class="sticker st-arrow" src="images/stickers/arrow.png" alt="" width="320" height="332">
           <img class="sticker st-eye" src="images/stickers/eye.png" alt="" width="332" height="332">
         </div>
       </div>
@@ -2595,6 +2611,13 @@ body.game-active .footer-links a {
               <div class="exp-date">2021</div>
             </div>
             <div class="exp-row">
+              <div class="exp-main"><div class="exp-title">Personal projects</div><div class="exp-desc">brOS, Takeout Fixer, Pantry and other apps I design and build on my own.</div></div>
+              <div class="exp-date">Ongoing</div>
+            </div>
+          </div>
+          <button class="exp-toggle" type="button" aria-expanded="false" aria-controls="exp-more"><span>More experience in other fields</span><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="exp-more" id="exp-more"><div class="exp-more-inner" inert>
+            <div class="exp-row">
               <div class="exp-main"><div class="exp-title">Graphic Designer at zeroCO2</div><div class="exp-desc">Designed the graphics and laid out the text of their first Impact Report, for 2020.</div></div>
               <div class="exp-date">2021</div>
             </div>
@@ -2606,7 +2629,7 @@ body.game-active .footer-links a {
               <div class="exp-main"><div class="exp-title">Blogger at Wired Italia</div><div class="exp-desc">Copywriting.</div></div>
               <div class="exp-date">2013</div>
             </div>
-          </div>
+          </div></div>
         </div>
       </div>
 
@@ -2615,7 +2638,7 @@ body.game-active .footer-links a {
         <div class="tools-card dock-card-wrap">
           <div class="dock-stage" id="tools-dock">
             <div class="dock-panel" aria-live="polite">
-              <div class="dock-head"><img class="dock-head-icon" src="images/tools/figma.png" alt="" width="20" height="20"><span class="dock-head-name">Figma</span><span class="dock-links"></span></div>
+              <div class="dock-head"><img class="dock-head-icon" src="images/tools/figma.png" alt="" width="20" height="20"><span class="dock-head-name">Figma</span><span class="dock-links"></span><button class="dock-sound" type="button" aria-pressed="true" aria-label="Sound on"><svg class="lucide dock-sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg><svg class="lucide dock-sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></svg></button></div>
               <div class="dock-cards"></div>
             </div>
             <div class="dock" role="toolbar" aria-label="Tools I use">
@@ -2630,8 +2653,9 @@ body.game-active .footer-links a {
             <button class="dock-btn" type="button" data-i="8" aria-pressed="false" aria-label="Thaw"><img class="dock-icon" src="images/tools/thaw.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
             <button class="dock-btn" type="button" data-i="9" aria-pressed="false" aria-label="Vorssaint"><img class="dock-icon" src="images/tools/vorssaint.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
             <button class="dock-btn" type="button" data-i="10" aria-pressed="false" aria-label="Expensa"><img class="dock-icon" src="images/tools/expensa.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="11" aria-pressed="false" aria-label="Immich"><img class="dock-icon" src="images/tools/immich.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="12" aria-pressed="false" aria-label="Ivory"><img class="dock-icon" src="images/tools/ivory.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
             </div>
-            <button class="dock-sound" type="button" aria-pressed="true" aria-label="Sound on"><svg class="lucide dock-sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg><svg class="lucide dock-sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></svg></button>
           </div>
         </div>
       </div>
@@ -4610,12 +4634,18 @@ const READING_LIST = [
     { name: 'brOS',      icon: 'bros.png',      kind: 'Browser',       desc: 'The Mac browser I built.', links: [{ label: 'Open project', href: '#/ideas/bros', internal: true }] },
     { name: 'Warp',      icon: 'warp.png',      kind: 'Terminal',      desc: 'Where the command line happens.', links: [{ label: 'warp.dev', href: 'https://www.warp.dev' }] },
     { name: 'Paper',     icon: 'paper.png',     kind: 'Design canvas', desc: 'Designing in HTML on a canvas.', links: [{ label: 'paper.design', href: 'https://paper.design' }] },
-    { name: 'BatFi',     icon: 'batfi.png',     kind: 'Battery',       desc: 'Keeps the Mac battery charge in check.', links: [] },
+    { name: 'BatFi',     icon: 'batfi.png',     kind: 'Battery',       desc: 'Keeps the Mac battery charge in check.', links: [{ label: 'micropixels.software', href: 'https://micropixels.software/batfi/' }] },
     { name: 'Thaw',      icon: 'thaw.png',      kind: 'Menu bar',      desc: 'Keeps the menu bar tidy.', links: [] },
     { name: 'Vorssaint', icon: 'vorssaint.png', kind: 'Mac utility',   desc: 'A small utility in the menu bar.', links: [] },
     { name: 'Expensa',   icon: 'expensa.png',   kind: 'Expenses',      desc: 'The money app I use now.', links: [
       { label: 'App Store', href: 'https://apps.apple.com/us/app/expensa-expense-tracker/id6758392205' },
-      { label: 'getexpensa.com', href: 'https://getexpensa.com/' } ] }
+      { label: 'getexpensa.com', href: 'https://getexpensa.com/' } ] },
+    { name: 'Immich',    icon: 'immich.png',    kind: 'Photos',        desc: 'Self-hosted photo and video backup.', links: [
+      { label: 'App Store', href: 'https://apps.apple.com/us/app/immich/id1613945652' },
+      { label: 'immich.app', href: 'https://immich.app' } ] },
+    { name: 'Ivory',     icon: 'ivory.png',     kind: 'Mastodon',      desc: 'My Mastodon client, by Tapbots.', links: [
+      { label: 'App Store', href: 'https://apps.apple.com/us/app/ivory-for-mastodon-by-tapbots/id6444602274' },
+      { label: 'tapbots.com', href: 'https://tapbots.com/ivory/' } ] }
   ];
   var ARROW_OUT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>';
   var ARROW_IN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
@@ -4673,6 +4703,14 @@ const READING_LIST = [
     a.insertAdjacentHTML('beforeend', l.internal ? ARROW_IN : ARROW_OUT);
     return a;
   }
+  var dock = root.querySelector('.dock');
+  function placeNotch() {
+    if (cur < 0) return;
+    var r = btns[cur].getBoundingClientRect(), pr = panel.getBoundingClientRect();
+    var x = Math.max(18, Math.min(pr.width - 18, r.left + r.width / 2 - pr.left));
+    panel.style.setProperty('--notch-x', x + 'px');
+  }
+  dock.addEventListener('scroll', placeNotch, { passive: true });
   function select(i, how) {
     if (i === cur) return;
     var t = TOOLS[i];
@@ -4688,22 +4726,104 @@ const READING_LIST = [
     var sp = document.createElement('span'); sp.textContent = t.desc;
     el.appendChild(b); el.appendChild(sp); fresh.appendChild(el);
     cards.replaceWith(fresh); cards = fresh;
-    var r = btns[i].getBoundingClientRect(), pr = panel.getBoundingClientRect();
-    panel.style.setProperty('--notch-x', (r.left + r.width / 2 - pr.left) + 'px');
+    placeNotch();
+    if (how !== 'none') {
+      var dr = dock.getBoundingClientRect(), br = btns[i].getBoundingClientRect();
+      if (br.left < dr.left + 8) dock.scrollBy({ left: br.left - dr.left - 8, behavior: 'smooth' });
+      else if (br.right > dr.right - 8) dock.scrollBy({ left: br.right - dr.right + 8, behavior: 'smooth' });
+    }
     if (how === 'hover') tick(i); else if (how === 'click') pop(i);
   }
   btns.forEach(function (b, i) {
-    b.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') select(i, 'hover'); });
+    b.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse' && !e.buttons && !dragging) select(i, 'hover'); });
     b.addEventListener('click', function () { audio(); if (i === cur) pop(i); else select(i, 'click'); });
     b.addEventListener('keydown', function (e) {
       var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
       if (!d) return;
       e.preventDefault();
-      var n = (i + d + btns.length) % btns.length;
-      btns[n].focus(); select(n, 'click');
+      var o = domOrder(), pos = o.indexOf(b), nb = o[(pos + d + o.length) % o.length], n = btns.indexOf(nb);
+      nb.focus(); select(n, 'click');
     });
   });
   window.addEventListener('resize', function () { var i = cur; cur = -1; if (i > -1) select(i, 'none'); });
+
+  /* ── reorder by dragging: the icon follows the pointer, the others slide aside. Mouse starts
+     after a few pixels, touch after a short press so a swipe still scrolls the bar. ── */
+  var dragging = null, suppress = false;
+  function domOrder() { return Array.prototype.slice.call(dock.querySelectorAll('.dock-btn')); }
+  dock.addEventListener('click', function (e) { if (suppress) { e.stopPropagation(); e.preventDefault(); } }, true);
+  dock.addEventListener('touchmove', function (e) { if (dragging) e.preventDefault(); }, { passive: false });
+  dock.addEventListener('contextmenu', function (e) { if (dragging) e.preventDefault(); });
+  btns.forEach(function (b, i) {
+    b.addEventListener('dragstart', function (e) { e.preventDefault(); });
+    b.addEventListener('pointerdown', function (e) {
+      if (e.button > 0 || dragging) return;
+      var sx = e.clientX, sy = e.clientY, lx = sx, started = false, grab = 0, timer = null, touch = e.pointerType !== 'mouse';
+      function layout(x) {
+        var dr = dock.getBoundingClientRect();
+        if (x < dr.left + 32) dock.scrollLeft -= 10; else if (x > dr.right - 32) dock.scrollLeft += 10;
+        b.style.transform = '';
+        var r = b.getBoundingClientRect(), center = r.left + r.width / 2, want = x - grab;
+        var others = domOrder().filter(function (o) { return o !== b; });
+        var before = null;
+        for (var k = 0; k < others.length; k++) {
+          var q = others[k].getBoundingClientRect();
+          if (want < q.left + q.width / 2) { before = others[k]; break; }
+        }
+        var cur0 = b.nextElementSibling;
+        while (cur0 && !cur0.classList.contains('dock-btn')) cur0 = cur0.nextElementSibling;
+        if (before !== cur0) {
+          var old = others.map(function (o) { return o.getBoundingClientRect().left; });
+          dock.insertBefore(b, before);
+          others.forEach(function (o, k) {
+            var dx = old[k] - o.getBoundingClientRect().left;
+            if (!dx) return;
+            o.style.transition = 'none'; o.style.transform = 'translateX(' + dx + 'px)';
+            o.getBoundingClientRect();
+            o.style.transition = ''; o.style.transform = '';
+          });
+          tick(btns.indexOf(b));
+          r = b.getBoundingClientRect(); center = r.left + r.width / 2;
+        }
+        b.style.transform = 'translateX(' + (want - center) + 'px) scale(1.12)';
+      }
+      function begin() {
+        started = true; dragging = b;
+        var r = b.getBoundingClientRect();
+        grab = lx - (r.left + r.width / 2);
+        b.classList.add('is-dragging'); dock.classList.add('is-sorting');
+        try { b.setPointerCapture(e.pointerId); } catch (err) {}
+        if (navigator.vibrate) try { navigator.vibrate(8); } catch (err) {}
+        layout(lx);
+      }
+      function mv(ev) {
+        lx = ev.clientX;
+        if (!started) {
+          if (touch) { if (Math.abs(ev.clientX - sx) > 8 || Math.abs(ev.clientY - sy) > 8) end(true); }
+          else if (Math.abs(ev.clientX - sx) > 5) begin();
+          return;
+        }
+        layout(lx);
+      }
+      function end(cancelOnly) {
+        clearTimeout(timer);
+        window.removeEventListener('pointermove', mv);
+        window.removeEventListener('pointerup', up);
+        window.removeEventListener('pointercancel', up);
+        if (!started) return;
+        started = false; dragging = null;
+        b.classList.remove('is-dragging'); dock.classList.remove('is-sorting');
+        b.style.transform = '';
+        suppress = true; setTimeout(function () { suppress = false; }, 0);
+        placeNotch();
+      }
+      function up() { end(); }
+      window.addEventListener('pointermove', mv);
+      window.addEventListener('pointerup', up);
+      window.addEventListener('pointercancel', up);
+      if (touch) timer = setTimeout(begin, 320);
+    });
+  });
   /* the About page is display:none until routed to, so place the notch when it appears */
   var first = function () { var r = btns[1].getBoundingClientRect(); if (r.width) { select(1, 'none'); return true; } return false; };
   if (!first() && 'IntersectionObserver' in window) {
@@ -4785,5 +4905,19 @@ const READING_LIST = [
   });
   btn.addEventListener('click', toggle);
   render();
+})();
+</script>
+<script>
+/* Experience accordion: the first roles are always shown, the rest open under the link. */
+(function () {
+  var btn = document.querySelector('.exp-toggle'), box = document.getElementById('exp-more');
+  if (!btn || !box) return;
+  var inner = box.firstElementChild;
+  btn.addEventListener('click', function () {
+    var open = btn.getAttribute('aria-expanded') !== 'true';
+    btn.setAttribute('aria-expanded', String(open));
+    box.classList.toggle('is-open', open);
+    if (open) inner.removeAttribute('inert'); else inner.setAttribute('inert', '');
+  });
 })();
 </script>
