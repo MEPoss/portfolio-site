@@ -668,7 +668,7 @@ h2.page-title {
 }
 .project-year { font-family: 'Geist Pixel', 'DM Sans', sans-serif; font-size: 1.15rem; color: var(--text-muted); padding-top: 0.15rem; }
 .project-thumb {
-  display: block; width: 100%; height: auto; aspect-ratio: 40 / 21; object-fit: cover; border-radius: 4px; border: 1px solid var(--divider);
+  display: block; width: 100%; aspect-ratio: 40 / 21; object-fit: cover; border-radius: 4px; border: 1px solid var(--divider);
 }
 .project-thumb-empty {
   background: repeating-linear-gradient(135deg, transparent 0 5px, var(--divider) 5px 6px);
@@ -682,10 +682,6 @@ a.project-row:hover .project-arrow { color: var(--accent); }
 .project-rule { border: 0; border-top: 1px solid var(--divider); margin: 1.25rem 0; }
 .project-note { font-size: 0.82rem; font-style: italic; color: var(--text-muted); margin: 0.5rem 0 0; padding-left: 7rem; }
 .project-note a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
-.ext-link { white-space: nowrap; }
-.ext-link .ext-arrow { margin-left: 0.2em; width: 0.85em; height: 0.85em; vertical-align: -0.05em; transition: transform 0.2s cubic-bezier(0.24, 1.34, 0.38, 1); }
-.ext-link:hover .ext-arrow, .ext-link:focus-visible .ext-arrow { transform: translate(0.15em, -0.15em); }
-@media (prefers-reduced-motion: reduce) { .ext-link .ext-arrow { transition: none; } }
 .project-body a { color: var(--accent); text-underline-offset: 3px; }
 @media (max-width: 760px) {
   .feature-card { flex-direction: column; }
@@ -926,177 +922,6 @@ svg.lucide {
 
 @media (max-width: 400px) {
   .readings-grid { grid-template-columns: 1fr; }
-}
-
-/* ── READINGS · "PRESS" STAGE (inspired by stripe.press) ───────── */
-#page-about { overflow-x: clip; }
-.press {
-  --press-bg: #0b0b0a;
-  --press-fg: #f1efe8;
-  --press-dim: rgba(241,239,232,0.38);
-  position: relative;
-  height: min(84vh, 720px);
-  min-height: 520px;
-  margin-top: 1rem;
-  /* break out of the text column to the full viewport width, like stripe.press */
-  width: 100vw; margin-left: calc(50% - 50vw);
-  border-radius: 0;
-  overflow: hidden;
-  background: var(--press-bg);
-  color: var(--press-fg);
-  isolation: isolate;
-  outline-offset: 4px;
-  user-select: none;
-  touch-action: pan-y;
-}
-.press-bg {
-  position: absolute; inset: -12%;
-  z-index: -1;
-  background-size: cover; background-position: center;
-  filter: blur(46px) saturate(1.25) brightness(0.55);
-  opacity: 0; transition: opacity 0.9s ease;
-}
-.press-bg.is-on { opacity: 1; }
-.press-grain {
-  position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.55) 100%);
-}
-.press-mono {
-  font-family: 'Geist Pixel', 'DM Sans', monospace;
-  font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
-}
-.press-top, .press-bottom {
-  position: absolute; left: 0; right: 0; z-index: 3;
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 1rem; padding: 0.9rem 1.2rem;
-}
-.press-top { top: 0; border-bottom: 1px solid rgba(241,239,232,0.22); }
-.press-bottom { bottom: 0; border-top: 1px solid rgba(241,239,232,0.22); }
-.press-top span:last-child, .press-bottom .press-count { opacity: 0.7; }
-
-/* title marquee */
-.press-marquee {
-  position: absolute; left: 0; right: 0; top: 3.2rem; z-index: 2;
-  height: 5.5rem; overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
-          mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
-}
-.press-track {
-  display: flex; align-items: center; height: 100%;
-  width: max-content; gap: 3.5rem; padding: 0 3.5rem;
-  transition: transform 0.9s cubic-bezier(0.22,1,0.36,1);
-  will-change: transform;
-}
-.press-title {
-  all: unset; box-sizing: border-box; cursor: pointer; white-space: nowrap;
-  font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
-  font-style: italic; font-size: clamp(1.8rem, 4.2vw, 3.1rem); letter-spacing: -0.02em;
-  color: var(--press-fg); opacity: 0.28;
-  transition: opacity 0.5s ease;
-}
-.press-title:hover { opacity: 0.6; }
-.press-title[aria-current="true"] { opacity: 1; }
-.press-title:focus-visible { outline: 1px dashed var(--press-fg); outline-offset: 6px; }
-
-/* the book */
-.press-scene {
-  position: absolute; inset: 0; z-index: 1;
-  display: flex; align-items: center; justify-content: center;
-  perspective: 1400px; padding-top: 5rem;
-}
-.press-float { animation: pressFloat 6s ease-in-out infinite; }
-@keyframes pressFloat { 50% { transform: translateY(-10px); } }
-.press-book {
-  --w: clamp(170px, 20vw, 290px);
-  --d: clamp(22px, 2.6vw, 32px);
-  position: relative; width: var(--w); aspect-ratio: 2 / 3;
-  transform-style: preserve-3d;
-  transform: rotateX(var(--rx, 4deg)) rotateY(var(--ry, -24deg));
-  transition: transform 0.45s cubic-bezier(0.22,1,0.36,1);
-}
-.press-face { position: absolute; inset: 0; backface-visibility: hidden; }
-.press-front {
-  transform: translateZ(calc(var(--d) / 2));
-  border-radius: 2px 5px 5px 2px; overflow: hidden;
-  background: linear-gradient(155deg, var(--cover-a, #3D5A80), var(--cover-b, #1B2A41));
-  box-shadow: 0 30px 60px -10px rgba(0,0,0,0.65), 0 8px 18px rgba(0,0,0,0.4);
-  display: flex; flex-direction: column; justify-content: space-between; padding: 1.1rem 1rem;
-}
-.press-front img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.press-front::after { /* spine crease + light sweep */
-  content: ''; position: absolute; inset: 0; pointer-events: none;
-  background:
-    linear-gradient(90deg, rgba(0,0,0,0.35) 0, rgba(255,255,255,0.12) 3%, rgba(0,0,0,0) 7%),
-    linear-gradient(115deg, rgba(255,255,255,0.14), rgba(255,255,255,0) 40%);
-}
-.press-ph-title {
-  position: relative; font-family: 'Iowan Old Style', Palatino, Georgia, serif;
-  font-style: italic; font-size: clamp(1rem, 1.7vw, 1.4rem); line-height: 1.15; color: #fff;
-}
-.press-ph-author { position: relative; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.75); }
-.press-back {
-  transform: rotateY(180deg) translateZ(calc(var(--d) / 2));
-  background: #1d1c19; border-radius: 5px 2px 2px 5px;
-}
-.press-spine {
-  width: var(--d); left: 0; transform-origin: left center;
-  transform: rotateY(-90deg); right: auto;
-  background: linear-gradient(90deg, var(--cover-b, #1B2A41), var(--cover-a, #3D5A80));
-  filter: brightness(0.8);
-}
-.press-pages {
-  width: var(--d); right: 0; left: auto; transform-origin: right center;
-  transform: rotateY(90deg);
-  background: repeating-linear-gradient(0deg, #f4f2ea 0 2px, #dcd9cf 2px 3px);
-}
-.press-pages, .press-spine { backface-visibility: visible; }
-.press-shadow {
-  position: absolute; left: 50%; bottom: 14%; width: 240px; height: 26px; margin-left: -120px;
-  background: radial-gradient(ellipse, rgba(0,0,0,0.55), transparent 70%); filter: blur(6px);
-  z-index: 0; pointer-events: none;
-}
-
-/* arrows + info */
-.press-nav { display: flex; gap: 0.4rem; }
-.press-btn {
-  all: unset; cursor: pointer; box-sizing: border-box;
-  padding: 0.25rem 0.5rem; border: 1px solid rgba(241,239,232,0.35);
-  font-family: 'Geist Pixel', 'DM Sans', monospace; font-size: 0.72rem; letter-spacing: 0.08em;
-  text-transform: uppercase; transition: background 0.2s, color 0.2s;
-}
-.press-btn:hover { background: var(--press-fg); color: var(--press-bg); }
-.press-btn:focus-visible { outline: 1px dashed var(--press-fg); outline-offset: 3px; }
-.press-info { display: flex; gap: 1.2rem; align-items: center; min-width: 0; }
-.press-info .is-reading { color: #e8a25f; }
-
-/* library index */
-.press-index { margin-top: 2.2rem; border-top: 1px solid var(--divider); }
-.press-index-head { padding: 0.8rem 0; color: var(--text-muted); }
-.press-row {
-  all: unset; box-sizing: border-box; cursor: pointer; width: 100%;
-  display: grid; grid-template-columns: 2.4rem 1fr auto 4.5rem; gap: 1rem; align-items: baseline;
-  padding: 0.9rem 0; border-top: 1px solid var(--divider); color: var(--text);
-  transition: padding-left 0.35s cubic-bezier(0.22,1,0.36,1), color 0.2s;
-}
-.press-row:hover, .press-row[aria-current="true"] { padding-left: 0.8rem; }
-.press-row[aria-current="true"] .press-row-title { color: var(--accent); }
-.press-row:focus-visible { outline: 1px dashed var(--text); outline-offset: 2px; }
-.press-row-n, .press-row-meta { color: var(--text-muted); font-family: 'Geist Pixel', 'DM Sans', monospace; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; }
-.press-row-title { font-family: 'Iowan Old Style', Palatino, Georgia, serif; font-style: italic; font-size: 1.35rem; letter-spacing: -0.01em; }
-.press-row-author { color: var(--text-muted); font-size: 0.82rem; }
-
-@media (max-width: 640px) {
-  .press { min-height: 480px; }
-  .press-info .press-year, .press-top span:last-child { display: none; }
-  .press-info { gap: 0.6rem; } .press-info > *, .press-count { white-space: nowrap; }
-  .press-info .press-status { font-size: 0; } .press-info .press-status::before { content: '●'; font-size: 0.72rem; }
-  .press-info .press-status:not(.is-reading)::before { opacity: 0.35; }
-  .press-row { grid-template-columns: 1.8rem 1fr 3.6rem; }
-  .press-row-author { display: none; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .press-float { animation: none; }
-  .press-track, .press-book, .press-bg { transition-duration: 0.01s; }
 }
 
 /* ── ABOUT PAGE ──────────────────────────────────────── */
@@ -2475,7 +2300,7 @@ body.game-active .footer-links a {
           <div class="project-main">
             <div class="project-head"><h4 class="project-title">Money Wallet App</h4><span class="pill pill-quiet">Abandoned</span></div>
             <p class="idea-card-meta">iOS app · 2025</p>
-            <p class="idea-card-body project-body">My own money app, started after testing 15+ that missed the mark. I abandoned the project and now use <a class="ext-link" href="https://getexpensa.com/" target="_blank" rel="noopener noreferrer">Expensa<svg class="lucide ext-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a> instead.</p>
+            <p class="idea-card-body project-body">My own money app, started after testing 15+ that missed the mark. I abandoned the project and now use <a href="https://getexpensa.com/" target="_blank" rel="noopener noreferrer">Expensa</a> instead.</p>
           </div>
           <span></span>
         </div></li>
@@ -2583,7 +2408,7 @@ body.game-active .footer-links a {
       <p class="readings-subtitle">What I've been reading.</p>
       <div id="readings-list"><p class="readings-loading" style="color:var(--text-muted);font-size:0.85rem;">Loading…</p></div>
 
-      <h3 class="about-section-title" style="margin-top:3.5rem;">Link belli</h3>
+      <h3 class="about-section-title" style="margin-top:3.5rem;">Cool links</h3>
       <p class="readings-subtitle">Things on the internet worth a visit.</p>
       <div class="ideas-grid">
         <a class="idea-card idea-card-link" href="https://noclip.website/" target="_blank" rel="noopener noreferrer" aria-label="Noclip dot website, opens in a new tab">
@@ -4237,184 +4062,91 @@ const READING_LIST = [
     return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
   }
 
-  function probe(url) {
-    return new Promise(res => {
-      const im = new Image();
-      im.onload = () => res(im.naturalWidth > 1 ? url : null);
-      im.onerror = () => res(null);
-      im.src = url;
-    });
+  function coverUrlFromIsbn(isbn) {
+    return `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(isbn)}-M.jpg`;
   }
 
-  async function resolveCover(book) {
-    if (book._cover !== undefined) return book._cover;
-    let url = book.cover || (book.isbn ? `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(book.isbn)}-L.jpg` : null);
-    if (!url) {
-      try {
-        const q = new URLSearchParams({ title: book.title, author: book.author, limit: '1' });
-        const r = await fetch(`https://openlibrary.org/search.json?${q}`);
-        const d = r.ok ? await r.json() : null;
-        const doc = d && d.docs && d.docs[0];
-        if (doc && doc.cover_i) url = `https://covers.openlibrary.org/b/id/${doc.cover_i}-L.jpg`;
-      } catch (e) { /* offline: placeholder stays */ }
-    }
-    book._cover = url ? await probe(url) : null;
-    return book._cover;
+  async function lookupCover(title, author) {
+    try {
+      const q = new URLSearchParams({ title, author, limit: '1' });
+      const res = await fetch(`https://openlibrary.org/search.json?${q}`);
+      if (!res.ok) return null;
+      const data = await res.json();
+      const doc = data.docs && data.docs[0];
+      if (doc && doc.cover_i) return `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`;
+    } catch (e) { /* offline, blocked, or no match - placeholder stays */ }
+    return null;
+  }
+
+  function applyCoverImage(coverEl, url) {
+    const probe = new Image();
+    probe.onload = () => {
+      if (probe.naturalWidth <= 1) return; // Open Library "no cover" stub
+      const img = document.createElement('img');
+      img.className = 'book-cover-img';
+      img.alt = '';
+      img.src = url;
+      coverEl.querySelectorAll('.book-cover-monogram, .book-cover-title, .book-cover-author')
+        .forEach(el => el.style.display = 'none');
+      coverEl.appendChild(img);
+    };
+    probe.src = url;
   }
 
   function renderReadings() {
     const container = document.getElementById('readings-list');
     if (!container) return;
-    const books = READING_LIST.slice();
-    const total = books.length;
-    const pad = n => String(n).padStart(2, '0');
-    let cur = 0;
+    container.innerHTML = '';
 
-    books.forEach((b, i) => {
-      const [a, c] = COVER_PALETTE[i % COVER_PALETTE.length];
-      b._a = a; b._b = c;
-    });
+    const byYear = {};
+    READING_LIST.forEach(b => { (byYear[b.year] = byYear[b.year] || []).push(b); });
+    const years = Object.keys(byYear).sort((a, b) => b - a);
 
-    container.innerHTML = `
-      <section class="press" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Books I've read. Use left and right arrow keys to browse.">
-        <div class="press-bg"></div><div class="press-bg"></div>
-        <div class="press-grain"></div>
-        <div class="press-top press-mono"><span>Library</span><span>[ ${pad(total)} books ]</span></div>
-        <div class="press-marquee" aria-hidden="false"><div class="press-track"></div></div>
-        <div class="press-scene">
-          <div class="press-shadow"></div>
-          <div class="press-float"><div class="press-book">
-            <div class="press-face press-front"></div>
-            <div class="press-face press-back"></div>
-            <div class="press-face press-spine"></div>
-            <div class="press-face press-pages"></div>
-          </div></div>
-        </div>
-        <div class="press-bottom press-mono">
-          <div class="press-info"><span class="press-author"></span><span class="press-status"></span><span class="press-year"></span></div>
-          <div class="press-nav"><button class="press-btn" data-dir="-1" aria-label="Previous book">[←]</button><button class="press-btn" data-dir="1" aria-label="Next book">[→]</button></div>
-          <span class="press-count"></span>
-        </div>
-        <p class="sr-only" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);"></p>
-      </section>
-      <div class="press-index">
-        <div class="press-index-head press-mono">[ Index ]</div>
-        ${books.map((b, i) => `
-          <button class="press-row" data-i="${i}">
-            <span class="press-row-n">${pad(i + 1)}</span>
-            <span><span class="press-row-title">${escapeHtml(b.title)}</span> <span class="press-row-author"> · ${escapeHtml(b.author)}</span></span>
-            <span class="press-row-meta">${b.status === 'reading' ? 'Reading' : 'Finished'}</span>
-            <span class="press-row-meta" style="text-align:right">${b.year}</span>
-          </button>`).join('')}
-      </div>`;
+    let colorIndex = 0;
+    years.forEach(year => {
+      const yearEl = document.createElement('h3');
+      yearEl.className = 'readings-year';
+      yearEl.textContent = year;
+      container.appendChild(yearEl);
 
-    const stage = container.querySelector('.press');
-    const track = stage.querySelector('.press-track');
-    const marquee = stage.querySelector('.press-marquee');
-    const bgs = stage.querySelectorAll('.press-bg');
-    const bookEl = stage.querySelector('.press-book');
-    const front = stage.querySelector('.press-front');
-    const live = stage.querySelector('[aria-live]');
-    const rows = container.querySelectorAll('.press-row');
-    let bgFlip = 0;
+      const grid = document.createElement('div');
+      grid.className = 'readings-grid';
+      grid.setAttribute('role', 'list');
+      container.appendChild(grid);
 
-    track.innerHTML = books.map((b, i) => `<button class="press-title" data-i="${i}" tabindex="-1">${escapeHtml(b.title)}</button>`).join('');
-    const titles = track.querySelectorAll('.press-title');
+      byYear[year].forEach(book => {
+        const [a, b] = COVER_PALETTE[colorIndex++ % COVER_PALETTE.length];
+        const isReading = book.status === 'reading';
+        const initial = (book.title.trim().charAt(0) || '?').toUpperCase();
 
-    function center() {
-      const t = titles[cur];
-      const x = marquee.clientWidth / 2 - (t.offsetLeft + t.offsetWidth / 2);
-      track.style.transform = `translateX(${x}px)`;
-    }
+        const card = document.createElement('article');
+        card.className = 'book-card';
+        card.setAttribute('role', 'listitem');
+        card.style.setProperty('--cover-a', a);
+        card.style.setProperty('--cover-b', b);
+        card.innerHTML = `
+          <div class="book-cover-wrap">
+            <div class="book-cover" aria-hidden="true">
+              <span class="book-cover-monogram">${escapeHtml(initial)}</span>
+              <span class="book-cover-title">${escapeHtml(book.title)}</span>
+              <span class="book-cover-author">${escapeHtml(book.author)}</span>
+            </div>
+          </div>
+          <h4 class="book-title">${escapeHtml(book.title)}</h4>
+          <p class="book-author">${escapeHtml(book.author)}</p>
+          <span class="book-status ${isReading ? 'is-reading' : 'is-finished'}">${isReading ? '<svg class="lucide lucide-lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg> Reading' : '<svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Finished'}</span>
+        `;
+        grid.appendChild(card);
 
-    function paintFront(b) {
-      front.style.setProperty('--cover-a', b._a);
-      front.style.setProperty('--cover-b', b._b);
-      stage.style.setProperty('--cover-a', b._a);
-      bookEl.style.setProperty('--cover-a', b._a);
-      bookEl.style.setProperty('--cover-b', b._b);
-      front.innerHTML = `<span class="press-ph-title">${escapeHtml(b.title)}</span><span class="press-ph-author">${escapeHtml(b.author)}</span>`;
-      const mine = b;
-      resolveCover(b).then(url => {
-        if (!url || books[cur] !== mine) return;
-        front.innerHTML = `<img alt="Cover of ${escapeHtml(b.title)}" src="${url}">`;
-        const bg = bgs[bgFlip ^= 1];
-        bgs.forEach(x => x.classList.remove('is-on'));
-        bg.style.backgroundImage = `url("${url}")`;
-        bg.classList.add('is-on');
+        const coverEl = card.querySelector('.book-cover');
+        const directUrl = book.cover || (book.isbn ? coverUrlFromIsbn(book.isbn) : null);
+        if (directUrl) {
+          applyCoverImage(coverEl, directUrl);
+        } else {
+          lookupCover(book.title, book.author).then(url => { if (url) applyCoverImage(coverEl, url); });
+        }
       });
-      if (b._cover === null) bgs.forEach(x => x.classList.remove('is-on'));
-    }
-
-    function go(i, dir) {
-      const next = (i + total) % total;
-      if (next === cur && dir === undefined) return;
-      dir = dir || (next >= cur ? 1 : -1);
-      cur = next;
-      const b = books[cur];
-      titles.forEach((t, k) => t.setAttribute('aria-current', String(k === cur)));
-      rows.forEach((r, k) => r.setAttribute('aria-current', String(k === cur)));
-      stage.querySelector('.press-author').textContent = b.author;
-      const st = stage.querySelector('.press-status');
-      st.textContent = b.status === 'reading' ? '[ Reading now ]' : '[ Finished ]';
-      st.className = 'press-status' + (b.status === 'reading' ? ' is-reading' : '');
-      stage.querySelector('.press-year').textContent = b.year;
-      stage.querySelector('.press-count').textContent = `${pad(cur + 1)} / ${pad(total)}`;
-      live.textContent = `${b.title}, ${b.author}`;
-      paintFront(b);
-      center();
-      if (!matchMedia('(prefers-reduced-motion: reduce)').matches && bookEl.animate) {
-        bookEl.animate(
-          [{ opacity: 0, translate: `${dir * 90}px 0`, filter: 'blur(6px)' }, { opacity: 1, translate: '0 0', filter: 'blur(0)' }],
-          { duration: 650, easing: 'cubic-bezier(0.22,1,0.36,1)' });
-      }
-    }
-
-    // input: buttons, titles, index rows, keys, swipe, wheel, pointer tilt
-    stage.querySelectorAll('.press-btn').forEach(btn => btn.addEventListener('click', () => go(cur + Number(btn.dataset.dir), Number(btn.dataset.dir))));
-    titles.forEach(t => t.addEventListener('click', () => go(Number(t.dataset.i))));
-    rows.forEach(r => r.addEventListener('click', () => {
-      go(Number(r.dataset.i));
-      stage.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
-    }));
-    stage.addEventListener('keydown', e => {
-      if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1, 1); }
-      if (e.key === 'ArrowLeft')  { e.preventDefault(); go(cur - 1, -1); }
     });
-
-    let sx = null;
-    stage.addEventListener('pointerdown', e => { if (!e.target.closest('button')) sx = e.clientX; });
-    window.addEventListener('pointerup', e => {
-      if (sx === null) return;
-      const dx = e.clientX - sx; sx = null;
-      if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
-    });
-
-    let wheelLock = 0;
-    stage.addEventListener('wheel', e => {
-      if (Math.abs(e.deltaX) < Math.abs(e.deltaY) || Date.now() - wheelLock < 450) return;
-      e.preventDefault(); wheelLock = Date.now();
-      go(cur + (e.deltaX > 0 ? 1 : -1), e.deltaX > 0 ? 1 : -1);
-    }, { passive: false });
-
-    stage.addEventListener('pointermove', e => {
-      if (e.pointerType === 'touch') return;
-      const r = stage.getBoundingClientRect();
-      const nx = (e.clientX - r.left) / r.width * 2 - 1;
-      const ny = (e.clientY - r.top) / r.height * 2 - 1;
-      bookEl.style.setProperty('--ry', `${-24 + nx * 26}deg`);
-      bookEl.style.setProperty('--rx', `${4 - ny * 12}deg`);
-    });
-    stage.addEventListener('pointerleave', () => {
-      bookEl.style.removeProperty('--ry'); bookEl.style.removeProperty('--rx');
-    });
-
-    window.addEventListener('resize', center);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(center);
-    // the About page is display:none until routed to, so re-center when it becomes visible
-    if ('IntersectionObserver' in window) new IntersectionObserver(es => es[0].isIntersecting && center()).observe(stage);
-
-    go(0, 1);
   }
 
   renderReadings();
