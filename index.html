@@ -620,44 +620,77 @@ h2.page-title {
 }
 
 
-/* Timeline */
-.timeline { list-style: none; margin: 0; padding: 0 0 0 1.75rem; position: relative; }
-.timeline::before {
-  content: ''; position: absolute; left: 0.3rem; top: 1rem; bottom: 0.5rem;
-  width: 2px; background: var(--divider);
-}
-.tl-group { position: relative; margin-bottom: 3rem; }
-.tl-dot {
-  position: absolute; left: -1.75rem; top: 0.75rem; width: 0.8rem; height: 0.8rem;
-  border-radius: 50%; background: var(--bg); border: 2px solid var(--accent);
-  box-shadow: 0 0 0 4px var(--bg);
-}
-.tl-group.is-now .tl-dot { background: var(--accent); }
-h3.tl-year {
+/* Side projects: "Try it now" features + a dated list */
+.ideas-intro { font-size: 1rem; color: var(--text-muted); margin: -1.5rem 0 3rem; max-width: 40rem; }
+.ideas-section-title {
+  display: flex; align-items: center; gap: 0.6rem;
   font-family: 'Geist Pixel', 'DM Sans', sans-serif; font-weight: normal;
-  font-size: clamp(1.6rem, 4vw, 2.2rem); line-height: 1.2; color: var(--text); margin: 0;
+  font-size: clamp(1.4rem, 3.4vw, 1.9rem); color: var(--text); margin: 0 0 1.5rem;
 }
-.tl-sub { font-size: 0.82rem; color: var(--text-muted); margin: 0.2rem 0 1.25rem; }
-.tl-note {
-  position: relative; margin: 0 0 3rem; font-size: 0.82rem; font-style: italic; color: var(--text-muted);
+.ideas-section-title::before {
+  content: ''; width: 0.7rem; height: 0.7rem; border-radius: 50%; background: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-dim); flex-shrink: 0;
 }
-.tl-note a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
-.tl-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1.25rem; }
-.tl-sub + .tl-cards { margin-top: 0; }
-.tl-cards .idea-card { padding: 0; gap: 0; overflow: hidden; height: 100%; }
-.idea-card-image {
-  display: block; width: 100%; height: auto; aspect-ratio: 40 / 21; object-fit: cover;
-  border-bottom: 1px solid var(--divider); background: var(--card-bg);
+.feature-list { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 4.5rem; }
+.feature-card {
+  display: flex; align-items: stretch; overflow: hidden;
+  background: var(--surface); border: 2px solid var(--accent); border-radius: 8px;
+  box-shadow: var(--shadow-sm); text-decoration: none; color: inherit;
 }
-.idea-card-content { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.25rem 1.4rem 1.4rem; flex: 1; }
-.tl-cards .idea-card-body { line-height: 1.6; }
-.idea-card.is-featured { border: 2px solid var(--accent); }
-.tl-cards .idea-card-cta {
-  display: inline-flex; align-items: center; gap: 0.4em; align-self: flex-start;
-  background: var(--accent); color: var(--accent-text); padding: 0.55rem 0.9rem;
-  border-radius: 4px; margin-top: auto;
+/* Each preview is cropped to the part of its cover that carries the message
+   (headline and app for brOS, the headline for Pantry, the finished run for
+   Takeout Fixer) and shown whole, never cropped again by the layout. If the
+   text beside it is taller, the panel keeps the cover's own edge colour
+   (--media-bg) so the picture and the space under it read as one. */
+.feature-media {
+  flex: 0 0 46%; align-self: stretch; background: var(--media-bg, var(--card-bg));
+  border-right: 1px solid var(--divider);
 }
-@media (max-width: 720px) { .tl-cards { grid-template-columns: 1fr; } }
+.feature-media[data-center] { display: flex; align-items: center; }
+.feature-media img { display: block; width: 100%; height: auto; aspect-ratio: 900 / 692; }
+.feature-body { display: flex; flex-direction: column; gap: 0.55rem; padding: 1.5rem 1.6rem; flex: 1; min-width: 0; }
+.feature-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.pill {
+  display: inline-block; font-size: 0.74rem; font-weight: 500; padding: 0.2rem 0.7rem; border-radius: 999px;
+  background: var(--tag-bg); color: var(--tag-text);
+}
+.pill-quiet { background: transparent; border: 1px solid var(--divider); color: var(--text-muted); }
+.feature-title { font-size: 1.25rem; font-weight: 600; color: var(--text); margin: 0.2rem 0 0; }
+.feature-cta {
+  display: inline-flex; align-items: center; gap: 0.45em; align-self: flex-start; margin-top: auto;
+  background: var(--accent); color: var(--accent-text); font-size: 0.85rem; font-weight: 600;
+  padding: 0.6rem 1rem; border-radius: 4px;
+}
+.project-list { list-style: none; margin: 0; padding: 0; }
+.project-row {
+  display: grid; grid-template-columns: 5.5rem 7.25rem 1fr 1.5rem; gap: 0 1.5rem; align-items: start;
+  padding: 1.1rem 0; text-decoration: none; color: inherit;
+}
+.project-year { font-family: 'Geist Pixel', 'DM Sans', sans-serif; font-size: 1.15rem; color: var(--text-muted); padding-top: 0.15rem; }
+.project-thumb {
+  display: block; width: 100%; aspect-ratio: 40 / 21; object-fit: cover; border-radius: 4px; border: 1px solid var(--divider);
+}
+.project-thumb-empty {
+  background: repeating-linear-gradient(135deg, transparent 0 5px, var(--divider) 5px 6px);
+}
+.project-main { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+.project-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
+.project-title { font-size: 1.05rem; font-weight: 600; color: var(--text); margin: 0; }
+.project-arrow { color: var(--text-muted); padding-top: 0.2rem; }
+a.project-row:hover .project-title { color: var(--accent); }
+a.project-row:hover .project-arrow { color: var(--accent); }
+.project-rule { border: 0; border-top: 1px solid var(--divider); margin: 1.25rem 0; }
+.project-note { font-size: 0.82rem; font-style: italic; color: var(--text-muted); margin: 0.5rem 0 0; padding-left: 7rem; }
+.project-note a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.project-body a { color: var(--accent); text-underline-offset: 3px; }
+@media (max-width: 760px) {
+  .feature-card { flex-direction: column; }
+  .feature-media { flex: none; border-right: 0; border-bottom: 1px solid var(--divider); }
+  .project-row { grid-template-columns: 5.5rem 1fr 1.5rem; row-gap: 0.6rem; }
+  .project-year { grid-column: 1 / -1; padding-top: 0; }
+  .project-thumb { grid-column: 1; }
+  .project-note { padding-left: 0; }
+}
 
 .idea-card-link {
   text-decoration: none;
@@ -2224,97 +2257,88 @@ body.game-active .footer-links a {
         Back
       </a>
       <h2 class="page-title">Side Projects</h2>
-      <ol class="timeline">
-      <li class="tl-group is-now">
-        <span class="tl-dot" aria-hidden="true"></span>
-        <h3 class="tl-year">2026</h3>
-        <p class="tl-sub">Now, and open to try</p>
-        <div class="tl-cards">
-          <a class="idea-card idea-card-link is-featured" href="#/ideas/bros" aria-label="brOS, a Mac browser that treats open tabs like files">
-            <img class="idea-card-image" src="images/ideas/bros.jpg" alt="brOS browser showing an Inbox with folders and page thumbnails" width="1200" height="630" loading="lazy" decoding="async">
-            <div class="idea-card-content">
-              <h4 class="idea-card-title">brOS</h4>
-              <p class="idea-card-meta">Open Source macOS App · 2026 – Present</p>
-              <p class="idea-card-body">A Mac browser that treats your open tabs like files in a Finder window. A fork of Search with an Inbox, nested folders, due dates and snapshot views, all driven from the keyboard.</p>
-              <span class="idea-card-cta">View project <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
-            </div>
-          </a>
-<a class="idea-card idea-card-link is-featured" href="#/ideas/google-takeout-fixer" aria-label="Google Photos Takeout Fixer, open source project">
-            <img class="idea-card-image" src="images/ideas/takeout-fixer.jpg" alt="Google Photos Takeout Fixer showing a finished run: 33,501 files processed" width="1200" height="630" loading="lazy" decoding="async">
-            <div class="idea-card-content">
-              <h4 class="idea-card-title">Google Photos Takeout Fixer</h4>
-              <p class="idea-card-meta">Open Source macOS &amp; Linux App · 2026 – Present</p>
-              <p class="idea-card-body">Built to migrate 50,000+ family photos into Immich without losing their real dates and locations. It reads Google Takeout’s JSON sidecars and writes the metadata back with exiftool. <strong>Key learning: the fix nobody had built yet is usually one weekend away.</strong></p>
-              <span class="idea-card-cta">View project <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
-            </div>
-          </a>
-<a class="idea-card idea-card-link is-featured" href="#/ideas/pantry" aria-label="Pantry, iOS grocery list and price tracker">
-            <img class="idea-card-image" src="images/ideas/pantry.jpg" alt="Pantry app icon on a ruled notebook page" width="1200" height="630" loading="lazy" decoding="async">
-            <div class="idea-card-content">
-              <h4 class="idea-card-title">Pantry</h4>
-              <p class="idea-card-meta">iOS app · 2026 – Present</p>
-              <p class="idea-card-body">A grocery list for iPhone that remembers what you paid and where, so the cheapest store is always one glance away. Local-first, built in SwiftUI and SwiftData. <strong>Key learning: accessibility is far cheaper to design in than to retrofit.</strong></p>
-              <span class="idea-card-cta">View project <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
-            </div>
-          </a>
-        </div>
-      </li>
-      <li class="tl-group">
-        <span class="tl-dot" aria-hidden="true"></span>
-        <h3 class="tl-year">2025</h3>
-        
-        <div class="tl-cards">
-          <article class="idea-card">
-            <div class="idea-card-content">
-              <h4 class="idea-card-title">Money Wallet App</h4>
-              <p class="idea-card-meta">iOS app · 2025 – Present</p>
-              <p class="idea-card-body">My own money app after testing 15+ that missed the mark. Prototyping an insight engine that spots spending patterns without judgment, <strong>because guilt isn’t a sustainable financial strategy.</strong></p>
-              
-            </div>
-          </article>
-<article class="idea-card">
-            <div class="idea-card-content">
-              <h4 class="idea-card-title">Immich Photo Server</h4>
-              <p class="idea-card-meta">RaspberryPi · 2025 – 2026</p>
-              <p class="idea-card-body">Self-hosted Google Photos alternative on a Raspberry Pi for 50,000+ family photos. <strong>Key learning: the best interface is invisible.</strong></p>
-              
-            </div>
-          </article>
-        </div>
-      </li>
-      <li class="tl-note">2018 – 2024: design work, <a href="#/#design">see the case studies</a></li>
-      <li class="tl-group">
-        <span class="tl-dot" aria-hidden="true"></span>
-        <h3 class="tl-year">2017</h3>
-        <div class="tl-cards">
-          <a class="idea-card idea-card-link" href="#/ideas/infostud" aria-label="Infostud App, Material Design redesign of the Sapienza Android app">
-            <img class="idea-card-image" src="images/ideas/infostud.jpg" alt="Redesigned Infostud Android app screens in an isometric layout" width="1200" height="630" loading="lazy" decoding="async">
-            <div class="idea-card-content">
-              <h4 class="idea-card-title">Infostud App</h4>
-              <p class="idea-card-meta">Open Source Android · 2017</p>
-              <p class="idea-card-body">Released to 120,000 Sapienza students. A mobile way into academic resources and student services. <strong>Key insight: clarity and minimal cognitive load come first at scale.</strong></p>
-              <span class="idea-card-cta">View project <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
-            </div>
-          </a>
-        </div>
-      </li>
-      <li class="tl-group">
-        <span class="tl-dot" aria-hidden="true"></span>
-        <h3 class="tl-year">2014</h3>
-        
-        <div class="tl-cards">
-          <a class="idea-card idea-card-link" href="#/ideas/lexi" aria-label="Lexi Vocabulary App, iOS game from 2014 (no longer active)">
-            <img class="idea-card-image" src="images/ideas/lexi.jpg" alt="Lexi app on an iPhone surrounded by colored circles" width="1200" height="630" loading="lazy" decoding="async">
-            <div class="idea-card-content">
-              <h4 class="idea-card-title">Lexi Vocabulary App</h4>
-              <p class="idea-card-meta">iOS Game · 2014 · No longer active</p>
-              <p class="idea-card-body">Gamified micro-learning, from research to App Store release. <strong>Key learning: streaks and rewards need careful adaptation for education.</strong></p>
-              <span class="idea-card-cta">View project <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
-            </div>
-          </a>
-        </div>
-      </li>
-      </ol>
+      <p class="ideas-intro">Things I build on my own time. Three are out now and free to try.</p>
+
+      <h3 class="ideas-section-title">Try it now</h3>
+      <div class="feature-list">
+        <a class="feature-card" href="#/ideas/bros" aria-label="brOS, a Mac browser that treats open tabs like files">
+          <div class="feature-media" style="--media-bg:#1c1c1c"><img src="images/ideas/bros-feature.jpg" alt="brOS browser: the headline "Your open pages, sorted like files" above an Inbox of folders" width="900" height="692" loading="lazy" decoding="async"></div>
+          <div class="feature-body">
+            <div class="feature-tags"><span class="pill">macOS</span><span class="pill">Open source</span></div>
+            <h4 class="feature-title">brOS</h4>
+            <p class="idea-card-meta">2026 – Present</p>
+            <p class="idea-card-body">A Mac browser that treats your open tabs like files in a Finder window. A fork of Search with an Inbox, nested folders, due dates and snapshot views, all driven from the keyboard.</p>
+            <span class="feature-cta">Try it <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+          </div>
+        </a>
+        <a class="feature-card" href="#/ideas/google-takeout-fixer" aria-label="Google Photos Takeout Fixer, open source project">
+          <div class="feature-media" data-center style="--media-bg:#fefefe"><img src="images/ideas/takeout-feature.jpg" alt="Google Photos Takeout Fixer after a finished run: 33,501 files processed" width="900" height="692" loading="lazy" decoding="async"></div>
+          <div class="feature-body">
+            <div class="feature-tags"><span class="pill">macOS &amp; Linux</span><span class="pill">Open source</span></div>
+            <h4 class="feature-title">Google Photos Takeout Fixer</h4>
+            <p class="idea-card-meta">2026 – Present</p>
+            <p class="idea-card-body">Built to migrate 50,000+ family photos into Immich without losing their real dates and locations. It reads Google Takeout’s JSON sidecars and writes the metadata back with exiftool. <strong>Key learning: the fix nobody had built yet is usually one weekend away.</strong></p>
+            <span class="feature-cta">Try it <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+          </div>
+        </a>
+        <a class="feature-card" href="#/ideas/pantry" aria-label="Pantry, iOS grocery list and price tracker">
+          <div class="feature-media" style="--media-bg:#f4f5f0"><img src="images/ideas/pantry-feature.jpg" alt="Pantry: Your list. Your prices. One page. Grocery list and price tracker for iOS" width="900" height="692" loading="lazy" decoding="async"></div>
+          <div class="feature-body">
+            <div class="feature-tags"><span class="pill">iOS</span></div>
+            <h4 class="feature-title">Pantry</h4>
+            <p class="idea-card-meta">2026 – Present</p>
+            <p class="idea-card-body">A grocery list for iOS that remembers what you paid and where, so the cheapest store is always one glance away. Local-first, built in SwiftUI and SwiftData. <strong>Key learning: accessibility is far cheaper to design in than to retrofit.</strong></p>
+            <span class="feature-cta">Try it <svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+          </div>
+        </a>
+      </div>
+
+      <ul class="project-list">
+        <li><div class="project-row">
+          <span class="project-year">2025</span>
+          <span class="project-thumb project-thumb-empty" aria-hidden="true"></span>
+          <div class="project-main">
+            <div class="project-head"><h4 class="project-title">Money Wallet App</h4><span class="pill pill-quiet">Abandoned</span></div>
+            <p class="idea-card-meta">iOS app · 2025</p>
+            <p class="idea-card-body project-body">My own money app, started after testing 15+ that missed the mark. I abandoned the project and now use <a href="https://getexpensa.com/" target="_blank" rel="noopener noreferrer">Expensa</a> instead.</p>
+          </div>
+          <span></span>
+        </div></li>
+        <li><div class="project-row">
+          <span class="project-year">2025</span>
+          <span class="project-thumb project-thumb-empty" aria-hidden="true"></span>
+          <div class="project-main">
+            <div class="project-head"><h4 class="project-title">Immich Photo Server</h4></div>
+            <p class="idea-card-meta">RaspberryPi · 2025 – 2026</p>
+            <p class="idea-card-body project-body">Self-hosted Google Photos alternative on a Raspberry Pi for 50,000+ family photos. <strong>Key learning: the best interface is invisible.</strong></p>
+          </div>
+          <span></span>
+        </div></li>
+      </ul>
+      <p class="project-note">2018 – 2024: design work, <a href="#/#design">see the case studies</a></p>
+      <hr class="project-rule">
+      <ul class="project-list">
+        <li><a class="project-row" href="#/ideas/infostud" aria-label="Infostud App, Material Design redesign of the Sapienza Android app">
+          <span class="project-year">2017</span>
+          <img class="project-thumb" src="images/ideas/infostud.jpg" alt="" width="1200" height="630" loading="lazy" decoding="async">
+          <div class="project-main">
+            <div class="project-head"><h4 class="project-title">Infostud App</h4></div>
+            <p class="idea-card-meta">Open Source Android · 2017</p>
+            <p class="idea-card-body project-body">Released to 120,000 Sapienza students. A mobile way into academic resources and student services. <strong>Key insight: clarity and minimal cognitive load come first at scale.</strong></p>
+          </div>
+          <span class="project-arrow" aria-hidden="true"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+        </a></li>
+        <li><a class="project-row" href="#/ideas/lexi" aria-label="Lexi Vocabulary App, iOS game from 2014 (no longer active)">
+          <span class="project-year">2014</span>
+          <img class="project-thumb" src="images/ideas/lexi.jpg" alt="" width="1200" height="630" loading="lazy" decoding="async">
+          <div class="project-main">
+            <div class="project-head"><h4 class="project-title">Lexi Vocabulary App</h4></div>
+            <p class="idea-card-meta">iOS Game · 2014 · No longer active</p>
+            <p class="idea-card-body project-body">Gamified micro-learning, from research to App Store release. <strong>Key learning: streaks and rewards need careful adaptation for education.</strong></p>
+          </div>
+          <span class="project-arrow" aria-hidden="true"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+        </a></li>
+      </ul>
           </div>
 
   </div>
@@ -2330,11 +2354,6 @@ body.game-active .footer-links a {
 
       <div class="about-grid">
         <div class="about-card">
-          <div class="about-avatar-row" aria-hidden="true">
-            <div class="av av-pixel"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg></div>
-            <div class="av av-cartoon"><svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="15" r="4"/><circle cx="18" cy="15" r="4"/><path d="M14 15a2 2 0 0 0-2-2 2 2 0 0 0-2 2"/><path d="M2.5 13 5 7c.7-1.3 1.4-2 3-2"/><path d="M21.5 13 19 7c-.7-1.3-1.5-2-3-2"/></svg></div>
-            <div class="av av-photo" style="color:#C4DDD0;font-weight:600;background:#4A7C5F;">U</div>
-          </div>
           <div class="about-bio">
             <p>I'm a Product Designer based in Italy 🇮🇹, passionate about turning complexity into clarity.</p>
             <p>I design digital experiences that bridge product, business, and technology. From empowering users through thoughtful workflows to creating playful, engaging interfaces inspired by games and space.</p>
@@ -2353,9 +2372,9 @@ body.game-active .footer-links a {
             </div>
             <div class="experience-item">
               <div class="experience-role">Co-Lead Designer</div>
-              <div class="experience-company">Digital School Register</div>
+              <div class="experience-company">Ars Digitalia</div>
               <div class="experience-period">Apr 2021 - Jul 2021 · Italy</div>
-              <div class="experience-desc">Modernized Italy's education infrastructure, achieving 95% adoption among 3,000+ teachers across 50 schools.</div>
+              <div class="experience-desc">Digital School Register: modernized Italy's education infrastructure, achieving 95% adoption among 3,000+ teachers across 50 schools.</div>
             </div>
           </div>
         </div>
@@ -3118,7 +3137,7 @@ function navigate() {
   document.body.classList.toggle('page-active', !isHome);
   const EMBED_PAGES = {
     'page-google-takeout-fixer': { title: 'Google Photos Takeout Fixer', icon: '/takeout-fixer/icon-256.png' },
-    'page-pantry': { title: 'Pantry: Grocery List and Price Tracker for iPhone', icon: '/pantry/icon-bot-256.png', frameTitle: true },
+    'page-pantry': { title: 'Pantry: Grocery List and Price Tracker for iOS', icon: '/pantry/icon-bot-256.png', frameTitle: true },
     'page-lexi': { title: 'Lexi: gioca con il tuo dizionario', icon: '/lexi/icon-256.png', frameTitle: true },
     'page-infostud': { title: 'InfoStud Material (re)Design', icon: '/infostud/icon-256.png', frameTitle: true },
     'page-bros': { title: 'brOS: the browser that treats your pages like files', icon: '/bros/icon-256.png', frameTitle: true },
