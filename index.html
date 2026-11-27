@@ -603,6 +603,7 @@ h1.home-title {
   margin: 0.5rem auto 0;
   max-width: 720px;
   padding: 0 1.5rem;
+  text-align: center;
   color: var(--bg); /* invisible on purpose - same as the page background */
   user-select: text;
 }
@@ -1255,22 +1256,32 @@ a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
    cover the ones behind it and you can slide from one to the next without leaving. */
 .crate-item {
   all: unset; box-sizing: border-box; cursor: pointer; position: absolute; left: 0; top: 50%; width: 72%; aspect-ratio: 1563 / 1412;
-  --d: 0; --lift: 0px; --z: 0px; --tilt: 0deg;
+  --d: 0; --lift: 0px; --z: 0px; --tilt: 0deg; --x: 0%;
   perspective: 900px;
   transform: translateY(calc(-50% - var(--d) * 17px));
   z-index: calc(10 - var(--d));
-  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
 }
 .crate-card {
   display: block; position: absolute; inset: 0; pointer-events: none; transform-origin: 50% 100%;
-  transform: translateY(calc(0px - var(--lift))) translateZ(var(--z)) rotateX(var(--tilt));
+  transform: translateX(var(--x)) translateY(calc(0px - var(--lift))) translateZ(var(--z)) rotateX(var(--tilt));
   transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 /* at rest every sleeve is a flat square in the stack; the motion only happens on hover.
    Any record you point at, in front or behind, leans toward you top edge first; the ones behind also rise clear of the stack. */
 .crate-item[data-front]:hover, .crate-item[data-front]:focus-visible { --z: 30px; --tilt: -10deg; }
 .crate-item:not([data-front]):hover, .crate-item:not([data-front]):focus-visible { --lift: 32px; --z: 30px; --tilt: -10deg; }
+/* switching: the front sleeve slides out to the right, then tucks behind the pile */
+.crate-item.is-leaving { --x: 100%; }
+/* a smooth, unhurried pace while records are being switched: soft easing, no bounce */
+#now-card.is-switching .crate-vinyl { transition-duration: 0.34s; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+#now-card.is-switching .crate-item, #now-card.is-switching .crate-card { transition-duration: 0.55s; transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1); }
+.crate-item.is-leaving .crate-card, #now-card.is-switching .crate-item.is-leaving .crate-card { transition-duration: 0.4s; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+.about-listen { position: relative; z-index: 2; }
+.crate { overflow-x: clip; }  /* the sleeve slides out past the edge of the card and is cut there */
 .crate-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+/* only the first few records show in the stack; the rest wait behind the last visible one */
+.crate-item[data-hidden] { opacity: 0; pointer-events: none; }
 .record-sleeve {
   display: block; position: relative; width: 100%; height: 100%; object-fit: cover; border-radius: 3px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
@@ -1303,8 +1314,22 @@ a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
 .now-text { font-size: 1.05rem; line-height: 1.75; color: var(--text-muted); margin: 0; min-height: 5.3em; }
 .now-text a { color: var(--text); font-weight: 500; text-decoration: underline dotted; text-decoration-thickness: 2px; text-underline-offset: 5px; }
 .now-text a:hover { color: var(--accent); }
+.crate-controls { display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; }
+.crate-nav {
+  all: unset; box-sizing: border-box; cursor: pointer; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid var(--divider); color: var(--text-muted); background: var(--surface); transition: border-color 0.15s, color 0.15s;
+}
+.crate-nav svg { width: 16px; height: 16px; }
+.crate-nav:hover, .crate-nav:focus-visible { border-color: var(--accent); color: var(--accent); }
+.crate-lucky {
+  all: unset; box-sizing: border-box; cursor: pointer; display: inline-flex; align-items: center; gap: 0.45rem; align-self: center; margin-top: 0.7rem;
+  padding: 0.25rem 0.6rem; border-radius: 999px; font-size: 0.8rem; color: var(--text-muted); transition: color 0.15s;
+}
+.crate-lucky svg { width: 14px; height: 14px; }
+.crate-lucky:hover, .crate-lucky:focus-visible { color: var(--accent); }
+.crate-lucky:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .play-btn {
-  all: unset; box-sizing: border-box; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem;
+  all: unset; box-sizing: border-box; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-width: 8.25rem;
   padding: 0.5rem 0.95rem 0.5rem 0.75rem; border: 1px solid var(--divider); border-radius: 999px; font-size: 0.85rem; font-weight: 500;
   color: var(--text); background: var(--surface); transition: border-color 0.15s, color 0.15s;
 }
@@ -1355,8 +1380,11 @@ a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
 .st-arrow { width: 24%; left: 14%; top: 50%; transform: rotate(-8deg); }
 .st-ball { width: 28%; left: 8%; top: 8%; transform: rotate(10deg); }
 .st-eye { width: 46%; right: -8%; top: 60%; transform: rotate(-6deg); }
-.about-row { display: grid; grid-template-columns: 0.8fr 1.4fr; gap: 1.5rem; margin-bottom: 3.5rem; align-items: start; }
-.about-row .now-card { max-width: none; margin: 0; padding: 1.25rem 1.25rem 1.5rem; }
+.about-row { display: grid; grid-template-columns: 0.8fr 1.4fr; gap: 1.5rem; margin-bottom: 3.5rem; align-items: stretch; }
+.about-row .now-card { max-width: none; margin: 0; padding: 1.25rem 1.25rem 1.5rem; display: flex; flex-direction: column; }
+.about-row .crate { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; }
+.about-row .crate-controls { justify-content: center; margin-top: auto; padding-top: 1rem; }
+.about-row .now-text { margin-bottom: 0.25rem; }
 .about-row .crate { padding-top: 2.6rem; margin-bottom: 1rem; }
 .about-row .now-text { font-size: 0.95rem; line-height: 1.7; }
 .exp-card { padding: 0.75rem; border-radius: 16px; }
@@ -2681,21 +2709,15 @@ body.game-active .footer-links a {
       <div class="about-row">
       <div class="now-card about-listen" id="now-card">
         <div class="crate">
-          <div class="crate-inner">
-            <button class="crate-item" type="button" data-i="0" aria-label="John Butler Trio, Grand National"><span class="crate-card">
-              <span class="crate-vinyl" aria-hidden="true" style="--label: url('images/music/grand-national.jpg')"><span class="crate-disc"><span class="record-label"></span></span></span>
-              <img class="record-sleeve" src="images/music/grand-national.jpg" alt="" width="900" height="813" loading="lazy" decoding="async">
-            </span></button>
-            <button class="crate-item" type="button" data-i="1" aria-label="Zero 7, When It Falls"><span class="crate-card">
-              <span class="crate-vinyl" aria-hidden="true" style="--label: url('images/music/when-it-falls.jpg')"><span class="crate-disc"><span class="record-label"></span></span></span>
-              <img class="record-sleeve" src="images/music/when-it-falls.jpg" alt="" width="600" height="600" loading="lazy" decoding="async">
-            </span></button>
-            <button class="crate-item is-empty" type="button" data-i="2" aria-label="Empty sleeve"><span class="crate-card"><span class="record-sleeve"></span></span></button>
-            <button class="crate-item is-empty" type="button" data-i="3" aria-label="Empty sleeve"><span class="crate-card"><span class="record-sleeve"></span></span></button>
-          </div>
+          <div class="crate-inner" id="crate-inner"></div>
         </div>
         <p class="now-text" aria-live="polite"></p>
-        <button class="play-btn" type="button" aria-pressed="false"><svg class="play-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="pause-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg><span class="play-label">Play preview</span></button>
+        <div class="crate-controls">
+          <button class="crate-nav crate-prev" type="button" aria-label="Previous record"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+          <button class="play-btn" type="button" aria-pressed="false"><svg class="play-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="pause-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg><span class="play-label">Play preview</span></button>
+          <button class="crate-nav crate-next" type="button" aria-label="Next record"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+        <button class="crate-lucky" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22"/><path d="M2 6h1.972a4 4 0 0 1 3.6 2.2"/><path d="M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45"/></svg><span>I'm feeling lucky</span></button>
       </div>
         <div class="about-card exp-card">
           <div class="exp-list">
@@ -2919,7 +2941,7 @@ body.game-active .footer-links a {
         <h1 class="case-title">Digital School Register</h1>
         <p class="case-tagline">Modernizing Italy's education infrastructure while achieving 95% adoption among 3,000+ teachers.</p>
         <div class="case-meta-grid" role="list">
-          <div class="case-meta-item" role="listitem"><div class="case-meta-label">My Role</div><div class="case-meta-value">Co-Lead Designer</div></div>
+          <div class="case-meta-item" role="listitem"><div class="case-meta-label">My Role</div><div class="case-meta-value">UX/UI Designer, co-leading with a senior designer</div></div>
           <div class="case-meta-item" role="listitem"><div class="case-meta-label">Duration</div><div class="case-meta-value">Apr - Jul 2021</div></div>
           <div class="case-meta-item" role="listitem"><div class="case-meta-label">Platform</div><div class="case-meta-value">iOS, Android, Web</div></div>
           <div class="case-meta-item" role="listitem"><div class="case-meta-label">Collaborators</div><div class="case-meta-value">Senior Designer, Ministry Reps, 20 School Directors, 3,000+ Teachers</div></div>
@@ -2928,7 +2950,7 @@ body.game-active .footer-links a {
 
       <section class="case-section" aria-labelledby="reg-overview">
         <h2 id="reg-overview" class="section-heading">Overview</h2>
-        <p class="body-text">The Digital School Register transforms a legacy government system into a modern, accessible platform serving 3,000+ teachers across 50 schools. As co-lead designer, I balanced strict regulatory requirements with intuitive user experience to achieve unprecedented adoption rates.</p>
+        <p class="body-text">The Digital School Register transforms a legacy government system into a modern, accessible platform serving 3,000+ teachers across 50 schools. Together with a senior designer, I balanced strict regulatory requirements with intuitive user experience to achieve unprecedented adoption rates.</p>
       </section>
 
       <section class="case-section" aria-labelledby="reg-problem">
@@ -4417,14 +4439,14 @@ document.addEventListener('click', e => {
 // cover online (Open Library, free/no key) by title + author. If nothing
 // is found, a generated placeholder cover is shown instead - no broken images.
 const READING_LIST = [
-  { title: 'Tomorrow, and Tomorrow, and Tomorrow', author: 'Gabrielle Zevin', year: 2026, status: 'reading',  isbn: '' },
+  { title: 'Tomorrow, and Tomorrow, and Tomorrow', author: 'Gabrielle Zevin', year: 2026, status: 'reading',  isbn: '', cover: 'images/books/tomorrow.jpg' },
   { title: 'Ready Player One',                     author: 'Ernest Cline',    year: 2026, status: 'finished', isbn: '9780307887436' },
   { title: 'La nave di Teseo',                     author: 'J.J. Abrams',     year: 2026, status: 'finished', isbn: '', cover: 'https://covers.openlibrary.org/b/id/12927305-L.jpg' },
-  { title: 'The Unseen World',                      author: 'Liz Moore',       year: 2026, status: 'finished', isbn: '' },
+  { title: 'The Unseen World',                      author: 'Liz Moore',       year: 2026, status: 'finished', isbn: '', cover: 'images/books/unseen-world.jpg' },
   { title: "L'uomo di Marte",                      author: 'Andy Weir',       year: 2026, status: 'finished', isbn: '9780553418026' },
   { title: 'Qualcosa è andato storto',              author: 'Riccardo Luna',   year: 2026, status: 'finished', isbn: '9788828218333' },
-  { title: 'The Creative Act',                      author: 'Rick Rubin',      year: 2026, status: 'finished', isbn: '' },
-  { title: 'Fire Exit',                             author: 'Morgan Talty',    year: 2026, status: 'finished', isbn: '' },
+  { title: 'The Creative Act',                      author: 'Rick Rubin',      year: 2026, status: 'finished', isbn: '', cover: 'images/books/creative-act.jpg' },
+  { title: 'Fire Exit',                             author: 'Morgan Talty',    year: 2026, status: 'finished', isbn: '', cover: 'images/books/fire-exit.jpg' },
 ];
 
 (function() {
@@ -4947,21 +4969,49 @@ const READING_LIST = [
 /* ══ Listening crate ══════════════════════════════════════
    Records are stacked; the one in front is "on the turntable". Click one behind and
    the stack reorders so it comes forward; click the front one (or the button) to play
-   or pause its preview. The preview is the free 30-second clip Apple Music publishes,
-   looked up when you first press play so the link never goes stale. */
+   or pause its preview, and use the arrows to flip through the rest. The preview is the
+   free 30-second clip Apple Music publishes, looked up when you first press play so the
+   link never goes stale. */
 (function () {
   var card = document.getElementById('now-card');
-  if (!card) return;
-  var items = Array.prototype.slice.call(card.querySelectorAll('.crate-item'));
+  var inner = document.getElementById('crate-inner');
+  if (!card || !inner) return;
   var text = card.querySelector('.now-text');
   var btn = card.querySelector('.play-btn');
   var label = btn.querySelector('.play-label');
-  var order = items.map(function (_, i) { return i; });
+  var APPLE = 'https://music.apple.com/search?term=';
+  var VISIBLE = 4;
+  /* q: what to search; match: exact track name to preview; album: shown after "from the album" (omit for singles) */
   var RECORDS = [
-    { q: 'John Butler Trio Funky Tonight', track: 'Funky Tonight', album: /Grand National/i, text: 'Currently listening to <a href="https://music.apple.com/search?term=John%20Butler%20Trio%20Funky%20Tonight" target="_blank" rel="noopener noreferrer">Funky Tonight</a> by <a href="https://music.apple.com/search?term=John%20Butler%20Trio" target="_blank" rel="noopener noreferrer">John Butler Trio</a> from the album <a href="https://music.apple.com/search?term=John%20Butler%20Trio%20Grand%20National" target="_blank" rel="noopener noreferrer">Grand National</a>.' },
-    { q: 'Zero 7 Speed Dial No. 2', track: 'Speed Dial No. 2', album: /When It Falls/i, text: 'Currently listening to <a href="https://www.youtube.com/watch?v=5ru1HXrIeWM&amp;t=134s" target="_blank" rel="noopener noreferrer">Speed Dial No. 2</a> by <a href="https://music.apple.com/search?term=Zero%207" target="_blank" rel="noopener noreferrer">Zero 7</a> from the album <a href="https://music.apple.com/search?term=Zero%207%20When%20It%20Falls" target="_blank" rel="noopener noreferrer">When It Falls</a>.' }
+    { track: 'Funky Tonight', artist: 'John Butler Trio', album: 'Grand National', cover: 'images/music/grand-national.jpg', w: 900, h: 813, q: 'John Butler Trio Funky Tonight', albumRe: /Grand National/i },
+    { track: 'Speed Dial No. 2', artist: 'Zero 7', album: 'When It Falls', cover: 'images/music/when-it-falls.jpg', q: 'Zero 7 Speed Dial No. 2', albumRe: /When It Falls/i, trackHref: 'https://www.youtube.com/watch?v=5ru1HXrIeWM&t=134s' },
+    { track: 'You Get Me So High', artist: 'The Rumpled', cover: 'images/music/rumpled.jpg', q: 'You Get Me So High The Rumpled', albumRe: /Single/i },
+    { track: 'Into You', artist: 'The Cinematic Orchestra', album: 'Ma Fleur', cover: 'images/music/into-you.jpg', q: 'Into You The Cinematic Orchestra', albumRe: /Ma Fleur/i },
+    { track: 'Philadelphia', artist: 'Peter Gabriel', album: 'Scratch My Back', cover: 'images/music/philadelphia.jpg', q: 'Philadelphia Peter Gabriel', albumRe: /^Scratch My Back$/i },
+    { track: 'Pulaski at Night', artist: 'Andrew Bird', album: 'I Want to See Pulaski at Night', cover: 'images/music/pulaski.jpg', q: 'Pulaski at Night Andrew Bird', albumRe: /Pulaski/i },
+    { track: 'Brother', artist: 'Matt Corby', album: 'Into the Flame', cover: 'images/music/brother.jpg', q: 'Brother Matt Corby', match: 'Brother (Live From Sydney ABC NYE 2025)', albumRe: /Sydney/i },
+    { track: 'The Cave', artist: 'Mumford & Sons', album: 'Sigh No More', cover: 'images/music/the-cave.jpg', q: 'The Cave Mumford & Sons', albumRe: /^Sigh No More$/i },
+    { track: 'Norwegian Wood (This Bird Has Flown)', artist: 'The Beatles', album: 'Rubber Soul', cover: 'images/music/norwegian-wood.jpg', q: 'Norwegian Wood Beatles', albumRe: /^Rubber Soul$/i },
+    { track: 'World Spins Madly On', artist: 'The Weepies', album: 'Say I Am You', cover: 'images/music/world-spins.jpg', q: 'The World Spins Madly On The Weepies', albumRe: /Say I Am You/i },
+    { track: 'New Slang', artist: 'The Shins', album: 'Oh, Inverted World', cover: 'images/music/new-slang.jpg', q: 'New Slang The Shins', albumRe: /^Oh, Inverted World$/i }
   ];
-  var EMPTY = 'An empty sleeve, for the next record.';
+  function esc(x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+  function link(href, txt) { return '<a href="' + esc(href) + '" target="_blank" rel="noopener noreferrer">' + esc(txt) + '</a>'; }
+  RECORDS.forEach(function (r) {
+    r.text = 'Currently listening to ' + link(r.trackHref || APPLE + encodeURIComponent(r.artist + ' ' + r.track), r.track) +
+      ' by ' + link(APPLE + encodeURIComponent(r.artist), r.artist) +
+      (r.album ? ' from the album ' + link(APPLE + encodeURIComponent(r.artist + ' ' + r.album), r.album) : '') + '.';
+  });
+  var items = RECORDS.map(function (r, i) {
+    var b = document.createElement('button');
+    b.className = 'crate-item'; b.type = 'button'; b.setAttribute('data-i', i);
+    b.setAttribute('aria-label', r.artist + ', ' + r.track);
+    b.innerHTML = '<span class="crate-card"><span class="crate-vinyl" aria-hidden="true" style="--label: url(\'' + r.cover + '\')"><span class="crate-disc"><span class="record-label"></span></span></span>' +
+      '<img class="record-sleeve" src="' + r.cover + '" alt="" width="' + (r.w || 600) + '" height="' + (r.h || 600) + '" loading="' + (i < VISIBLE ? 'eager' : 'lazy') + '" decoding="async"></span>';
+    inner.appendChild(b);
+    return b;
+  });
+  var order = items.map(function (_, i) { return i; });
   var previews = [], loading = [], audios = [];
   function playing() { return card.hasAttribute('data-playing'); }
   function setPlaying(v) {
@@ -4973,22 +5023,22 @@ const READING_LIST = [
   function render() {
     items.forEach(function (it, i) {
       var d = order.indexOf(i);
-      it.style.setProperty('--d', d);
+      it.style.setProperty('--d', Math.min(d, VISIBLE - 1));
       if (d === 0) it.setAttribute('data-front', ''); else it.removeAttribute('data-front');
+      if (d >= VISIBLE) { it.setAttribute('data-hidden', ''); it.tabIndex = -1; } else { it.removeAttribute('data-hidden'); it.tabIndex = 0; }
     });
-    var front = order[0];
-    text.innerHTML = RECORDS[front] ? RECORDS[front].text : EMPTY;
-    btn.hidden = !RECORDS[front];
+    text.innerHTML = RECORDS[order[0]].text;
   }
   function lookup(i) {
     if (previews[i] || loading[i]) return Promise.resolve(previews[i] || null);
     loading[i] = true;
-    var rec = RECORDS[i];
-    return fetch('https://itunes.apple.com/search?term=' + encodeURIComponent(rec.q) + '&entity=song&limit=10')
+    var rec = RECORDS[i], name = rec.match || rec.track;
+    return fetch('https://itunes.apple.com/search?term=' + encodeURIComponent(rec.q) + '&entity=song&limit=15')
       .then(function (r) { return r.json(); })
       .then(function (d) {
-        var hit = (d.results || []).filter(function (x) { return x.trackName === rec.track && rec.album.test(x.collectionName || ''); })[0]
-               || (d.results || []).filter(function (x) { return x.trackName === rec.track; })[0];
+        var res = d.results || [];
+        var hit = res.filter(function (x) { return x.trackName === name && rec.albumRe.test(x.collectionName || ''); })[0]
+               || res.filter(function (x) { return x.trackName === name; })[0];
         previews[i] = hit && hit.previewUrl || null;
         return previews[i];
       })
@@ -4996,14 +5046,14 @@ const READING_LIST = [
       .then(function (u) { loading[i] = false; return u; });
   }
   function toggle() {
+    if (timer) return;
     var i = order[0];
-    if (!RECORDS[i]) return;
     if (playing()) { stop(); return; }
     btn.disabled = true; label.textContent = 'Loading…';
     lookup(i).then(function (u) {
       btn.disabled = false;
       if (order[0] !== i) { label.textContent = 'Play preview'; return; }
-      if (!u) { label.textContent = 'Preview unavailable'; setTimeout(function () { label.textContent = 'Play preview'; }, 2500); return; }
+      if (!u) { label.textContent = 'No preview'; setTimeout(function () { label.textContent = 'Play preview'; }, 2500); return; }
       if (!audios[i]) {
         audios[i] = new Audio(u);
         audios[i].addEventListener('ended', function () { setPlaying(false); });
@@ -5011,13 +5061,44 @@ const READING_LIST = [
       audios[i].play().then(function () { setPlaying(true); }).catch(function () { setPlaying(false); });
     });
   }
+  /* Switching: the record in front first lets its disc slide back inside the sleeve, then the sleeve slides out to the
+     right and tucks behind the pile while the next one comes forward and puts its disc out. Quick clicks keep the latest choice. */
+  var pending = null, timer = null;
+  var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function now() { return pending || order; }
+  var calmTimer = null;
+  function go(next) {
+    stop();
+    if (calm) { order = next; render(); return; }
+    pending = next;
+    card.classList.add('is-switching');
+    clearTimeout(calmTimer);
+    if (timer) return;
+    var leaving = items[order[0]];
+    leaving.removeAttribute('data-front');
+    timer = setTimeout(function () {
+      leaving.classList.add('is-leaving');
+      timer = setTimeout(function () {
+        order = pending; pending = null; timer = null;
+        render();
+        leaving.classList.remove('is-leaving');
+        calmTimer = setTimeout(function () { card.classList.remove('is-switching'); }, 650);
+      }, 360);
+    }, 280);
+  }
   items.forEach(function (it, i) {
     it.addEventListener('click', function () {
-      if (order[0] === i) { toggle(); return; }
-      stop();
-      order = [i].concat(order.filter(function (x) { return x !== i; }));
-      render();
+      var cur = now();
+      if (cur[0] === i) { toggle(); return; }
+      go([i].concat(cur.filter(function (x) { return x !== i; })));
     });
+  });
+  card.querySelector('.crate-next').addEventListener('click', function () { var c = now(); go(c.slice(1).concat(c[0])); });
+  card.querySelector('.crate-prev').addEventListener('click', function () { var c = now(); go([c[c.length - 1]].concat(c.slice(0, -1))); });
+  card.querySelector('.crate-lucky').addEventListener('click', function () {
+    var c = now(), pick = c[0];
+    while (pick === c[0]) pick = Math.floor(Math.random() * RECORDS.length);
+    go([pick].concat(c.filter(function (x) { return x !== pick; })));
   });
   btn.addEventListener('click', toggle);
   render();
