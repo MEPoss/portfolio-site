@@ -1124,56 +1124,75 @@ body.game-active .about-avatar-row .av {
 
 
 /* ── Tools dock: icons on a floating bar, the one you point at shows what it is
-   (an idea borrowed from marco.fyi). Sounds are synthesised in the script, no files. */
-.dock-card-wrap { padding: 0.75rem; }
+   (an idea borrowed from marco.fyi). Sounds are synthesised in the script, no files.
+   Radii follow the padding rule: an inner radius is its container's radius minus the
+   gap between them, so every curve is concentric with the one around it. */
+.tools-panel.is-dock { background: none; border: 0; padding: 0; margin-bottom: 3.5rem; }
+.tools-card.dock-card-wrap { background: none; border: 0; box-shadow: none; padding: 0; }
 .dock-stage {
-  position: relative; border-radius: 22px; padding: 2.2rem 1rem 3.4rem;
-  background: color-mix(in srgb, var(--text) 4%, var(--surface));
+  --gap: 10px;                                  /* padding of the stage, the panel and the dock */
+  --r-in: 24px;                                 /* panel and dock */
+  --r-out: calc(var(--r-in) + var(--gap));      /* stage = inner + its padding */
+  position: relative; padding: var(--gap); border-radius: var(--r-out);
+  background: color-mix(in srgb, var(--text) 5%, var(--surface));
+  border: 1px solid var(--divider);
+  display: flex; flex-direction: column; gap: 14px;
 }
-.dock-hint { position: absolute; top: 0.8rem; right: 1.2rem; display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--text-muted); }
 .dock-panel {
-  position: relative; border: 1px solid var(--divider); border-radius: 16px; padding: 0.85rem 0.9rem 0.95rem;
-  margin-bottom: 1.1rem; min-height: 8.5rem;
+  position: relative; border: 1px solid var(--divider); border-radius: var(--r-in); padding: var(--gap);
+  height: 11rem;                                /* fixed, so the section never grows or shrinks with the content */
+  display: flex; flex-direction: column; background: var(--surface);
   --notch-x: 50%;
 }
 .dock-panel::after {
-  content: ''; position: absolute; left: var(--notch-x); bottom: -7px; width: 12px; height: 12px;
-  background: color-mix(in srgb, var(--text) 4%, var(--surface)); border-right: 1px solid var(--divider); border-bottom: 1px solid var(--divider);
+  content: ''; position: absolute; left: var(--notch-x); bottom: -8px; width: 14px; height: 14px;
+  background: var(--surface); border-right: 1px solid var(--divider); border-bottom: 1px solid var(--divider);
   transform: translateX(-50%) rotate(45deg); transition: left 0.25s cubic-bezier(0.24, 1.34, 0.38, 1);
 }
-.dock-head { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.7rem; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+.dock-head { display: flex; align-items: center; gap: 0.5rem; padding: 0.15rem 0.45rem 0.6rem; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
 .dock-head-icon { width: 20px; height: 20px; border-radius: 5px; }
-.dock-cards { display: flex; flex-wrap: wrap; gap: 0.7rem; animation: dockIn 0.2s ease; }
+.dock-cards { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); animation: dockIn 0.2s ease; }
 @keyframes dockIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 .dock-item {
-  flex: 1 1 11rem; max-width: 17rem; display: block; background: var(--surface); border: 1px solid var(--divider);
-  border-radius: 10px; padding: 0.7rem 0.9rem; box-shadow: var(--shadow-sm); color: inherit; text-decoration: none;
+  min-width: 0; display: flex; flex-direction: column; background: color-mix(in srgb, var(--text) 3%, var(--surface));
+  border: 1px solid var(--divider); border-radius: calc(var(--r-in) - var(--gap)); padding: 0.65rem 0.9rem;
+  color: inherit; text-decoration: none; overflow: hidden;
 }
-.dock-item strong { display: block; font-size: 0.95rem; font-weight: 600; color: var(--text); padding-bottom: 0.45rem; border-bottom: 1px solid var(--divider); margin-bottom: 0.45rem; }
+.dock-item strong { display: block; font-size: 0.95rem; font-weight: 600; color: var(--text); padding-bottom: 0.4rem; border-bottom: 1px solid var(--divider); margin-bottom: 0.4rem; }
 .dock-item span { font-size: 0.82rem; color: var(--text-muted); line-height: 1.45; }
 a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
 .dock {
-  display: flex; gap: 0.55rem; padding: 0.7rem; border-radius: 20px; background: var(--surface);
-  border: 1px solid var(--divider); box-shadow: var(--shadow-sm);
+  display: flex; gap: 0.1rem; padding: var(--gap); border-radius: var(--r-in); background: var(--surface);
+  border: 1px solid var(--divider);
 }
+/* each button is its icon plus a 3px margin; the ring sits on the button's edge, so its
+   radius is the icon's radius (22.5% of the icon) plus that margin */
 .dock-btn {
-  all: unset; box-sizing: border-box; cursor: pointer; flex: 1 1 0; min-width: 0; max-width: 64px; aspect-ratio: 1;
-  border-radius: 16px; display: grid; place-items: center;
+  all: unset; box-sizing: border-box; cursor: pointer; position: relative; flex: 1 1 0; min-width: 0; max-width: 76px;
+  aspect-ratio: 1; padding: 3px; border-radius: 26%;
   transition: transform 0.2s cubic-bezier(0.24, 1.34, 0.38, 1), box-shadow 0.15s, background 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
-.dock-btn img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; }
-.dock-btn[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--accent); background: var(--accent-dim); transform: scale(1.06); }
-.dock-btn:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+.dock-btn img.dock-icon { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; border-radius: 22.5%; }
+.dock-btn[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); transform: translateY(-2px); }
+.dock-btn:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+/* Vercel is a website, not an app: brOS (where it opens) rides in the corner */
+.dock-badge { position: absolute; right: -5px; bottom: -5px; width: 44%; height: 44%; pointer-events: none; border-radius: 22.5%; box-shadow: 0 0 0 2px var(--surface); background: var(--surface); }
 .dock-sound {
-  all: unset; box-sizing: border-box; cursor: pointer; position: absolute; left: 1rem; bottom: 0.8rem; width: 34px; height: 34px;
-  border-radius: 50%; border: 2px solid var(--divider); color: var(--text-muted); display: grid; place-items: center;
-  transition: color 0.15s, border-color 0.15s;
+  all: unset; box-sizing: border-box; cursor: pointer; position: absolute; z-index: 2;
+  top: calc(var(--gap) + 0.4rem); right: calc(var(--gap) + 0.55rem); width: 30px; height: 30px;
+  border-radius: 50%; border: 1.5px solid var(--divider); color: var(--text-muted); display: grid; place-items: center;
+  background: var(--surface); transition: color 0.15s, border-color 0.15s;
 }
 .dock-sound:hover, .dock-sound:focus-visible { color: var(--text); border-color: var(--text-muted); }
-.dock-sound svg { width: 16px; height: 16px; }
+.dock-sound svg { width: 15px; height: 15px; }
 .dock-sound[aria-pressed="true"] .dock-sound-off, .dock-sound[aria-pressed="false"] .dock-sound-on { display: none; }
-@media (max-width: 560px) { .dock { gap: 0.3rem; padding: 0.5rem; border-radius: 16px; } .dock-btn { border-radius: 10px; } .dock-hint { display: none; } }
+@media (max-width: 560px) {
+  .dock-stage { --gap: 8px; --r-in: 18px; }
+  .dock { gap: 0; }
+  .dock-panel { height: 14rem; }
+  .dock-cards { grid-template-columns: 1fr; grid-auto-rows: 1fr; }
+}
 @media (prefers-reduced-motion: reduce) { .dock-btn, .dock-panel::after { transition: none; } .dock-cards { animation: none; } }
 
 /* ── Listening: the sleeve with its record sliding out (idea from marco.fyi) ── */
@@ -2477,25 +2496,24 @@ body.game-active .footer-links a {
       </div>
 
       <h3 class="about-section-title">Tools I use</h3>
-      <div class="tools-panel">
+      <div class="tools-panel is-dock">
         <div class="tools-card dock-card-wrap">
           <div class="dock-stage" id="tools-dock">
-            <span class="dock-hint" aria-hidden="true"><svg class="lucide" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M4 3l16 7-7 2-2 7z"/></svg> Look around…</span>
             <div class="dock-panel" aria-live="polite">
               <div class="dock-head"><img class="dock-head-icon" src="images/tools/figma.png" alt="" width="20" height="20"><span class="dock-head-name">Figma</span></div>
               <div class="dock-cards"></div>
             </div>
             <div class="dock" role="toolbar" aria-label="Tools I use">
-            <button class="dock-btn" type="button" data-i="0" aria-pressed="false" aria-label="Raycast"><img src="images/tools/raycast.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
-            <button class="dock-btn" type="button" data-i="1" aria-pressed="false" aria-label="Figma"><img src="images/tools/figma.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
-            <button class="dock-btn" type="button" data-i="2" aria-pressed="false" aria-label="Claude"><img src="images/tools/claude.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
-            <button class="dock-btn" type="button" data-i="3" aria-pressed="false" aria-label="Vercel"><img src="images/tools/vercel.svg" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
-            <button class="dock-btn" type="button" data-i="4" aria-pressed="false" aria-label="brOS"><img src="images/tools/bros.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
-            <button class="dock-btn" type="button" data-i="5" aria-pressed="false" aria-label="Warp"><img src="images/tools/warp.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
-            <button class="dock-btn" type="button" data-i="6" aria-pressed="false" aria-label="Paper"><img src="images/tools/paper.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
-            <button class="dock-btn" type="button" data-i="7" aria-pressed="false" aria-label="BatFi"><img src="images/tools/batfi.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
-            <button class="dock-btn" type="button" data-i="8" aria-pressed="false" aria-label="Thaw"><img src="images/tools/thaw.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
-            <button class="dock-btn" type="button" data-i="9" aria-pressed="false" aria-label="Vorssaint"><img src="images/tools/vorssaint.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="0" aria-pressed="false" aria-label="Raycast"><img class="dock-icon" src="images/tools/raycast.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="1" aria-pressed="false" aria-label="Figma"><img class="dock-icon" src="images/tools/figma.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="2" aria-pressed="false" aria-label="Claude"><img class="dock-icon" src="images/tools/claude.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="3" aria-pressed="false" aria-label="Vercel"><img class="dock-icon" src="images/tools/vercel.png" alt="" width="96" height="96" loading="lazy" decoding="async"><img class="dock-badge" src="images/tools/bros.png" alt="" width="40" height="40" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="4" aria-pressed="false" aria-label="brOS"><img class="dock-icon" src="images/tools/bros.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="5" aria-pressed="false" aria-label="Warp"><img class="dock-icon" src="images/tools/warp.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="6" aria-pressed="false" aria-label="Paper"><img class="dock-icon" src="images/tools/paper.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="7" aria-pressed="false" aria-label="BatFi"><img class="dock-icon" src="images/tools/batfi.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="8" aria-pressed="false" aria-label="Thaw"><img class="dock-icon" src="images/tools/thaw.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
+            <button class="dock-btn" type="button" data-i="9" aria-pressed="false" aria-label="Vorssaint"><img class="dock-icon" src="images/tools/vorssaint.png" alt="" width="96" height="96" loading="lazy" decoding="async"></button>
             </div>
             <button class="dock-sound" type="button" aria-pressed="true" aria-label="Sound on"><svg class="lucide dock-sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg><svg class="lucide dock-sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></svg></button>
           </div>
@@ -4480,7 +4498,7 @@ const READING_LIST = [
     { name: 'Raycast',   icon: 'raycast.png',   kind: 'Launcher',       desc: 'Apps, snippets and quick commands from one key.', url: 'https://www.raycast.com', host: 'raycast.com' },
     { name: 'Figma',     icon: 'figma.png',     kind: 'UI design',      desc: 'Interfaces, prototypes and design systems.', url: 'https://www.figma.com', host: 'figma.com' },
     { name: 'Claude',    icon: 'claude.png',    kind: 'AI pair',        desc: 'Thinking partner for design and code.', url: 'https://claude.ai', host: 'claude.ai' },
-    { name: 'Vercel',    icon: 'vercel.svg',    kind: 'Hosting',        desc: 'Where this site lives.', url: 'https://vercel.com', host: 'vercel.com' },
+    { name: 'Vercel',    icon: 'vercel.png',    kind: 'Hosting',        desc: 'Where this site lives.', url: 'https://vercel.com', host: 'vercel.com' },
     { name: 'brOS',      icon: 'bros.png',      kind: 'Browser',        desc: 'The Mac browser I built.', url: '#/ideas/bros', host: 'Open project', internal: true },
     { name: 'Warp',      icon: 'warp.png',      kind: 'Terminal',       desc: 'Where the command line happens.', url: 'https://www.warp.dev', host: 'warp.dev' },
     { name: 'Paper',     icon: 'paper.png',     kind: 'Design canvas',  desc: 'Designing in HTML on a canvas.', url: 'https://paper.design', host: 'paper.design' },
