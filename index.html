@@ -31,6 +31,7 @@
 <link rel="alternate icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
+<script>document.documentElement.classList.add('js');</script>
 <meta name="theme-color" content="#38BF77">
 <meta name="msapplication-TileColor" content="#0C0C0B">
 
@@ -123,7 +124,7 @@
     --card-bg: #FFFFFF;
     --card-border: #DDDBD6;
     --divider: #DDDBD6;
-    --nav-bg: rgba(245,244,240,0.92);
+    --nav-bg: rgba(245,244,240,0.66);
     --surface: #FFFFFF;
     --shadow-sm: 0 1px 2px rgba(20,16,10,0.05), 0 6px 20px -10px rgba(20,16,10,0.14);
     --accent: var(--accent-orange);
@@ -143,7 +144,7 @@
   --card-bg: #FFFFFF;
   --card-border: #DDDBD6;
   --divider: #DDDBD6;
-  --nav-bg: rgba(245,244,240,0.92);
+  --nav-bg: rgba(245,244,240,0.66);
   --surface: #FFFFFF;
   --shadow-sm: 0 1px 2px rgba(20,16,10,0.05), 0 6px 20px -10px rgba(20,16,10,0.14);
   --accent: var(--accent-orange);
@@ -214,8 +215,8 @@ nav#main-nav {
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px) saturate(1.5);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
   border-bottom: 1px solid transparent;
   transition: background 0.3s, border-color 0.3s;
 }
@@ -262,6 +263,8 @@ body::after { right: 2.25rem; }
 
 .nav-logo .avatar-stack {
   display: flex;
+  overflow: hidden;           /* the face slides up from below this edge */
+  border-radius: 50%;
 }
 
 .nav-logo .av {
@@ -278,6 +281,12 @@ body::after { right: 2.25rem; }
   overflow: hidden;
   user-select: none;
 }
+
+/* On the home page the face in the nav stays out while the big one in the hero is on screen, then rises into the nav as the hero face scrolls away */
+.nav-logo .av { transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease; }
+body.nav-face-hidden .nav-logo .av { transform: translateY(115%); opacity: 0; }
+body.nav-face-still .nav-logo .av { transition: none; }
+@media (prefers-reduced-motion: reduce) { .nav-logo .av { transition: opacity 0.3s ease; } body.nav-face-hidden .nav-logo .av { transform: none; } }
 
 body.page-active .nav-logo .av {
   border-color: var(--bg);
@@ -444,6 +453,25 @@ h1.home-title {
   margin-bottom: 1.75rem;
   text-wrap: balance;
 }
+
+/* Hello, written by hand: the original script is drawn stroke by stroke, then the rest of the title is typed in */
+.hello-crt {
+  display: inline-block; height: 1.05em; width: auto; aspect-ratio: 638 / 200; vertical-align: -0.06em;
+  fill: none; stroke: currentColor; stroke-width: 14.8883px; stroke-linecap: round; stroke-linejoin: round; overflow: visible;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hs { stroke-dasharray: 1 1; animation: helloDraw 0.7s cubic-bezier(0.45, 0, 0.3, 1) 0.15s backwards; }
+  .hs2 { animation-duration: 1.3s; animation-delay: 0.75s; }
+  .hello-rest { clip-path: inset(-10% 100% -10% 0); animation: helloRest 0.6s steps(10, end) 2.15s forwards; }
+  /* titles ease in as they scroll into view */
+  html.js :is(.page-title, .case-title, .section-heading, .subsection-heading, .about-section-title, .ideas-section-title, .section-eyebrow, .section-label) {
+    opacity: 0; transform: translateY(14px);
+    transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  html.js :is(.page-title, .case-title, .section-heading, .subsection-heading, .about-section-title, .ideas-section-title, .section-eyebrow, .section-label).is-in { opacity: 1; transform: none; }
+}
+@keyframes helloDraw { 0% { stroke-dashoffset: 1; opacity: 0; } 0.5% { opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 1; } }
+@keyframes helloRest { to { clip-path: inset(-10% 0 -10% 0); } }
 
 .home-bio {
   max-width: 600px;
@@ -2418,7 +2446,9 @@ body.game-active .footer-links a {
         <div class="av av-pixel" style="width:56px;height:56px;font-size:26px;border:3px solid var(--bg);"></div>
       </div>
 
-      <h1 class="home-title" id="bio">Hi, I'm Ugo.</h1>
+      <h1 class="home-title" id="bio" aria-label="Hello, I'm Ugo.">
+        <svg class="hello-crt" viewBox="0 0 638 200" aria-hidden="true" focusable="false"><path class="hs hs1" pathLength="1" d="M8.69214 166.558C36.2393 151.245 61.3409 131.553 89.8191 98.0349C109.203 75.1542 119.625 49.0282 120.122 31.008C120.37 17.609 113.836 7.4442 101.759 7.4442C88.3598 7.4442 79.9231 17.609 74.7122 40.9417C69.005 66.5846 64.7866 96.009 54.1166 190.361"/><path class="hs hs2" pathLength="1" d="M55.1624 181.14C60.6251 133.12 81.4118 98.0536 107.963 98.0536C123.844 98.0536 133.937 110.709 131.071 128.823C129.457 139.493 127.587 150.411 125.408 163.066C122.869 178.947 130.128 191.354 152.122 191.354C184.197 191.354 219.189 173.529 237.097 145.921C243.198 136.515 245.68 128.078 245.928 119.89C246.176 105.001 237.739 93.8352 222.851 93.8352C203.992 93.8352 189.6 115.175 189.6 142.47C189.6 171.751 205.481 192.346 239.208 192.346C285.066 192.346 335.86 137.297 359.199 75.8642C365.788 58.5186 368.26 42.4121 368.26 31.1568C368.26 17.8113 364.042 7.56384 352.131 7.56384C340.469 7.56384 332.777 16.6197 325.829 30.9185C317.688 47.5023 311.667 71.4218 309.203 98.4605C303 166.307 316.896 191.354 349.936 191.354C390 191.354 434.542 135.54 457.286 75.6742C463.803 58.5186 466.275 42.4121 466.275 31.1568C466.275 17.8113 462.057 7.56384 450.146 7.56384C438.484 7.56384 430.792 16.6197 423.844 30.9185C415.703 47.5023 409.682 71.4218 407.218 98.4605C401.015 166.307 414.911 191.354 444.416 191.354C473.874 191.354 489.877 165.675 499.471 138.408C508.955 111.453 520.618 94.8278 544.935 94.8278C565.035 94.8278 580.916 109.716 580.916 137.756C580.916 168.773 560.792 192.098 535.362 192.346C512.984 192.594 498.285 174.48 499.774 147.185C501.511 116.912 519.873 94.8278 543.943 94.8278C557.839 94.8278 569.51 101.005 578.682 107.731C603.549 125.872 622.709 114.661 630.047 96.7242"/></svg><span class="hello-rest" aria-hidden="true">, I'm Ugo.</span>
+      </h1>
 
       <div class="home-bio">
         <p>I'm a Product Designer based in Italy 🇮🇹, passionate about turning complexity into clarity.</p>
@@ -5005,5 +5035,44 @@ const READING_LIST = [
     box.classList.toggle('is-open', open);
     if (open) inner.removeAttribute('inert'); else inner.setAttribute('inert', '');
   });
+})();
+</script>
+
+<script>
+/* Titles fade up gently when they come into view. Without IntersectionObserver they simply show. */
+(function () {
+  var sel = '.page-title, .case-title, .section-heading, .subsection-heading, .about-section-title, .ideas-section-title, .section-eyebrow, .section-label';
+  var els = Array.prototype.slice.call(document.querySelectorAll(sel));
+  if (!('IntersectionObserver' in window)) { els.forEach(function (e) { e.classList.add('is-in'); }); return; }
+  var io = new IntersectionObserver(function (entries) {
+    var n = 0;
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      en.target.style.transitionDelay = (n++ * 70) + 'ms';
+      en.target.classList.add('is-in');
+      io.unobserve(en.target);
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
+  els.forEach(function (e) { io.observe(e); });
+})();
+</script>
+
+<script>
+/* Home: hide the nav face while the hero face is visible; it rises into the nav when the hero face scrolls under it. */
+(function () {
+  var hero = document.querySelector('.home-avatars .av-pixel');
+  if (!hero) return;
+  var body = document.body;
+  var NAV_H = 56;
+  function visible() {
+    var r = hero.getBoundingClientRect();
+    return r.width > 0 && r.bottom > NAV_H && r.top < window.innerHeight;
+  }
+  function set(hidden) { body.classList.toggle('nav-face-hidden', hidden); }
+  body.classList.add('nav-face-still');
+  set(visible());
+  requestAnimationFrame(function () { requestAnimationFrame(function () { body.classList.remove('nav-face-still'); }); });
+  if (!('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function (es) { set(es[es.length - 1].isIntersecting); }, { rootMargin: '-' + NAV_H + 'px 0px 0px 0px' }).observe(hero);
 })();
 </script>
