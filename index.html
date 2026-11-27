@@ -2,7 +2,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ugo Possenti · Product Designer</title>
-<meta name="description" content="Product Designer based in Italy, passionate about turning complexity into clarity. Currently at Treedom making satellite data readable. Previously built open-source apps for 120,000 students.">
+<meta name="description" content="Hello, I&#39;m Ugo, a Product Designer based in Italy. At Treedom, making satellite data readable and sustainability measurable. Case studies and side projects.">
 <meta name="author" content="Ugo Possenti">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://ugopossenti.com/">
@@ -11,20 +11,20 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://ugopossenti.com/">
 <meta property="og:title" content="Ugo Possenti · Product Designer">
-<meta property="og:description" content="Product Designer based in Italy. Building digital experiences at Treedom that bridge complexity and clarity. ESA, education, design systems.">
-<meta property="og:image" content="https://ugopossenti.com/og-image.png">
+<meta property="og:description" content="Hello, I&#39;m Ugo, a Product Designer based in Italy. At Treedom, making satellite data readable and sustainability measurable. Case studies and side projects.">
+<meta property="og:image" content="https://www.ugopossenti.com/og-image.png?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Ugo Possenti · Product Designer portfolio">
+<meta property="og:image:alt" content="hello, I&#39;m Ugo. Product Designer portfolio">
 <meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="Ugo Possenti">
 
 <!-- Twitter / X Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Ugo Possenti · Product Designer">
-<meta name="twitter:description" content="Product Designer based in Italy. Building digital experiences at Treedom that bridge complexity and clarity.">
-<meta name="twitter:image" content="https://ugopossenti.com/og-image.png">
-<meta name="twitter:image:alt" content="Ugo Possenti · Product Designer">
+<meta name="twitter:description" content="Hello, I&#39;m Ugo, a Product Designer based in Italy. At Treedom, making satellite data readable and sustainability measurable. Case studies and side projects.">
+<meta name="twitter:image" content="https://www.ugopossenti.com/og-image.png?v=2">
+<meta name="twitter:image:alt" content="hello, I&#39;m Ugo. Product Designer portfolio">
 
 <!-- Favicon -->
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -52,7 +52,7 @@
   "jobTitle": "Product Designer",
   "url": "https://ugopossenti.com/",
   "image": "https://ugopossenti.com/og-image.png",
-  "description": "Product Designer based in Italy, passionate about turning complexity into clarity.",
+  "description": "Hello, I'm Ugo, a Product Designer based in Italy. At Treedom, making satellite data readable and sustainability measurable. Case studies and side projects.",
   "nationality": "Italian",
   "sameAs": [
     "https://www.linkedin.com/in/ugo-possenti/"
@@ -1257,7 +1257,7 @@ a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
 .crate-item {
   all: unset; box-sizing: border-box; cursor: pointer; position: absolute; left: 0; top: 50%; width: 72%; aspect-ratio: 1563 / 1412;
   --d: 0; --lift: 0px; --z: 0px; --tilt: 0deg; --x: 0%;
-  perspective: 900px;
+  perspective: 2600px;
   transform: translateY(calc(-50% - var(--d) * 17px));
   z-index: calc(10 - var(--d));
   transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
@@ -1269,8 +1269,8 @@ a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
 }
 /* at rest every sleeve is a flat square in the stack; the motion only happens on hover.
    Any record you point at, in front or behind, leans toward you top edge first; the ones behind also rise clear of the stack. */
-.crate-item[data-front]:hover, .crate-item[data-front]:focus-visible { --z: 30px; --tilt: -10deg; }
-.crate-item:not([data-front]):hover, .crate-item:not([data-front]):focus-visible { --lift: 32px; --z: 30px; --tilt: -10deg; }
+.crate-item[data-front]:hover, .crate-item[data-front]:focus-visible { --z: 0px; --tilt: -10deg; }
+.crate-item:not([data-front]):hover, .crate-item:not([data-front]):focus-visible { --lift: 32px; --z: 0px; --tilt: -10deg; }
 /* switching: the front sleeve slides out to the right, then tucks behind the pile */
 .crate-item.is-leaving { --x: 100%; }
 /* a smooth, unhurried pace while records are being switched: soft easing, no bounce */
@@ -1278,7 +1278,8 @@ a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
 #now-card.is-switching .crate-item, #now-card.is-switching .crate-card { transition-duration: 0.55s; transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1); }
 .crate-item.is-leaving .crate-card, #now-card.is-switching .crate-item.is-leaving .crate-card { transition-duration: 0.4s; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
 .about-listen { position: relative; z-index: 2; }
-.crate { overflow-x: clip; }  /* the sleeve slides out past the edge of the card and is cut there */
+/* while switching, the sleeve slides out past the edge of the card and is cut there; otherwise nothing is clipped */
+#now-card.is-switching .crate { overflow-x: clip; }
 .crate-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 /* only the first few records show in the stack; the rest wait behind the last visible one */
 .crate-item[data-hidden] { opacity: 0; pointer-events: none; }
@@ -1406,7 +1407,25 @@ a.dock-item:hover, a.dock-item:focus-visible { border-color: var(--accent); }
 .exp-date { flex: none; font-size: 0.95rem; color: var(--text); white-space: nowrap; }
 @media (max-width: 720px) {
   .about-row { grid-template-columns: 1fr; }
-  .about-row .now-card { max-width: 24rem; }
+  /* the music card sits centered in the viewport, with bigger, easier-to-tap controls */
+  .about-row .now-card { max-width: 26rem; width: 100%; margin: 0 auto; }
+  .about-row .crate-controls { gap: 1.5rem; }
+  .about-row .crate-nav { width: 52px; height: 52px; }
+  .about-row .crate-nav svg { width: 24px; height: 24px; }
+  .about-row .play-btn { min-width: 11rem; padding: 0.95rem 1.4rem 0.95rem 1.2rem; font-size: 1.05rem; gap: 0.6rem; }
+  .about-row .play-btn svg { width: 20px; height: 20px; }
+  .about-row .crate-lucky { font-size: 1rem; padding: 0.7rem 1.1rem; gap: 0.55rem; margin-top: 0.7rem; min-height: 44px; }
+  .about-row .crate-nav { flex: none; }
+  .about-row .play-btn { white-space: nowrap; }
+  .about-row .crate-lucky svg { width: 18px; height: 18px; }
+}
+@media (max-width: 430px) {
+  /* every control keeps a 44px+ touch target and 16px+ between neighbours; the play button takes the space left */
+  .about-row .crate-controls { gap: 1.35rem; }
+  .about-row .crate-nav { flex: none; width: 46px; height: 46px; }
+  .about-row .play-btn { flex: none; width: 8.75rem; min-width: 0; padding: 0.85rem 1rem; font-size: 1rem; gap: 0.5rem; white-space: nowrap; }
+  .about-row .play-btn svg { width: 18px; height: 18px; }
+  .about-row .crate-lucky { min-height: 44px; margin-top: 0.7rem; }
 }
 @media (max-width: 640px) {
   .about-intro { padding: 1.5rem; min-height: 0; }
@@ -2714,7 +2733,7 @@ body.game-active .footer-links a {
         <p class="now-text" aria-live="polite"></p>
         <div class="crate-controls">
           <button class="crate-nav crate-prev" type="button" aria-label="Previous record"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
-          <button class="play-btn" type="button" aria-pressed="false"><svg class="play-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="pause-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg><span class="play-label">Play preview</span></button>
+          <button class="play-btn" type="button" aria-pressed="false"><svg class="play-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="pause-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg><span class="play-label">Play</span></button>
           <button class="crate-nav crate-next" type="button" aria-label="Next record"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
         </div>
         <button class="crate-lucky" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22"/><path d="M2 6h1.972a4 4 0 0 1 3.6 2.2"/><path d="M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45"/></svg><span>I'm feeling lucky</span></button>
@@ -5017,7 +5036,7 @@ const READING_LIST = [
   function setPlaying(v) {
     if (v) card.setAttribute('data-playing', ''); else card.removeAttribute('data-playing');
     btn.setAttribute('aria-pressed', String(v));
-    label.textContent = v ? 'Pause' : 'Play preview';
+    label.textContent = v ? 'Pause' : 'Play';
   }
   function stop() { audios.forEach(function (a) { if (a) { a.pause(); a.currentTime = 0; } }); setPlaying(false); }
   function render() {
@@ -5052,8 +5071,8 @@ const READING_LIST = [
     btn.disabled = true; label.textContent = 'Loading…';
     lookup(i).then(function (u) {
       btn.disabled = false;
-      if (order[0] !== i) { label.textContent = 'Play preview'; return; }
-      if (!u) { label.textContent = 'No preview'; setTimeout(function () { label.textContent = 'Play preview'; }, 2500); return; }
+      if (order[0] !== i) { label.textContent = 'Play'; return; }
+      if (!u) { label.textContent = 'No preview'; setTimeout(function () { label.textContent = 'Play'; }, 2500); return; }
       if (!audios[i]) {
         audios[i] = new Audio(u);
         audios[i].addEventListener('ended', function () { setPlaying(false); });
